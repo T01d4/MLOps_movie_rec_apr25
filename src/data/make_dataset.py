@@ -39,13 +39,13 @@ def process_data(input_filepath_scores, input_filepath_gtags,
                                     "tagId": "int32",
                                     "relevance": "float32"
                                     })
-        #unused
+        # unused
         df_gtags = pd.read_csv(input_filepath_gtags, sep=",",
                                dtype={
                                    "tagId": "int32",
                                    "tag": "string"
                                    })
-        #unused
+        # unused
         df_movies = pd.read_csv(input_filepath_movies, sep=",",
                                 usecols=["movieId", "title", "genres"],
                                 dtype={
@@ -60,7 +60,7 @@ def process_data(input_filepath_scores, input_filepath_gtags,
                                      "movieId": "int32",
                                      "rating": "float32"
                                      })
-        #unused
+        # unused
         df_tags = pd.read_csv(input_filepath_tags, sep=",",
                               usecols=["userId", "movieId", "tag"],
                               dtype={
