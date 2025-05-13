@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import os
 import pandas as pd
+from tqdm import tqdm
 
 
 def main(input_filepath, output_filepath):
@@ -53,13 +54,13 @@ def process_data(input_filepath_scores, input_filepath_gtags,
                                     "title": "string",
                                     "genres": "string"
                                     })
-        # df_ratings = pd.read_csv(input_filepath_ratings, sep=",",
-        #                          usecols=["userId", "movieId", "rating"],
-        #                          dtype={
-        #                              "userId": "int32",
-        #                              "movieId": "int32",
-        #                              "rating": "float32"
-        #                              })
+        df_ratings = pd.read_csv(input_filepath_ratings, sep=",",
+                                 usecols=["userId", "movieId", "rating"],
+                                 dtype={
+                                     "userId": "int32",
+                                     "movieId": "int32",
+                                     "rating": "float32"
+                                     })
         # unused
         df_tags = pd.read_csv(input_filepath_tags, sep=",",
                               usecols=["userId", "movieId", "tag"],
@@ -71,25 +72,39 @@ def process_data(input_filepath_scores, input_filepath_gtags,
 
         # Merging datasets
         logger.info("Merging datasets...")
-        chunk_size = 1_000_000  # passe an deinen RAM an
 
-        merged_chunks = []
+        movie_embeddings = df_scores.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
 
-        for chunk in pd.read_csv("ratings.csv", chunksize=chunk_size, dtype={
-            "userId": "int32",
-            "movieId": "int32",
-            "rating": "float32",
-            "timestamp": "int32"
-        }):
-            merged = chunk.merge(df_scores, on="movieId", how="left")
-            merged_chunks.append(merged)
+        user_vectors = []
+        user_ids = []
 
-        # Alles zusammenfügen und speichern (optional)
-        final_df = pd.concat(merged_chunks, ignore_index=True)
-        final_df.to_csv("merged_ratings_scores.csv", index=False)
+        grouped = df_ratings.groupby("userId")
+
+        for user_id, group in tqdm(grouped):
+            rated_movies = group["movieId"].values
+            common_movies = [mid for mid in rated_movies if mid in movie_embeddings.index]
+
+            if len(common_movies) == 0:
+                continue  # skip user if no matching embeddings
+
+            vectors = movie_embeddings.loc[common_movies]
+            # Optional: mit Bewertung gewichten
+            # weights = group.set_index("movieId").loc[common_movies]["rating"].values
+            # weighted_vectors = vectors.mul(weights, axis=0)
+            user_vector = vectors.mean(axis=0)  # oder: weighted_vectors.sum(axis=0) / weights.sum()
+            user_vectors.append(user_vector)
+            user_ids.append(user_id)
+
+        user_matrix = pd.DataFrame(user_vectors, index=user_ids)
+        user_matrix.index.name = "userId"
+        user_matrix.to_csv(os.path.join(output_filepath, "user_matrix.csv"))
+        logger.info(f"User matrix saved to {os.path.join(output_filepath, 'user_matrix.csv')}")
+
+        # df = pd.concat(merged_chunks, ignore_index=True)
+        # df.to_csv("merged_ratings_scores.csv", index=False)
 
 
-        df = pd.merge(df_ratings, df_scores, on='movieId', how='left')
+        # df = pd.merge(df_ratings, df_scores, on='movieId', how='left')
 
         # Drop rows with missing values in specific columns
         col_to_drop_lines = ["rating", "tagId", "relevance"]  # Ensure these columns are used for the matrix
