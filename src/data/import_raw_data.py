@@ -1,20 +1,19 @@
 import requests
 import os
 import logging
-from check_structure import check_existing_file, check_existing_folder
 
 
 def import_raw_data(raw_data_relative_path, 
                     filenames,
                     bucket_folder_url):
     '''import filenames from bucket_folder_url in raw_data_relative_path'''
-    if check_existing_folder(raw_data_relative_path):
+    if not os.path.exists(raw_data_relative_path):
         os.makedirs(raw_data_relative_path)
     # download all the files
     for filename in filenames :
         input_file = os.path.join(bucket_folder_url,filename)
         output_file = os.path.join(raw_data_relative_path, filename)
-        if check_existing_file(output_file):
+        if not os.path.exists(output_file):
             object_url = input_file
             print(f'downloading {input_file} as {os.path.basename(output_file)}')
             response = requests.get(object_url)

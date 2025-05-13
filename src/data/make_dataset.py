@@ -5,9 +5,6 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import os
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import mean_squared_error
 import numpy as np
 
 
@@ -19,7 +16,7 @@ def main(input_filepath, output_filepath):
         cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info('Making final data set from raw data')
 
     # Define input file paths
     input_filepath_scores = os.path.join(input_filepath, "genome-scores.csv")
@@ -42,38 +39,31 @@ def process_data(input_filepath_scores, input_filepath_gtags, input_filepath_mov
         df_ratings = pd.read_csv(input_filepath_ratings, sep=",", usecols=["userId", "movieId", "rating"], dtype={"userId": "int32", "movieId": "int32", "rating": "float32"})
         df_tags = pd.read_csv(input_filepath_tags, sep=",", usecols=["userId", "movieId", "tag"], dtype={"userId": "int32", "movieId": "int32", "tag": "string"})
         
-        # Merging datasets incrementally
+        # Merging datasets
         logger.info("Merging datasets...")
-        df = pd.merge(df_scores, df_gtags, on='tagId', how='left')
-        df = pd.merge(df, df_movies, on='movieId', how='left')
-      #  df = pd.merge(df, df_ratings, on='movieId', how='left')
-      #  df = pd.merge(df, df_tags, on='movieId', how='left')
+        df = pd.merge(df_ratings, df_scores , on='movieId', how='left')
+
 
         # Drop rows with missing values in specific columns
-        col_to_drop_lines = [ "relevance"]  # Define columns to check for NaN
+        col_to_drop_lines = ["rating"]  # Ensure 'rating' is used for the matrix
+        logger.info(f"Dropping rows with missing values in columns: {col_to_drop_lines}")
         df = df.dropna(subset=col_to_drop_lines, axis=0)
 
-        # Split features and target
-        target = df['movieId']
-        feats = df.drop(['movieId', 'tagId'], axis=1)
+        # Create a pivot table to generate the movie matrix
+        logger.info("Creating movie matrix...")
+        movie_matrix = df.pivot_table(index='userId', columns='movieId', values='rating', fill_value=0)
 
-        # Train-test split
-        X_train, X_test, y_train, y_test = train_test_split(feats, target, test_size=0.3, random_state=42)
+        # Save the movie matrix to a CSV file
+        output_file = os.path.join(output_filepath, 'movie_matrix.csv')
+        movie_matrix.to_csv(output_file)
 
-        # Create output folder if necessary
-        if not os.path.exists(output_filepath):
-            os.makedirs(output_filepath)
-
-        # Save the train-test split data
-        for file, filename in zip([X_train, X_test, y_train, y_test], ['X_train', 'X_test', 'y_train', 'y_test']):
-            output_file = os.path.join(output_filepath, f'{filename}.csv')
-            file.to_csv(output_file, index=False)
-
-        logger.info("Data processing completed successfully.")
+        logger.info(f"Movie matrix saved to {output_file}")
     except FileNotFoundError as e:
         logger.error(f"File not found: {e}")
     except pd.errors.ParserError as e:
         logger.error(f"Error parsing file: {e}")
+    except KeyError as e:
+        logger.error(f"Key error: {e}")
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
 
