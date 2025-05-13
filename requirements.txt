@@ -1,5 +1,5 @@
-Package            Version     Editable project location
------------------- ----------- ------------------------------------------------
+#Package            Version     Editable project location
+#------------------ ----------- ------------------------------------------------
 annotated-types    0.7.0
 anyio              4.9.0
 awscli             1.40.13
