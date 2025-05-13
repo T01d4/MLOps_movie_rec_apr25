@@ -27,11 +27,11 @@ def import_raw_data(raw_data_relative_path,
                 print(f'Error accessing the object {input_file}:', response.status_code)
 
 
-def main(raw_data_relative_path="./data/raw", 
-         filenames = ["genome-scores.csv", "genome-tags.csv", "links.csv", 
+def main(raw_data_relative_path="./data/raw",
+         filenames=["genome-scores.csv", "genome-tags.csv", "links.csv",
                     "movies.csv", "ratings.csv", "README.txt", "tags.csv"],
-         bucket_folder_url= "https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/"          
-        ):
+         bucket_folder_url="https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/"
+         ):
     """ Upload data from AWS s3 in ./data/raw
     """
     import_raw_data(raw_data_relative_path, filenames, bucket_folder_url)

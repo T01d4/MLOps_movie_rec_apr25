@@ -1,12 +1,10 @@
 import unittest
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
-import numpy as np
 
-# sys.path setzen, wenn du src-layout nutzt
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+# import sys
+# from pathlib import Path
+# sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from models.train_model import train_model  # Pfad ggf. anpassen
 

@@ -21,7 +21,7 @@ def main(input_filepath, output_filepath):
 
     # Call the main data processing function with the provided file paths
     process_data(input_filepath_scores, input_filepath_gtags,
-                 input_filepath_movies, input_filepath_ratings, 
+                 input_filepath_movies, input_filepath_ratings,
                  input_filepath_tags, output_filepath, logger
                  )
 
@@ -33,17 +33,19 @@ def process_data(input_filepath_scores, input_filepath_gtags,
     try:
         # Importing datasets with optimized memory usage
         logger.info("Loading datasets...")
-        df_scores = pd.read_csv(input_filepath_scores, sep=",", 
+        df_scores = pd.read_csv(input_filepath_scores, sep=",",
                                 dtype={
                                     "movieId": "int32",
                                     "tagId": "int32",
                                     "relevance": "float32"
                                     })
+        #unused
         df_gtags = pd.read_csv(input_filepath_gtags, sep=",",
                                dtype={
                                    "tagId": "int32",
                                    "tag": "string"
                                    })
+        #unused
         df_movies = pd.read_csv(input_filepath_movies, sep=",",
                                 usecols=["movieId", "title", "genres"],
                                 dtype={
@@ -58,6 +60,7 @@ def process_data(input_filepath_scores, input_filepath_gtags,
                                      "movieId": "int32",
                                      "rating": "float32"
                                      })
+        #unused
         df_tags = pd.read_csv(input_filepath_tags, sep=",",
                               usecols=["userId", "movieId", "tag"],
                               dtype={
@@ -65,7 +68,7 @@ def process_data(input_filepath_scores, input_filepath_gtags,
                                   "movieId": "int32",
                                   "tag": "string"
                                   })
-        
+
         # Merging datasets
         logger.info("Merging datasets...")
         df = pd.merge(df_ratings, df_scores, on='movieId', how='left')
@@ -118,4 +121,4 @@ if __name__ == '__main__':
     input_filepath = "data/raw"
     output_filepath = "data/processed"
 
-    main(input_filepath, output_filepath) 
+    main(input_filepath, output_filepath)
