@@ -53,13 +53,13 @@ def process_data(input_filepath_scores, input_filepath_gtags,
                                     "title": "string",
                                     "genres": "string"
                                     })
-        df_ratings = pd.read_csv(input_filepath_ratings, sep=",",
-                                 usecols=["userId", "movieId", "rating"],
-                                 dtype={
-                                     "userId": "int32",
-                                     "movieId": "int32",
-                                     "rating": "float32"
-                                     })
+        # df_ratings = pd.read_csv(input_filepath_ratings, sep=",",
+        #                          usecols=["userId", "movieId", "rating"],
+        #                          dtype={
+        #                              "userId": "int32",
+        #                              "movieId": "int32",
+        #                              "rating": "float32"
+        #                              })
         # unused
         df_tags = pd.read_csv(input_filepath_tags, sep=",",
                               usecols=["userId", "movieId", "tag"],
@@ -71,6 +71,24 @@ def process_data(input_filepath_scores, input_filepath_gtags,
 
         # Merging datasets
         logger.info("Merging datasets...")
+        chunk_size = 1_000_000  # passe an deinen RAM an
+
+        merged_chunks = []
+
+        for chunk in pd.read_csv("ratings.csv", chunksize=chunk_size, dtype={
+            "userId": "int32",
+            "movieId": "int32",
+            "rating": "float32",
+            "timestamp": "int32"
+        }):
+            merged = chunk.merge(df_scores, on="movieId", how="left")
+            merged_chunks.append(merged)
+
+        # Alles zusammenfügen und speichern (optional)
+        final_df = pd.concat(merged_chunks, ignore_index=True)
+        final_df.to_csv("merged_ratings_scores.csv", index=False)
+
+
         df = pd.merge(df_ratings, df_scores, on='movieId', how='left')
 
         # Drop rows with missing values in specific columns
