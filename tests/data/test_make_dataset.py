@@ -1,12 +1,10 @@
-import sys
 import unittest
 import pandas as pd
 from tempfile import TemporaryDirectory
 from pathlib import Path
 import logging
-sys.path.append(str(Path(__file__).resolve().parents[2] / "src"))
-
 from data.make_dataset import process_data
+
 
 class TestProcessData(unittest.TestCase):
     def setUp(self):
