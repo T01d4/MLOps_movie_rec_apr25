@@ -44,14 +44,15 @@ def process_data(input_filepath_scores, input_filepath_gtags, input_filepath_mov
         logger.info(f"Dropping rows with missing values in columns: {col_to_drop_lines}")
         df = df.dropna(subset=col_to_drop_lines, axis=0)
 
-        # Create a pivot table to generate the movie matrix
-        logger.info("Creating movie matrix...")
-        movie_matrix = df.pivot_table(
-            index='userId',
-            columns='movieId',
-            values=['rating', 'tagId', 'relevance'],
-            fill_value=0
-        )
+        # Create a matrix with userId as rows and all other variables as columns
+        logger.info("Creating user-feature matrix...")
+        movie_matrix = df.set_index('userId')
+
+        # Save the movie matrix to a CSV file
+        output_file = os.path.join(output_filepath, 'movies_matrix.csv')
+        movie_matrix.to_csv(output_file)
+
+        logger.info(f"User-feature matrix saved to {output_file}")
 
         # Flatten the multi-level columns for better readability
         movie_matrix.columns = ['_'.join(map(str, col)) for col in movie_matrix.columns]
@@ -92,4 +93,3 @@ if __name__ == '__main__':
     output_filepath = sys.argv[2]
 
     main(input_filepath, output_filepath) 
-    
