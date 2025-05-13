@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-import click
+import sys
 import logging
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
@@ -8,9 +7,6 @@ import pandas as pd
 import numpy as np
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
 def main(input_filepath, output_filepath):
     """ Runs data processing scripts to turn raw data from (../raw) into
         cleaned data ready to be analyzed (saved in ../processed).
@@ -41,25 +37,34 @@ def process_data(input_filepath_scores, input_filepath_gtags, input_filepath_mov
         
         # Merging datasets
         logger.info("Merging datasets...")
-        df = pd.merge(df_ratings, df_scores , on='movieId', how='left')
-
+        df = pd.merge(df_ratings, df_scores, on='movieId', how='left')
 
         # Drop rows with missing values in specific columns
-        col_to_drop_lines = ["rating"]  # Ensure 'rating' is used for the matrix
+        col_to_drop_lines = ["rating", "tagId", "relevance"]  # Ensure these columns are used for the matrix
         logger.info(f"Dropping rows with missing values in columns: {col_to_drop_lines}")
         df = df.dropna(subset=col_to_drop_lines, axis=0)
 
-        # Create a pivot table to generate the movie matrix
-        logger.info("Creating movie matrix...")
-        movie_matrix = df.pivot_table(index='userId', columns='movieId', values='rating', fill_value=0)
+        # Create a matrix with userId as rows and all other variables as columns
+        logger.info("Creating user-feature matrix...")
+        movie_matrix = df.set_index('userId')
 
         # Save the movie matrix to a CSV file
-        output_file = os.path.join(output_filepath, 'movie_matrix.csv')
+        output_file = os.path.join(output_filepath, 'movies_matrix.csv')
         movie_matrix.to_csv(output_file)
 
+        logger.info(f"User-feature matrix saved to {output_file}")
+
+        # Flatten the multi-level columns for better readability
+        movie_matrix.columns = ['_'.join(map(str, col)) for col in movie_matrix.columns]
+
+        # Reset the index to make `userId` a column
+        movie_matrix.reset_index(inplace=True)
+
+        # Save the movie matrix to a CSV file
+        output_file = os.path.join(output_filepath, 'movies_matrix.csv')
+        movie_matrix.to_csv(output_file, index=False)
+
         logger.info(f"Movie matrix saved to {output_file}")
-    except FileNotFoundError as e:
-        logger.error(f"File not found: {e}")
     except pd.errors.ParserError as e:
         logger.error(f"Error parsing file: {e}")
     except KeyError as e:
@@ -79,4 +84,12 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    main()
+    # Parse command-line arguments
+    if len(sys.argv) != 3:
+        print("Usage: python make_dataset.py <input_filepath> <output_filepath>")
+        sys.exit(1)
+
+    input_filepath = sys.argv[1]
+    output_filepath = sys.argv[2]
+
+    main(input_filepath, output_filepath) 
