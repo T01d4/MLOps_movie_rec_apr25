@@ -1,10 +1,8 @@
-import sys
 import logging
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import os
 import pandas as pd
-import numpy as np
 
 
 def main(input_filepath, output_filepath):
@@ -20,20 +18,53 @@ def main(input_filepath, output_filepath):
     input_filepath_movies = os.path.join(input_filepath, "movies.csv")
     input_filepath_ratings = os.path.join(input_filepath, "ratings.csv")
     input_filepath_tags = os.path.join(input_filepath, "tags.csv")
-    
+
     # Call the main data processing function with the provided file paths
-    process_data(input_filepath_scores, input_filepath_gtags, input_filepath_movies, input_filepath_ratings, input_filepath_tags, output_filepath, logger)
+    process_data(input_filepath_scores, input_filepath_gtags,
+                 input_filepath_movies, input_filepath_ratings, 
+                 input_filepath_tags, output_filepath, logger
+                 )
 
 
-def process_data(input_filepath_scores, input_filepath_gtags, input_filepath_movies, input_filepath_ratings, input_filepath_tags, output_filepath, logger):
+def process_data(input_filepath_scores, input_filepath_gtags,
+                 input_filepath_movies, input_filepath_ratings,
+                 input_filepath_tags, output_filepath, logger
+                 ):
     try:
         # Importing datasets with optimized memory usage
         logger.info("Loading datasets...")
-        df_scores = pd.read_csv(input_filepath_scores, sep=",", dtype={"movieId": "int32", "tagId": "int32", "relevance": "float32"})
-        df_gtags = pd.read_csv(input_filepath_gtags, sep=",", dtype={"tagId": "int32", "tag": "string"})
-        df_movies = pd.read_csv(input_filepath_movies, sep=",", usecols=["movieId", "title", "genres"], dtype={"movieId": "int32", "title": "string", "genres": "string"})
-        df_ratings = pd.read_csv(input_filepath_ratings, sep=",", usecols=["userId", "movieId", "rating"], dtype={"userId": "int32", "movieId": "int32", "rating": "float32"})
-        df_tags = pd.read_csv(input_filepath_tags, sep=",", usecols=["userId", "movieId", "tag"], dtype={"userId": "int32", "movieId": "int32", "tag": "string"})
+        df_scores = pd.read_csv(input_filepath_scores, sep=",", 
+                                dtype={
+                                    "movieId": "int32",
+                                    "tagId": "int32",
+                                    "relevance": "float32"
+                                    })
+        df_gtags = pd.read_csv(input_filepath_gtags, sep=",",
+                               dtype={
+                                   "tagId": "int32",
+                                   "tag": "string"
+                                   })
+        df_movies = pd.read_csv(input_filepath_movies, sep=",",
+                                usecols=["movieId", "title", "genres"],
+                                dtype={
+                                    "movieId": "int32",
+                                    "title": "string",
+                                    "genres": "string"
+                                    })
+        df_ratings = pd.read_csv(input_filepath_ratings, sep=",",
+                                 usecols=["userId", "movieId", "rating"],
+                                 dtype={
+                                     "userId": "int32",
+                                     "movieId": "int32",
+                                     "rating": "float32"
+                                     })
+        df_tags = pd.read_csv(input_filepath_tags, sep=",",
+                              usecols=["userId", "movieId", "tag"],
+                              dtype={
+                                  "userId": "int32",
+                                  "movieId": "int32",
+                                  "tag": "string"
+                                  })
         
         # Merging datasets
         logger.info("Merging datasets...")

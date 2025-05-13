@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
-from pathlib import Path
 import os
 
 # sys.path setzen, falls du src-layout nutzt
@@ -8,6 +7,7 @@ import os
 # sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from data.import_raw_data import import_raw_data
+
 
 class TestImportRawData(unittest.TestCase):
 
