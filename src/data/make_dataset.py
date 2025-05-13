@@ -84,12 +84,7 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    # Parse command-line arguments
-    if len(sys.argv) != 3:
-        print("Usage: python make_dataset.py <input_filepath> <output_filepath>")
-        sys.exit(1)
-
-    input_filepath = sys.argv[1]
-    output_filepath = sys.argv[2]
+    input_filepath = "data/raw"
+    output_filepath = "data/processed"
 
     main(input_filepath, output_filepath) 
