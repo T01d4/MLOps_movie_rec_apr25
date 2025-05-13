@@ -12,7 +12,7 @@ def train_model(movie_matrix):
         movie_matrix.drop("movieId", axis=1)
     )
     return nbrs
-#
+
 
 if __name__ == "__main__":
     movie_matrix_path = "data/processed/movie_matrix.csv"
