@@ -73,32 +73,12 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         # Merging datasets
         logger.info("Merging datasets...")
 
-        movie_embeddings = df_scores.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
-
-        user_vectors = []
-        user_ids = []
-
-        grouped = df_ratings.groupby("userId")
-
-        for user_id, group in tqdm(grouped):
-            rated_movies = group["movieId"].values
-            common_movies = [mid for mid in rated_movies if mid in movie_embeddings.index]
-
-            if len(common_movies) == 0:
-                continue  # skip user if no matching embeddings
-
-            vectors = movie_embeddings.loc[common_movies]
-            # Optional: mit Bewertung gewichten
-            # weights = group.set_index("movieId").loc[common_movies]["rating"].values
-            # weighted_vectors = vectors.mul(weights, axis=0)
-            user_vector = vectors.mean(axis=0)  # oder: weighted_vectors.sum(axis=0) / weights.sum()
-            user_vectors.append(user_vector)
-            user_ids.append(user_id)
-
-        user_matrix = pd.DataFrame(user_vectors, index=user_ids)
-        user_matrix.index.name = "userId"
-        user_matrix.to_csv(os.path.join(output_filepath, "user_matrix.csv"))
-        logger.info(f"User matrix saved to {os.path.join(output_filepath, 'user_matrix.csv')}")
+        # new approach, instead of merging gnoeme-scores with ratings,
+        # we'll create a vektor from the genome-scores for each movie
+        # afterwards we create vektors for each user, and average their
+        # ratings for the movies they rated
+        if not os.path.exists(os.path.join(output_filepath, "user_matrix.csv")):
+            generate_user_matrix(df_ratings, df_scores, output_filepath, logger)
 
         # df = pd.concat(merged_chunks, ignore_index=True)
         # df.to_csv("merged_ratings_scores.csv", index=False)
@@ -139,6 +119,34 @@ def process_data(input_filepath_scores, input_filepath_gtags,
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
 
+
+def generate_user_matrix(df_ratings, df_scores, output_filepath, logger):
+    movie_embeddings = df_scores.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
+
+    user_vectors = []
+    user_ids = []
+
+    grouped = df_ratings.groupby("userId")
+
+    for user_id, group in tqdm(grouped):
+        rated_movies = group["movieId"].values
+        common_movies = [mid for mid in rated_movies if mid in movie_embeddings.index]
+
+        if len(common_movies) == 0:
+            continue  # skip user if no matching embeddings
+
+        vectors = movie_embeddings.loc[common_movies]
+        # Optional: mit Bewertung gewichten
+        # weights = group.set_index("movieId").loc[common_movies]["rating"].values
+        # weighted_vectors = vectors.mul(weights, axis=0)
+        user_vector = vectors.mean(axis=0)  # oder: weighted_vectors.sum(axis=0) / weights.sum()
+        user_vectors.append(user_vector)
+        user_ids.append(user_id)
+
+    user_matrix = pd.DataFrame(user_vectors, index=user_ids)
+    user_matrix.index.name = "userId"
+    user_matrix.to_csv(os.path.join(output_filepath, "user_matrix.csv"))
+    logger.info(f"User matrix saved to {os.path.join(output_filepath, 'user_matrix.csv')}")
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
