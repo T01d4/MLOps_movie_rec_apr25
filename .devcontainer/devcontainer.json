@@ -1,7 +1,8 @@
 {
   "name": "movie-recommender",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "../Dockerfile",
+    "context": ".."
   },
   "customizations": {
     "vscode": {
@@ -13,8 +14,5 @@
   },
   "postCreateCommand": "echo 'Devcontainer setup complete.'",
   "forwardPorts": [8888, 5000],
-  "remoteUser": "root",
-  "mounts": [
-    "source=${localWorkspaceFolder}/.env,target=/workspace/.env,type=bind"
-  ]
+  "remoteUser": "root"
 }

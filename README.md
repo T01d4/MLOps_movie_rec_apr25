@@ -4,7 +4,7 @@ Movie Recommandation
 This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
 
 Project Organization
-------------
+--------------------
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
@@ -84,26 +84,18 @@ Project Organization
 
 Convention : All python scripts must be run from the root specifying the relative file path.
 
-### 1- Create a virtual environment using Virtualenv.
+### 1- Start the devcontainer
 
-    `python -m venv my_env`
-    `pyenv virtualenv -name-`
+> clone the repo on a location you like
+> in vscode open the folder of your repo
+> reopen in Container
+> everything should be setup correctly
 
-###   Activate it 
-
-    `./my_env/Scripts/activate`
-    `pyenv activate`
-    `pyenv local -name-`
-
-###   Install the packages from requirements.txt  (You can ignore the warning with "setup.py")
-
-    `pip install -r .\requirements.txt`
-
-### 2- Execute import_raw_data.py to import the 4 datasets (say yes when it asks you to create a new folder)
+### 2- Execute import_raw_data.py to import the 4 datasets
 
     `python .\src\data\import_raw_data.py` 
 
-### 3- Execute make_dataset.py initializing `./data/raw` as input file path and `./data/processed` as output file path.
+### 3- Execute make_dataset.py
 
     `python .\src\data\make_dataset.py`
 
