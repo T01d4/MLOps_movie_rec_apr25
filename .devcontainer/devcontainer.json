@@ -1,0 +1,18 @@
+{
+  "name": "movie-recommender",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "python.defaultInterpreterPath": "/workspace/.venv/bin/python"
+      }
+    }
+  },
+  "postCreateCommand": "echo 'Devcontainer setup complete.'",
+  "forwardPorts": [8888, 5000],
+  "remoteUser": "root"
+}

@@ -6,6 +6,7 @@ import logging
 def import_raw_data(raw_data_relative_path,
                     filenames,
                     bucket_folder_url):
+    
     '''import filenames from bucket_folder_url in raw_data_relative_path'''
     if not os.path.exists(raw_data_relative_path):
         os.makedirs(raw_data_relative_path)
