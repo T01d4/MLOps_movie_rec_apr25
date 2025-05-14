@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 import os
+import data.check_structure as check_structure
 
 
 def read_ratings(ratings_csv, data_dir="data/raw") -> pd.DataFrame:
@@ -74,5 +75,7 @@ if __name__ == "__main__":
     movies = read_movies("movies.csv")
     user_matrix = create_user_matrix(user_ratings, movies)
     movies = movies.drop("title", axis=1)
+    if not os.path.exists("data/processed"):
+        os.makedirs("data/processed")
     movies.to_csv("data/processed/movie_matrix.csv", index=False)
     user_matrix.to_csv("data/processed/user_matrix.csv")

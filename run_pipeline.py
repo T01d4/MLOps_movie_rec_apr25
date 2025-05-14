@@ -1,11 +1,12 @@
 import os
-python_exe = "venv312\\Scripts\\python.exe"
+
+os.environ["PYTHONPATH"] = "src"
 
 steps = [
-    f"{python_exe} src/data/import_raw_data.py",
-    f"{python_exe} src/data/make_dataset.py data/raw data/processed",
-    f"{python_exe} src/features/build_features.py",
-    f"{python_exe} src/models/train_model.py"
+    f"python src/data/import_raw_data.py",
+    f"python src/data/make_dataset.py",
+    f"python src/features/build_features.py",
+    f"python src/models/train_model.py"
 ]
 
 for step in steps:

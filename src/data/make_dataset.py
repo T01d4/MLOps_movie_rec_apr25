@@ -4,6 +4,7 @@ from dotenv import find_dotenv, load_dotenv
 import os
 import pandas as pd
 from tqdm import tqdm
+import check_structure
 
 
 def main(input_filepath, output_filepath):
@@ -78,7 +79,9 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         # afterwards we create vektors for each user, and average their
         # ratings for the movies they rated
         if not os.path.exists(os.path.join(output_filepath, "user_matrix.csv")):
-            generate_user_matrix(df_ratings, df_scores, output_filepath, logger)
+            df = generate_user_matrix(df_ratings, df_scores, output_filepath, logger)
+        else:
+            df = pd.read_csv(os.path.join(output_filepath, "user_matrix.csv"))
 
         # df = pd.concat(merged_chunks, ignore_index=True)
         # df.to_csv("merged_ratings_scores.csv", index=False)
@@ -87,17 +90,20 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         # df = pd.merge(df_ratings, df_scores, on='movieId', how='left')
 
         # Drop rows with missing values in specific columns
-        col_to_drop_lines = ["rating", "tagId", "relevance"]  # Ensure these columns are used for the matrix
-        logger.info(f"Dropping rows with missing values in columns: {col_to_drop_lines}")
-        df = df.dropna(subset=col_to_drop_lines, axis=0)
+        # col_to_drop_lines = ["rating", "tagId", "relevance"]  # Ensure these columns are used for the matrix
+        # logger.info(f"Dropping rows with missing values in columns: {col_to_drop_lines}")
+        # df = df.dropna(subset=col_to_drop_lines, axis=0)
 
         # Create a matrix with userId as rows and all other variables as columns
         logger.info("Creating user-feature matrix...")
         movie_matrix = df.set_index('userId')
 
         # Save the movie matrix to a CSV file
+        if not os.path.exists(output_filepath):
+            os.makedirs(output_filepath)
         output_file = os.path.join(output_filepath, 'movies_matrix.csv')
-        movie_matrix.to_csv(output_file)
+        if check_structure.check_existing_file(output_file):
+            movie_matrix.to_csv(output_file)
 
         logger.info(f"User-feature matrix saved to {output_file}")
 
@@ -147,6 +153,7 @@ def generate_user_matrix(df_ratings, df_scores, output_filepath, logger):
     user_matrix.index.name = "userId"
     user_matrix.to_csv(os.path.join(output_filepath, "user_matrix.csv"))
     logger.info(f"User matrix saved to {os.path.join(output_filepath, 'user_matrix.csv')}")
+    return user_matrix
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
