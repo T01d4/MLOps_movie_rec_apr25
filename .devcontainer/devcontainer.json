@@ -4,6 +4,7 @@
     "dockerfile": "../Dockerfile",
     "context": ".."
   },
+  "runArgs": ["--name", "movie-recommender"],
   "customizations": {
     "vscode": {
       "settings": {
