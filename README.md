@@ -80,6 +80,52 @@ Project Organization
 
 --------
 
+Scheme of containerization
+--------------------------
+```mermaid
+graph TD
+    subgraph User
+        A[Browser / API Client]
+    end
+
+    subgraph Frontend
+        B[Streamlit (optional)]
+    end
+
+    subgraph API
+        C[FastAPI Container]
+    end
+
+    subgraph ML-System
+        D1[Data Import / Preprocessing Container]
+        D2[Feature Engineering Container]
+        D3[Model Training Container]
+        D4[Prediction Container]
+    end
+
+    subgraph Storage
+        E1[Volume: /data]
+        E2[Volume: /models]
+        E3[.env / secrets]
+    end
+
+    A -->|HTTP| B
+    B -->|REST| C
+    A -->|REST| C
+
+    C -->|Load model| D4
+    C -->|Feature transform| D2
+
+    D1 -->|write| E1
+    D2 -->|read/write| E1
+    D3 -->|read| E1
+    D3 -->|write| E2
+    D4 -->|read| E1
+    D4 -->|read| E2
+
+    C -->|read| E2
+```
+
 ## Steps to follow 
 
 Convention : All python scripts must be run from the root specifying the relative file path.
