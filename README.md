@@ -84,28 +84,31 @@ Scheme of containerization
 --------------------------
 ```mermaid
 graph TD
-    subgraph User
-        A[Browser / API Client]
-    end
+    %% Clients
+    A[Browser / API Client]
 
+    %% Optional Frontend
     subgraph Frontend
-        B[Streamlit (optional)]
+        B[Streamlit / React UI]
     end
 
+    %% FastAPI-based API
     subgraph API
         C[FastAPI Container]
     end
 
-    subgraph ML-System
-        D1[Data Import / Preprocessing Container]
-        D2[Feature Engineering Container]
-        D3[Model Training Container]
-        D4[Prediction Container]
+    %% ML Pipeline
+    subgraph "ML System"
+        D1[Import & Preprocessing]
+        D2[Feature Engineering]
+        D3[Model Training]
+        D4[Prediction Logic]
     end
 
+    %% Volumes & Shared Storage
     subgraph Storage
-        E1[Volume: /data]
-        E2[Volume: /models]
+        E1[/data volume]
+        E2[/models volume]
         E3[.env / secrets]
     end
 
@@ -113,17 +116,17 @@ graph TD
     B -->|REST| C
     A -->|REST| C
 
-    C -->|Load model| D4
-    C -->|Feature transform| D2
+    C -->|predict| D4
+    C -->|feature transform| D2
 
-    D1 -->|write| E1
-    D2 -->|read/write| E1
-    D3 -->|read| E1
-    D3 -->|write| E2
-    D4 -->|read| E1
-    D4 -->|read| E2
+    D1 -->|writes raw data| E1
+    D2 -->|reads/writes features| E1
+    D3 -->|reads features| E1
+    D3 -->|writes model| E2
+    D4 -->|reads model| E2
+    D4 -->|reads features| E1
 
-    C -->|read| E2
+    C -->|reads model| E2
 ```
 
 ## Steps to follow 
