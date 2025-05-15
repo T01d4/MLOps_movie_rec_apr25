@@ -89,7 +89,7 @@ graph TD
 
     %% Optional Frontend
     subgraph Frontend
-        B[Streamlit / React UI]
+        B[Streamlit oder React UI]
     end
 
     %% FastAPI-based API
@@ -98,18 +98,18 @@ graph TD
     end
 
     %% ML Pipeline
-    subgraph "ML System"
+    subgraph MLSystem
         D1[Import & Preprocessing]
         D2[Feature Engineering]
         D3[Model Training]
         D4[Prediction Logic]
     end
 
-    %% Volumes & Shared Storage
+    %% Shared Volumes / Storage
     subgraph Storage
-        E1[/data volume]
-        E2[/models volume]
-        E3[.env / secrets]
+        E1[data-volume]
+        E2[models-volume]
+        E3[env-secrets]
     end
 
     A -->|HTTP| B
@@ -117,9 +117,9 @@ graph TD
     A -->|REST| C
 
     C -->|predict| D4
-    C -->|feature transform| D2
+    C -->|transform| D2
 
-    D1 -->|writes raw data| E1
+    D1 -->|writes raw| E1
     D2 -->|reads/writes features| E1
     D3 -->|reads features| E1
     D3 -->|writes model| E2
