@@ -78,10 +78,13 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         # we'll create a vektor from the genome-scores for each movie
         # afterwards we create vektors for each user, and average their
         # ratings for the movies they rated
-        if not os.path.exists(os.path.join(output_filepath, "user_matrix.csv")):
+        user_matrix_path = os.path.join(output_filepath, "user_matrix.csv")
+        if check_structure.check_existing_folder(output_filepath):
+            os.makedirs(output_filepath)
+        if not os.path.isfile(user_matrix_path):
             df = generate_user_matrix(df_ratings, df_scores, output_filepath, logger)
         else:
-            df = pd.read_csv(os.path.join(output_filepath, "user_matrix.csv"))
+            df = pd.read_csv(user_matrix_path)
 
         # df = pd.concat(merged_chunks, ignore_index=True)
         # df.to_csv("merged_ratings_scores.csv", index=False)
@@ -99,8 +102,8 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         movie_matrix = df.set_index('userId')
 
         # Save the movie matrix to a CSV file
-        if not os.path.exists(output_filepath):
-            os.makedirs(output_filepath)
+        # if not os.path.exists(output_filepath):
+        #     os.makedirs(output_filepath)
         output_file = os.path.join(output_filepath, 'movies_matrix.csv')
         if check_structure.check_existing_file(output_file):
             movie_matrix.to_csv(output_file)
