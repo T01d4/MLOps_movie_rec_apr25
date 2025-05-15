@@ -81,10 +81,12 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         user_matrix_path = os.path.join(output_filepath, "user_matrix.csv")
         if check_structure.check_existing_folder(output_filepath):
             os.makedirs(output_filepath)
-        if not os.path.isfile(user_matrix_path):
+        if check_structure.check_existing_file(user_matrix_path):
             df = generate_user_matrix(df_ratings, df_scores, output_filepath, logger)
+            logger.info("df created")
         else:
             df = pd.read_csv(user_matrix_path)
+            logger.info("df read from file")
 
         # df = pd.concat(merged_chunks, ignore_index=True)
         # df.to_csv("merged_ratings_scores.csv", index=False)
@@ -100,13 +102,15 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         # Create a matrix with userId as rows and all other variables as columns
         logger.info("Creating user-feature matrix...")
         movie_matrix = df.set_index('userId')
-
+        logger.info("movie_matrix created")
         # Save the movie matrix to a CSV file
         # if not os.path.exists(output_filepath):
         #     os.makedirs(output_filepath)
         output_file = os.path.join(output_filepath, 'movies_matrix.csv')
         if check_structure.check_existing_file(output_file):
+            logger.info(f"File {output_file} already exists. Overwriting...")
             movie_matrix.to_csv(output_file)
+            logger.info(f"User-feature matrix saved to {output_file}")
 
         logger.info(f"User-feature matrix saved to {output_file}")
 
