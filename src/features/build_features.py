@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 import os
-import data.check_structure as check_structure
 
 
 def read_ratings(ratings_csv, data_dir="data/raw") -> pd.DataFrame:

@@ -153,4 +153,14 @@ Convention : All python scripts must be run from the root specifying the relativ
 
 ### Note that we have 10 recommandations per user
 
+### Extra: poster for recommendations
+
+* create account for https://developer.themoviedb.org/
+* create an api key, follow the guide https://developer.themoviedb.org/reference/intro/getting-started
+* create a .env file in your project folder
+* put the following content into your .env file:
+```bash
+TMDB_API_KEY="<your_key>"
+```
+
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
