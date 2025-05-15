@@ -84,59 +84,40 @@ Scheme of containerization
 --------------------------
 ```mermaid
 graph TD
-  %% External source
-  S3[(S3 Bucket / External Data Source)]
+  S3[S3 Bucket / External Data]
 
-  %% Orchestrator
-  ORCH[Orchestrator (e.g. Prefect, Airflow, Makefile)]
+  ORCH[Orchestrator - Prefect / Airflow / Makefile]
 
-  %% Pipeline Steps
   INGEST[data-ingest container]
   PREP[preprocess container]
   TRAIN[train-model container]
   API[predict-api container]
-  UI[Streamlit UI (optional)]
+  UI[Streamlit UI - optional]
 
-  %% Volumes
-  V1[/data volume/]
-  V2[/processed volume/]
-  V3[/models volume/]
+  V1[/volume: raw-data/]
+  V2[/volume: processed-data/]
+  V3[/volume: models/]
 
-  %% API endpoint
   API_OUT[(REST API endpoint)]
 
-  %% Workflow
-  S3 -->|Download| INGEST
+  S3 --> INGEST
   ORCH --> INGEST
-  INGEST -->|writes raw data| V1
+  INGEST --> V1
   V1 --> PREP
   ORCH --> PREP
-  PREP -->|writes features| V2
+  PREP --> V2
   V2 --> TRAIN
   ORCH --> TRAIN
-  TRAIN -->|writes model.pkl| V3
+  TRAIN --> V3
   V3 --> API
   API --> API_OUT
-  UI -->|requests| API_OUT
+  UI --> API_OUT
 
-  %% Volumes grouping
-  subgraph Shared Volumes
+  subgraph Volumes
     V1
     V2
     V3
   end
-
-  %% Styles
-  style ORCH fill:#ffe4b5,stroke:#333,stroke-width:1px
-  style INGEST fill:#cde,stroke:#000
-  style PREP fill:#cde,stroke:#000
-  style TRAIN fill:#cde,stroke:#000
-  style API fill:#cde,stroke:#000
-  style UI fill:#e7f5ff,stroke:#000
-  style V1 fill:#fff3cd,stroke:#ccc
-  style V2 fill:#fff3cd,stroke:#ccc
-  style V3 fill:#fff3cd,stroke:#ccc
-  style API_OUT fill:#d4edda,stroke:#000
 ```
 
 ## Steps to follow 
