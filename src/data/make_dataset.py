@@ -106,13 +106,13 @@ def process_data(input_filepath_scores, input_filepath_gtags,
         # Save the movie matrix to a CSV file
         # if not os.path.exists(output_filepath):
         #     os.makedirs(output_filepath)
-        output_file = os.path.join(output_filepath, 'movies_matrix.csv')
-        if check_structure.check_existing_file(output_file):
-            logger.info(f"File {output_file} already exists. Overwriting...")
-            movie_matrix.to_csv(output_file)
-            logger.info(f"User-feature matrix saved to {output_file}")
-
-        logger.info(f"User-feature matrix saved to {output_file}")
+        output_file_path = os.path.join(output_filepath, 'movies_matrix.csv')
+        if check_structure.check_existing_file(output_file_path):
+            movie_matrix.to_csv(output_file_path)
+            logger.info(f"User-feature matrix saved to {output_file_path}")
+        else:
+            movie_matrix = pd.read_csv(output_file_path)
+            logger.info(f"User-feature matrix read from file: {output_file_path}")
 
         # Flatten the multi-level columns for better readability
         movie_matrix.columns = ['_'.join(map(str, col)) for col in movie_matrix.columns]
@@ -122,7 +122,7 @@ def process_data(input_filepath_scores, input_filepath_gtags,
 
         # Save the movie matrix to a CSV file
         output_file = os.path.join(output_filepath, 'movies_matrix.csv')
-        movie_matrix.to_csv(output_file, index=False)
+        # movie_matrix.to_csv(output_file, index=False)
 
         logger.info(f"Movie matrix saved to {output_file}")
     except pd.errors.ParserError as e:
