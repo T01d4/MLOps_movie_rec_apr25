@@ -86,10 +86,10 @@ Convention : All python scripts must be run from the root specifying the relativ
 
 ### 1- Start the devcontainer
 
-> clone the repo on a location you like
-> in vscode open the folder of your repo
-> reopen in Container
-> everything should be setup correctly
+* clone the repo on a location you like
+* in vscode open the folder of your repo
+* reopen in Container
+* everything should be setup correctly
 
 ### 2- Execute import_raw_data.py to import the 4 datasets
 

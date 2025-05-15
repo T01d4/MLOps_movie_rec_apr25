@@ -158,8 +158,10 @@ def generate_user_matrix(df_ratings, df_scores, output_filepath, logger):
 
     user_matrix = pd.DataFrame(user_vectors, index=user_ids)
     user_matrix.index.name = "userId"
+    user_matrix_path = os.path.join(output_filepath, 'user_matrix.csv')
+    logger.info(f"User matrix will be saved to {user_matrix_path}. This might take some time.")
     user_matrix.to_csv(os.path.join(output_filepath, "user_matrix.csv"))
-    logger.info(f"User matrix saved to {os.path.join(output_filepath, 'user_matrix.csv')}")
+    logger.info(f"User matrix saved to {user_matrix_path}")
     return user_matrix
 
 if __name__ == '__main__':
