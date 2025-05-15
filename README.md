@@ -84,49 +84,59 @@ Scheme of containerization
 --------------------------
 ```mermaid
 graph TD
-    %% Clients
-    A[Browser / API Client]
+  %% External source
+  S3[(S3 Bucket / External Data Source)]
 
-    %% Optional Frontend
-    subgraph Frontend
-        B[Streamlit oder React UI]
-    end
+  %% Orchestrator
+  ORCH[Orchestrator (e.g. Prefect, Airflow, Makefile)]
 
-    %% FastAPI-based API
-    subgraph API
-        C[FastAPI Container]
-    end
+  %% Pipeline Steps
+  INGEST[data-ingest container]
+  PREP[preprocess container]
+  TRAIN[train-model container]
+  API[predict-api container]
+  UI[Streamlit UI (optional)]
 
-    %% ML Pipeline
-    subgraph MLSystem
-        D1[Import & Preprocessing]
-        D2[Feature Engineering]
-        D3[Model Training]
-        D4[Prediction Logic]
-    end
+  %% Volumes
+  V1[/data volume/]
+  V2[/processed volume/]
+  V3[/models volume/]
 
-    %% Shared Volumes / Storage
-    subgraph Storage
-        E1[data-volume]
-        E2[models-volume]
-        E3[env-secrets]
-    end
+  %% API endpoint
+  API_OUT[(REST API endpoint)]
 
-    A -->|HTTP| B
-    B -->|REST| C
-    A -->|REST| C
+  %% Workflow
+  S3 -->|Download| INGEST
+  ORCH --> INGEST
+  INGEST -->|writes raw data| V1
+  V1 --> PREP
+  ORCH --> PREP
+  PREP -->|writes features| V2
+  V2 --> TRAIN
+  ORCH --> TRAIN
+  TRAIN -->|writes model.pkl| V3
+  V3 --> API
+  API --> API_OUT
+  UI -->|requests| API_OUT
 
-    C -->|predict| D4
-    C -->|transform| D2
+  %% Volumes grouping
+  subgraph Shared Volumes
+    V1
+    V2
+    V3
+  end
 
-    D1 -->|writes raw| E1
-    D2 -->|reads/writes features| E1
-    D3 -->|reads features| E1
-    D3 -->|writes model| E2
-    D4 -->|reads model| E2
-    D4 -->|reads features| E1
-
-    C -->|reads model| E2
+  %% Styles
+  style ORCH fill:#ffe4b5,stroke:#333,stroke-width:1px
+  style INGEST fill:#cde,stroke:#000
+  style PREP fill:#cde,stroke:#000
+  style TRAIN fill:#cde,stroke:#000
+  style API fill:#cde,stroke:#000
+  style UI fill:#e7f5ff,stroke:#000
+  style V1 fill:#fff3cd,stroke:#ccc
+  style V2 fill:#fff3cd,stroke:#ccc
+  style V3 fill:#fff3cd,stroke:#ccc
+  style API_OUT fill:#d4edda,stroke:#000
 ```
 
 ## Steps to follow 
