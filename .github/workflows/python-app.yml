@@ -44,7 +44,7 @@ jobs:
         cat test-results/testlog.txt
 
     - name: Upload test results artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
         name: pytest-logs
         path: test-results/
