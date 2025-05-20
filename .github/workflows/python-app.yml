@@ -44,8 +44,12 @@ jobs:
 
     - name: Run pytest and show output
       run: |
+<<<<<<< HEAD
         mkdir -p test-results
         pytest -v --tb=short --disable-warnings > test-results/testlog.txt || true
         echo "-------- BEGIN pytest log --------"
         cat test-results/testlog.txt
         echo "-------- END pytest log ----------"
+=======
+        pytest || true  # vorübergehend tolerieren, falls keine Tests da sind
+>>>>>>> e7fe277 (neuer python-app.yml)
