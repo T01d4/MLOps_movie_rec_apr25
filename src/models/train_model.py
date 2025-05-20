@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import pickle
 import os
-
 import mlflow
 import mlflow.sklearn
 
@@ -14,9 +13,8 @@ def train_model(movie_matrix):
     return nbrs
 
 
-if __name__ == "__main__":
-    movie_matrix_path = "data/processed/movie_matrix.csv"
-    model_path = "models/model.pkl"
+def main(input_filepath="data/processed", model_path="models/model.pkl"):
+    movie_matrix_path = os.path.join(input_filepath, "movie_matrix.csv")
 
     mlflow.set_experiment("movie_recommendation")
     with mlflow.start_run(run_name="knn_model"):
@@ -30,7 +28,7 @@ if __name__ == "__main__":
             mlflow.log_param("n_neighbors", 20)
             mlflow.log_param("algorithm", "ball_tree")
 
-            os.makedirs("models", exist_ok=True)
+            os.makedirs(os.path.dirname(model_path), exist_ok=True)
             with open(model_path, "wb") as filehandler:
                 pickle.dump(model, filehandler)
 
@@ -40,3 +38,8 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Fehler beim Training: {e}")
             mlflow.log_param("status", "failed")
+
+
+# Lokaler Aufruf (z. B. in Notebook oder CLI)
+if __name__ == "__main__":
+    main()
