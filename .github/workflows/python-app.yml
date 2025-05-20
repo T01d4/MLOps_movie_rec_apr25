@@ -36,4 +36,12 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest
+        mkdir -p test-results
+        pytest -v --tb=short --disable-warnings --junitxml=test-results/results.xml > test-results/testlog.txt || true
+        cat test-results/testlog.txt
+
+    - name: Upload test results artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-logs
+        path: test-results/
