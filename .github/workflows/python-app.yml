@@ -40,6 +40,10 @@ jobs:
         echo "== Testverzeichnis Inhalt =="
         ls -la tests || true
 
-    - name: Test with pytest
+    - name: Run pytest and show output
       run: |
-        pytest || true  # vorübergehend tolerieren, falls keine Tests da sind
+        mkdir -p test-results
+        pytest -c pytest.ini tests -v --tb=short --disable-warnings > test-results/testlog.txt || true
+        echo "-------- BEGIN pytest log --------"
+        cat test-results/testlog.txt
+        echo "-------- END pytest log ----------"
