@@ -45,6 +45,7 @@ jobs:
     - name: Run pytest and show output
       run: |
 <<<<<<< HEAD
+<<<<<<< HEAD
         mkdir -p test-results
         pytest -v --tb=short --disable-warnings > test-results/testlog.txt || true
         echo "-------- BEGIN pytest log --------"
@@ -53,3 +54,10 @@ jobs:
 =======
         pytest || true  # vorübergehend tolerieren, falls keine Tests da sind
 >>>>>>> e7fe277 (neuer python-app.yml)
+=======
+        mkdir -p test-results
+        pytest -c pytest.ini tests -v --tb=short --disable-warnings > test-results/testlog.txt || true
+        echo "-------- BEGIN pytest log --------"
+        cat test-results/testlog.txt
+        echo "-------- END pytest log ----------"
+>>>>>>> 6b77991 (neuer python-app.yml)
