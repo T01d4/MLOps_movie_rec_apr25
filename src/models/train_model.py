@@ -12,7 +12,7 @@ def train_model(user_matrix):
     return nbrs
 
 def main(input_filepath="data/processed", model_path="models/model.pkl"):
-    user_matrix_path = os.path.join(input_filepath, "user_matrix.csv")
+    user_matrix_path = os.path.join(input_filepath, "movies_matrix.csv")
 
     mlflow.set_experiment("movie_recommendation")
     with mlflow.start_run(run_name="knn_model"):
