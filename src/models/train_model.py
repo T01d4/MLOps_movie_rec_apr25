@@ -14,7 +14,7 @@ def train_model(movie_matrix):
 
 
 def main(input_filepath="data/processed", model_path="models/model.pkl"):
-    movie_matrix_path = os.path.join(input_filepath, "movie_matrix.csv")
+    movie_matrix_path = os.path.join(input_filepath, "movies_matrix.csv")
 
     mlflow.set_experiment("movie_recommendation")
     with mlflow.start_run(run_name="knn_model"):
