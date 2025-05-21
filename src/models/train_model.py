@@ -5,25 +5,23 @@ import os
 import mlflow
 import mlflow.sklearn
 
-
-def train_model(movie_matrix):
+def train_model(user_matrix):
     nbrs = NearestNeighbors(n_neighbors=20, algorithm="ball_tree").fit(
-        movie_matrix.drop("movieId", axis=1)
+        user_matrix.drop("userId", axis=1)
     )
     return nbrs
 
-
 def main(input_filepath="data/processed", model_path="models/model.pkl"):
-    movie_matrix_path = os.path.join(input_filepath, "movies_matrix.csv")
+    user_matrix_path = os.path.join(input_filepath, "user_matrix.csv")
 
     mlflow.set_experiment("movie_recommendation")
     with mlflow.start_run(run_name="knn_model"):
 
         try:
-            print(f"Lade Daten aus {movie_matrix_path}")
-            movie_matrix = pd.read_csv(movie_matrix_path)
+            print(f"Lade Daten aus {user_matrix_path}")
+            user_matrix = pd.read_csv(user_matrix_path)
 
-            model = train_model(movie_matrix)
+            model = train_model(user_matrix)
 
             mlflow.log_param("n_neighbors", 20)
             mlflow.log_param("algorithm", "ball_tree")
@@ -39,7 +37,5 @@ def main(input_filepath="data/processed", model_path="models/model.pkl"):
             print(f"Fehler beim Training: {e}")
             mlflow.log_param("status", "failed")
 
-
-# Lokaler Aufruf (z. B. in Notebook oder CLI)
 if __name__ == "__main__":
     main()
