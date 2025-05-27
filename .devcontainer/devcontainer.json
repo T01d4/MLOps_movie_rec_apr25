@@ -4,7 +4,10 @@
     "dockerfile": "../Dockerfile",
     "context": ".."
   },
-  "runArgs": ["--name", "movie-recommender"],
+  "runArgs": [
+    "--name", "movie-recommender",
+    "--volume", "/var/run/docker.sock:/var/run/docker.sock"
+  ],
   "customizations": {
     "vscode": {
       "settings": {
@@ -14,6 +17,11 @@
     }
   },
   "postCreateCommand": "echo 'Devcontainer setup complete.'",
-  "forwardPorts": [8888, 5000],
+  "forwardPorts": [
+    8080,   // Airflow Webserver
+    8501,   // Streamlit
+    8888,   // Jupyter
+    5000    // Flask/MLflow o.ä.
+  ],
   "remoteUser": "root"
 }
