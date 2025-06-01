@@ -2,13 +2,17 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Installiere Abhängigkeiten
-COPY streamlit_app/requirements.streamlit.txt ./requirements.txt
+# Requirements & Code kopieren
+COPY requirements.streamlit.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Nur das Nötige kopieren
-COPY streamlit_app/app.py ./app.py
-COPY data/predictions/ ./data/predictions/
+COPY app.py ./app.py
+COPY auth.py ./auth.py
+COPY .env ./.env
 
-# Starte Streamlit
+# Optional: Erstelle leeres Verzeichnis, falls nicht vorhanden
+RUN mkdir -p ./data/predictions
+
+EXPOSE 8501
+
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

@@ -1,0 +1,13 @@
+[2025-05-31T12:48:42.218+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_model manual__2025-05-31T12:48:15.180341+00:00 [queued]>
+[2025-05-31T12:48:42.224+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_model manual__2025-05-31T12:48:15.180341+00:00 [queued]>
+[2025-05-31T12:48:42.225+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-05-31T12:48:42.234+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_model> on 2025-05-31 12:48:15.180341+00:00
+[2025-05-31T12:48:42.244+0000] {standard_task_runner.py:60} INFO - Started process 468 to run task
+[2025-05-31T12:48:42.246+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_model', 'manual__2025-05-31T12:48:15.180341+00:00', '--job-id', '133', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpp7tjungq']
+[2025-05-31T12:48:42.247+0000] {standard_task_runner.py:88} INFO - Job 133: Subtask train_model
+[2025-05-31T12:48:42.279+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_model manual__2025-05-31T12:48:15.180341+00:00 [running]> on host 3f7e02f622b9
+[2025-05-31T12:48:42.334+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_model' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T12:48:15.180341+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T12:48:15.180341+00:00'
+[2025-05-31T12:48:42.451+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-05-31T12:48:42.459+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_model, execution_date=20250531T124815, start_date=20250531T124842, end_date=20250531T124842
+[2025-05-31T12:48:42.499+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-31T12:48:42.517+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

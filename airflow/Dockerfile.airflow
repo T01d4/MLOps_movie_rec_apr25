@@ -1,8 +1,21 @@
 FROM apache/airflow:2.8.1-python3.10
 
-# Installiere zusätzliche Python-Abhängigkeiten
+# Arbeitsverzeichnis
+WORKDIR /
+
+# Wechsel zu Root für apt-get (nur falls Git o.ä. benötigt wird)
+USER root
+RUN apt-get update && apt-get install -y git && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# requirements kopieren
 COPY airflow/requirements.airflow.txt /requirements.txt
+
+# Wechsel zurück zu airflow-User für pip!
+USER airflow
 RUN pip install --no-cache-dir -r /requirements.txt
 
-# Erstelle interne Verzeichnisse mit Rechten (nicht notwendig für Host-Volumes!)
-RUN mkdir -p /opt/airflow/data/processed
+# src-Ordner einbinden
+COPY ./src /src
+
+# PYTHONPATH korrekt setzen
+ENV PYTHONPATH="/src:/opt/airflow:${PYTHONPATH}"

@@ -1,7 +1,7 @@
+#src/models/predict_model.py
 import pandas as pd
 import pickle
 import numpy as np
-import os
 
 
 def make_predictions(users_id, model_filename, user_matrix_filename):
@@ -15,8 +15,9 @@ def make_predictions(users_id, model_filename, user_matrix_filename):
     users = users.drop("userId", axis=1)
 
     # Open model
-    with open(model_filename, "rb") as filehandler:
-        model = pickle.load(filehandler)
+    filehandler = open(model_filename, "rb")
+    model = pickle.load(filehandler)
+    filehandler.close()
 
     # Calculate nearest neighbors
     _, indices = model.kneighbors(users)
@@ -29,23 +30,13 @@ def make_predictions(users_id, model_filename, user_matrix_filename):
     return selection
 
 
-def main(model_path, user_matrix_path, output_path):
-    # Nimm z.B. die ersten 5 Nutzer
+if __name__ == "__main__":
+    # Take the 5 first users Id of the DB
     users_id = [1, 2, 3, 4, 5]
 
-    predictions = make_predictions(users_id, model_path, user_matrix_path)
-
-    # Als DataFrame speichern
-    df = pd.DataFrame(predictions)
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    df.to_csv(output_path, index=False)
-    print(f"Prediction gespeichert unter {output_path}")
-
-
-# Lokaler Test
-if __name__ == "__main__":
-    main(
-        model_path="models/model.pkl",
-        user_matrix_path="data/processed/user_matrix.csv",
-        output_path="data/predictions/predictions.csv"
+    # Make predictions using `model.pkl`
+    predictions = make_predictions(
+        users_id, "models/model.pkl", "data/processed/user_matrix.csv"
     )
+
+    print(predictions)

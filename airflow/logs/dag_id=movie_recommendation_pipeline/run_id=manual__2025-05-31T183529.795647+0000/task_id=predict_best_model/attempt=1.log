@@ -1,0 +1,29 @@
+[2025-05-31T18:39:57.081+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-05-31T18:35:29.795647+00:00 [queued]>
+[2025-05-31T18:39:57.089+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-05-31T18:35:29.795647+00:00 [queued]>
+[2025-05-31T18:39:57.090+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-05-31T18:39:57.102+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-05-31 18:35:29.795647+00:00
+[2025-05-31T18:39:57.109+0000] {standard_task_runner.py:60} INFO - Started process 1333 to run task
+[2025-05-31T18:39:57.111+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'predict_best_model', 'manual__2025-05-31T18:35:29.795647+00:00', '--job-id', '350', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp7x75xans']
+[2025-05-31T18:39:57.112+0000] {standard_task_runner.py:88} INFO - Job 350: Subtask predict_best_model
+[2025-05-31T18:39:57.155+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-05-31T18:35:29.795647+00:00 [running]> on host 9d39827f6207
+[2025-05-31T18:39:57.216+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T18:35:29.795647+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T18:35:29.795647+00:00'
+[2025-05-31T18:41:42.374+0000] {mlops_movie_dag.py:12} INFO - 2025-05-31 18:39:58,585 - INFO - 🚀 Starte Vorhersage mit MLflow Registry-Modell
+2025-05-31 18:39:58,976 - INFO - 📥 User-Matrix geladen: /opt/***/data/processed/user_matrix.csv – Shape: (138493, 20)
+
+Downloading artifacts:   0%|          | 0/5 [00:00<?, ?it/s]
+Downloading artifacts:  20%|██        | 1/5 [00:00<00:01,  3.56it/s]
+Downloading artifacts:  20%|██        | 1/5 [00:00<00:01,  3.56it/s]
+Downloading artifacts:  40%|████      | 2/5 [00:00<00:00,  3.56it/s]
+Downloading artifacts:  60%|██████    | 3/5 [00:01<00:00,  2.68it/s]
+Downloading artifacts:  60%|██████    | 3/5 [00:01<00:00,  2.68it/s]
+Downloading artifacts:  80%|████████  | 4/5 [00:02<00:00,  1.66it/s]
+Downloading artifacts:  80%|████████  | 4/5 [00:02<00:00,  1.66it/s]
+Downloading artifacts: 100%|██████████| 5/5 [01:41<00:00, 33.34s/it]
+Downloading artifacts: 100%|██████████| 5/5 [01:41<00:00, 33.34s/it]
+Downloading artifacts: 100%|██████████| 5/5 [01:41<00:00, 20.34s/it]
+2025-05-31 18:41:42,231 - ERROR - ❌ Fehler beim Laden des Modells aus MLflow: Model does not have the "python_function" flavor
+
+[2025-05-31T18:41:42.375+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-05-31T18:41:42.383+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=predict_best_model, execution_date=20250531T183529, start_date=20250531T183957, end_date=20250531T184142
+[2025-05-31T18:41:42.408+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-31T18:41:42.419+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

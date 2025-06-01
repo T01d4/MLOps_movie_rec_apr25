@@ -1,0 +1,26 @@
+[2025-05-31T14:50:01.847+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-05-31T14:46:08.419468+00:00 [queued]>
+[2025-05-31T14:50:01.852+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-05-31T14:46:08.419468+00:00 [queued]>
+[2025-05-31T14:50:01.853+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-05-31T14:50:01.862+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-05-31 14:46:08.419468+00:00
+[2025-05-31T14:50:01.872+0000] {standard_task_runner.py:60} INFO - Started process 832 to run task
+[2025-05-31T14:50:01.874+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'predict_best_model', 'manual__2025-05-31T14:46:08.419468+00:00', '--job-id', '227', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpwfry_epm']
+[2025-05-31T14:50:01.874+0000] {standard_task_runner.py:88} INFO - Job 227: Subtask predict_best_model
+[2025-05-31T14:50:01.902+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-05-31T14:46:08.419468+00:00 [running]> on host 59c692acafaa
+[2025-05-31T14:50:01.949+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T14:46:08.419468+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T14:46:08.419468+00:00'
+[2025-05-31T14:50:02.500+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 45, in run_predict_best_model
+    predict_best_model()
+  File "/opt/airflow/src/models/predict_best_model.py", line 9, in predict_best_model
+    with open(model_path, "rb") as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/airflow/models/best_model.pkl'
+[2025-05-31T14:50:02.513+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=predict_best_model, execution_date=20250531T144608, start_date=20250531T145001, end_date=20250531T145002
+[2025-05-31T14:50:02.522+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 227 for task predict_best_model ([Errno 2] No such file or directory: '/opt/airflow/models/best_model.pkl'; 832)
+[2025-05-31T14:50:02.569+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-05-31T14:50:02.581+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

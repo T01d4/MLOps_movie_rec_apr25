@@ -1,0 +1,24 @@
+[2025-05-30T15:58:42.355+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.make_dataset manual__2025-05-30T15:53:12.907073+00:00 [queued]>
+[2025-05-30T15:58:42.362+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.make_dataset manual__2025-05-30T15:53:12.907073+00:00 [queued]>
+[2025-05-30T15:58:42.362+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-05-30T15:58:42.372+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): make_dataset> on 2025-05-30 15:53:12.907073+00:00
+[2025-05-30T15:58:42.381+0000] {standard_task_runner.py:60} INFO - Started process 292 to run task
+[2025-05-30T15:58:42.382+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'make_dataset', 'manual__2025-05-30T15:53:12.907073+00:00', '--job-id', '32', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpjf9kqyk7']
+[2025-05-30T15:58:42.384+0000] {standard_task_runner.py:88} INFO - Job 32: Subtask make_dataset
+[2025-05-30T15:58:42.422+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.make_dataset manual__2025-05-30T15:53:12.907073+00:00 [running]> on host 8fd611eb37f0
+[2025-05-30T15:58:42.480+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='make_dataset' AIRFLOW_CTX_EXECUTION_DATE='2025-05-30T15:53:12.907073+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-30T15:53:12.907073+00:00'
+[2025-05-30T15:58:42.481+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 28, in run_make_dataset
+    make_dataset("/opt/airflow/data/raw", "/opt/airflow/data/processed")
+TypeError: 'PythonOperator' object is not callable
+[2025-05-30T15:58:42.489+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=make_dataset, execution_date=20250530T155312, start_date=20250530T155842, end_date=20250530T155842
+[2025-05-30T15:58:42.497+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 32 for task make_dataset ('PythonOperator' object is not callable; 292)
+[2025-05-30T15:58:42.516+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-05-30T15:58:42.533+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
