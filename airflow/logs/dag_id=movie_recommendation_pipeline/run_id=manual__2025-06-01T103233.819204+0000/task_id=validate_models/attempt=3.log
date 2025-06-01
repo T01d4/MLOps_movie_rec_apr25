@@ -1,0 +1,47 @@
+[2025-06-01T10:46:22.810+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-01T10:32:33.819204+00:00 [queued]>
+[2025-06-01T10:46:22.816+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-01T10:32:33.819204+00:00 [queued]>
+[2025-06-01T10:46:22.816+0000] {taskinstance.py:2170} INFO - Starting attempt 3 of 3
+[2025-06-01T10:46:22.826+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-06-01 10:32:33.819204+00:00
+[2025-06-01T10:46:22.831+0000] {standard_task_runner.py:60} INFO - Started process 195 to run task
+[2025-06-01T10:46:22.834+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-06-01T10:32:33.819204+00:00', '--job-id', '957', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpa3ekcr2i']
+[2025-06-01T10:46:22.835+0000] {standard_task_runner.py:88} INFO - Job 957: Subtask validate_models
+[2025-06-01T10:46:22.876+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-01T10:32:33.819204+00:00 [running]> on host ec4a1b49d043
+[2025-06-01T10:46:22.942+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T10:32:33.819204+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T10:32:33.819204+00:00'
+[2025-06-01T10:51:24.914+0000] {mlops_movie_dag.py:13} INFO -                       ❗❗❗ AUTHORIZATION REQUIRED ❗❗❗                      
+
+
+Open the following link in your browser to authorize the client:
+https://dagshub.com/login/oauth/authorize?state=cc770c46-f06e-4979-87d2-2a88d6841f90&client_id=32b60ba385aa7cecf24046d8195a71c07dd345d9657977863b52e7748e0f0f28&middleman_request_id=7c428cda25873c0376524aac16e7c0cb482f4000a41bb4430cc3314dae4adda6
+
+
+Traceback (most recent call last):
+  File "/opt/***/src/models/validate_model.py", line 17, in <module>
+    dagshub.init(repo_owner='sacer11', repo_name='MLOps_movie_rec_apr25', mlflow=True)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/common/init.py", line 86, in init
+    repo_api = RepoAPI(f"{repo_owner}/{repo_name}", host=host)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/common/api/repo.py", line 78, in __init__
+    self.auth = dagshub.auth.get_authenticator(host=host)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/auth/tokens.py", line 374, in get_authenticator
+    return _get_token_storage(**kwargs).get_authenticator(**kwargs)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/auth/tokens.py", line 122, in get_authenticator
+    token = self.get_token_object(host, fail_if_no_token, **kwargs)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/auth/tokens.py", line 187, in get_token_object
+    good_token = oauth.oauth_flow(host, **kwargs)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/auth/oauth.py", line 46, in oauth_flow
+    token = oauth_flow_post(flow_data)
+  File "/home/***/.local/lib/python3.10/site-packages/dagshub/auth/oauth.py", line 117, in oauth_flow_post
+    raise Exception(f"Error while getting OAuth code: HTTP {res.status_code}, Body: {res.json()}")
+  File "/home/***/.local/lib/python3.10/site-packages/httpx/_models.py", line 755, in json
+    return jsonlib.loads(self.content.decode(encoding), **kwargs)
+  File "/usr/local/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/lib/python3.10/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+[2025-06-01T10:51:24.915+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T10:51:24.922+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250601T103233, start_date=20250601T104622, end_date=20250601T105124
+[2025-06-01T10:51:24.970+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T10:51:24.989+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
