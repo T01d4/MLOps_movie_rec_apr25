@@ -3,3 +3,4 @@ outs:
   size: 118593046
   hash: md5
   path: hybrid_model.pkl
+  isexec: true
