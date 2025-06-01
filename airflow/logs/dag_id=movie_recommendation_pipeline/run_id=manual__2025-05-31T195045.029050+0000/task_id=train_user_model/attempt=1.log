@@ -1,0 +1,31 @@
+[2025-05-31T19:51:09.935+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-05-31T19:50:45.029050+00:00 [queued]>
+[2025-05-31T19:51:09.942+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-05-31T19:50:45.029050+00:00 [queued]>
+[2025-05-31T19:51:09.942+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-05-31T19:51:09.954+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_user_model> on 2025-05-31 19:50:45.029050+00:00
+[2025-05-31T19:51:09.960+0000] {standard_task_runner.py:60} INFO - Started process 307 to run task
+[2025-05-31T19:51:09.965+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_user_model', 'manual__2025-05-31T19:50:45.029050+00:00', '--job-id', '366', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpx32clcxk']
+[2025-05-31T19:51:09.966+0000] {standard_task_runner.py:88} INFO - Job 366: Subtask train_user_model
+[2025-05-31T19:51:09.999+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-05-31T19:50:45.029050+00:00 [running]> on host 1dcc2d477114
+[2025-05-31T19:51:10.057+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_user_model' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T19:50:45.029050+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T19:50:45.029050+00:00'
+[2025-05-31T19:54:25.787+0000] {mlops_movie_dag.py:12} INFO - 🚀 Starte Training des user_model
+📥 Lade Bewertungen und Movie-Embeddings
+🔄 Erstelle User-Vektoren
+✅ 138493 User-Vektoren gespeichert unter /opt/***/data/processed/user_matrix.csv
+📊 Trainiere NearestNeighbors-Modell
+✅ Modell gespeichert unter /opt/***/models/user_model.pkl
+📡 Starte MLflow-Tracking
+Traceback (most recent call last):
+  File "/opt/***/src/models/train_user_model.py", line 90, in <module>
+    train_user_model()
+  File "/opt/***/src/models/train_user_model.py", line 78, in train_user_model
+    signature = infer_signature(X, model.kneighbors(X[:5]))
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/models/signature.py", line 213, in infer_signature
+    outputs = _infer_schema(model_output) if model_output is not None else None
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/types/utils.py", line 187, in _infer_schema
+    raise TypeError(
+TypeError: ('Expected one of the following types:\n- pandas.DataFrame\n- pandas.Series\n- numpy.ndarray\n- dictionary of (name -> numpy.ndarray)\n- pyspark.sql.DataFrame\n', "- scipy.sparse.csr_matrix\n- scipy.sparse.csc_matrix\n- str\n- List[str]\n- List[Dict[str, Union[str, List[str]]]]\n- Dict[str, Union[str, List[str]]]\n- bytes\nbut got '<class 'tuple'>'")
+
+[2025-05-31T19:54:25.788+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-05-31T19:54:25.799+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_user_model, execution_date=20250531T195045, start_date=20250531T195109, end_date=20250531T195425
+[2025-05-31T19:54:25.837+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-31T19:54:25.856+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

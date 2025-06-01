@@ -1,0 +1,21 @@
+[2025-05-31T13:23:52.655+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.import_raw_data manual__2025-05-31T13:23:50.395858+00:00 [queued]>
+[2025-05-31T13:23:52.662+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.import_raw_data manual__2025-05-31T13:23:50.395858+00:00 [queued]>
+[2025-05-31T13:23:52.663+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-05-31T13:23:52.674+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): import_raw_data> on 2025-05-31 13:23:50.395858+00:00
+[2025-05-31T13:23:52.685+0000] {standard_task_runner.py:60} INFO - Started process 258 to run task
+[2025-05-31T13:23:52.688+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'import_raw_data', 'manual__2025-05-31T13:23:50.395858+00:00', '--job-id', '167', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp6hxbjhy4']
+[2025-05-31T13:23:52.689+0000] {standard_task_runner.py:88} INFO - Job 167: Subtask import_raw_data
+[2025-05-31T13:23:52.735+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.import_raw_data manual__2025-05-31T13:23:50.395858+00:00 [running]> on host d35b3b7ac69d
+[2025-05-31T13:23:53.063+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='import_raw_data' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T13:23:50.395858+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T13:23:50.395858+00:00'
+[2025-05-31T13:23:53.068+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: genome-scores.csv
+[2025-05-31T13:23:53.070+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: genome-tags.csv
+[2025-05-31T13:23:53.072+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: links.csv
+[2025-05-31T13:23:53.073+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: movies.csv
+[2025-05-31T13:23:53.075+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: ratings.csv
+[2025-05-31T13:23:53.077+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: README.txt
+[2025-05-31T13:23:53.079+0000] {logging_mixin.py:188} INFO - ✅ Datei bereits vorhanden, überspringe: tags.csv
+[2025-05-31T13:23:53.079+0000] {import_raw_data.py:46} INFO - ✅ Rohdatenprüfung abgeschlossen.
+[2025-05-31T13:23:53.079+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-05-31T13:23:53.088+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=import_raw_data, execution_date=20250531T132350, start_date=20250531T132352, end_date=20250531T132353
+[2025-05-31T13:23:53.143+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-31T13:23:53.167+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

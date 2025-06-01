@@ -1,0 +1,24 @@
+[2025-05-31T20:39:08.357+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T20:35:15.386496+00:00 [queued]>
+[2025-05-31T20:39:08.363+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T20:35:15.386496+00:00 [queued]>
+[2025-05-31T20:39:08.363+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-05-31T20:39:08.376+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-05-31 20:35:15.386496+00:00
+[2025-05-31T20:39:08.382+0000] {standard_task_runner.py:60} INFO - Started process 678 to run task
+[2025-05-31T20:39:08.384+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-05-31T20:35:15.386496+00:00', '--job-id', '399', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp1ofse7p1']
+[2025-05-31T20:39:08.386+0000] {standard_task_runner.py:88} INFO - Job 399: Subtask validate_models
+[2025-05-31T20:39:08.417+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T20:35:15.386496+00:00 [running]> on host 6c2ad6c49f7a
+[2025-05-31T20:39:08.477+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T20:35:15.386496+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T20:35:15.386496+00:00'
+[2025-05-31T20:39:49.537+0000] {mlops_movie_dag.py:12} INFO - 2025-05-31 20:39:09,875 - INFO - 🚀 Starte Validierung der Modelle
+2025-05-31 20:39:19,669 - INFO - 📥 Daten geladen – Beginne Evaluation
+2025-05-31 20:39:46,734 - INFO - 📊 precision_10_hybrid: 0.22
+2025-05-31 20:39:46,734 - INFO - 📊 precision_10_user:   0.05
+2025-05-31 20:39:46,735 - INFO - 📡 Logging der Metriken in MLflow
+2025-05-31 20:39:48,541 - INFO - 🏆 Bestes Modell: hybrid_model
+Registered model 'movie_model' already exists. Creating a new version of this model...
+2025/05/31 20:39:49 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: movie_model, version 80
+Created version '80' of model 'movie_model'.
+2025-05-31 20:39:49,141 - INFO - 📁 Modell registriert in MLflow: runs:/80e66b9527eb41c6ab243e03bc116a46/model
+
+[2025-05-31T20:39:49.538+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-05-31T20:39:49.546+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250531T203515, start_date=20250531T203908, end_date=20250531T203949
+[2025-05-31T20:39:49.568+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-31T20:39:49.582+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

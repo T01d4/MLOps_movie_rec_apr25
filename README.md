@@ -1,10 +1,10 @@
-Movie Recommandation
-====================
+Project Name
+==============================
 
 This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
 
 Project Organization
---------------------
+------------
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
@@ -33,10 +33,6 @@ Project Organization
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── api            <- Scripts for the api supposed to be running in the backgroud
-    │   │   ├── main.py
-    │   │   └── routes.py
-    │   │
     │   ├── data           <- Scripts to download or generate data
     │   │   ├── check_structure.py    
     │   │   ├── import_raw_data.py 
@@ -53,89 +49,30 @@ Project Organization
     │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
     │   │   └── visualize.py
     │   └── config         <- Describe the parameters used in train_model.py and predict_model.py
-    │
-    │
-    ├── tests              <- Source code for the tests of this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── api            <- Scripts for the api supposed to be running in the backgroud
-    │   │   ├── main.py
-    │   │   └── routes.py
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   ├── test_check_structure.py    
-    │   │   ├── test_import_raw_data.py 
-    │   │   └── test_make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── test_build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── test_predict_model.py
-    │   │   └── test_train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── test_visualize.py
 
 --------
-
-Scheme of containerization
---------------------------
-```mermaid
-graph TD
-  S3[S3 Bucket / External Data]
-
-  ORCH[Orchestrator - Prefect / Airflow / Makefile]
-
-  INGEST[data-ingest container]
-  PREP[preprocess container]
-  TRAIN[train-model container]
-  API[predict-api container]
-  UI[Streamlit UI - optional]
-
-  V1[/volume: raw-data/]
-  V2[/volume: processed-data/]
-  V3[/volume: models/]
-
-  API_OUT[(REST API endpoint)]
-
-  S3 --> INGEST
-  ORCH --> INGEST
-  INGEST --> V1
-  V1 --> PREP
-  ORCH --> PREP
-  PREP --> V2
-  V2 --> TRAIN
-  ORCH --> TRAIN
-  TRAIN --> V3
-  V3 --> API
-  API --> API_OUT
-  UI --> API_OUT
-
-  subgraph Volumes
-    V1
-    V2
-    V3
-  end
-```
 
 ## Steps to follow 
 
 Convention : All python scripts must be run from the root specifying the relative file path.
 
-### 1- Start the devcontainer
+### 1- Create a virtual environment using Virtualenv.
 
-* clone the repo on a location you like
-* in vscode open the folder of your repo
-* reopen in Container
-* everything should be setup correctly
+    `python -m venv my_env`
 
-### 2- Execute import_raw_data.py to import the 4 datasets
+###   Activate it 
+
+    `./my_env/Scripts/activate`
+
+###   Install the packages from requirements.txt  (You can ignore the warning with "setup.py")
+
+    `pip install -r .\requirements.txt`
+
+### 2- Execute import_raw_data.py to import the 4 datasets (say yes when it asks you to create a new folder)
 
     `python .\src\data\import_raw_data.py` 
 
-### 3- Execute make_dataset.py
+### 3- Execute make_dataset.py initializing `./data/raw` as input file path and `./data/processed` as output file path.
 
     `python .\src\data\make_dataset.py`
 
@@ -147,20 +84,10 @@ Convention : All python scripts must be run from the root specifying the relativ
 
     `python .\src\models\train_model.py`
 
-### 6- Finally, execute predict_model.py file to make the predictions (by default you will be printed predictions for the first 5 users of the dataset). 
+### 5- Finally, execute predict_model.py file to make the predictions (by default you will be printed predictions for the first 5 users of the dataset). 
 
     `python .\src\models\predict_model.py`
 
 ### Note that we have 10 recommandations per user
-
-### Extra: poster for recommendations
-
-* create account for https://developer.themoviedb.org/
-* create an api key, follow the guide https://developer.themoviedb.org/reference/intro/getting-started
-* create a .env file in your project folder
-* put the following content into your .env file:
-```bash
-TMDB_API_KEY="<your_key>"
-```
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>

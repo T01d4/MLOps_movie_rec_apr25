@@ -1,31 +1,20 @@
 import os
 
-
 def check_existing_file(file_path):
-    '''Check if a file already exists. If it does, ask if we want to overwrite it.'''
+    '''Check if a file already exists. Log the result.'''
     if os.path.isfile(file_path):
-        while True:
-            response = input(f"File {os.path.basename(file_path)} already exists. Do you want to overwrite it? (y/n): ")
-            if response.lower() == 'y':
-                return True
-            elif response.lower() == 'n':
-                return False
-            else:
-                print("Invalid response. Please enter 'y' or 'n'.")
-    else:
+        print(f"⚠️ File already exists: {file_path}")
         return True
-
+    else:
+        print(f"✅ File does not exist (expected): {file_path}")
+        return False
 
 def check_existing_folder(folder_path):
-    '''Check if a folder already exists. If it does, ask if we want to create it.'''
-    if os.path.exists(folder_path) is False:
-        while True:
-            response = input(f"{os.path.basename(folder_path)} doesn't exists. Do you want to create it? (y/n): ")
-            if response.lower() == 'y':
-                return True
-            elif response.lower() == 'n':
-                return False
-            else:
-                print("Invalid response. Please enter 'y' or 'n'.")
+    '''Check if a folder exists. If not, create it.'''
+    if not os.path.exists(folder_path):
+        print(f"📁 Folder not found, creating: {folder_path}")
+        os.makedirs(folder_path)
+        return True
     else:
+        print(f"✅ Folder exists: {folder_path}")
         return False

@@ -1,0 +1,17 @@
+[2025-05-31T16:37:04.463+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T16:36:01.251219+00:00 [queued]>
+[2025-05-31T16:37:04.471+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T16:36:01.251219+00:00 [queued]>
+[2025-05-31T16:37:04.471+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-05-31T16:37:04.483+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-05-31 16:36:01.251219+00:00
+[2025-05-31T16:37:04.490+0000] {standard_task_runner.py:60} INFO - Started process 514 to run task
+[2025-05-31T16:37:04.492+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-05-31T16:36:01.251219+00:00', '--job-id', '289', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpiqxsldpe']
+[2025-05-31T16:37:04.494+0000] {standard_task_runner.py:88} INFO - Job 289: Subtask validate_models
+[2025-05-31T16:37:04.528+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T16:36:01.251219+00:00 [running]> on host e9536150eb5d
+[2025-05-31T16:37:04.589+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T16:36:01.251219+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T16:36:01.251219+00:00'
+[2025-05-31T16:37:06.626+0000] {mlops_movie_dag.py:12} INFO - 📡 MLflow Tracking URI: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+👤 MLflow Username: sacer11
+🔐 MLflow Password gesetzt: ✅
+
+[2025-05-31T16:37:06.626+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-05-31T16:37:06.634+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250531T163601, start_date=20250531T163704, end_date=20250531T163706
+[2025-05-31T16:37:06.683+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-05-31T16:37:06.699+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
