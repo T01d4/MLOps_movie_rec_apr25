@@ -83,71 +83,75 @@ st.success(f"Angemeldet als: {role.upper()}")
 try:
     movies_df = pd.read_csv("data/raw/movies.csv")
     movie_titles = sorted(movies_df["title"].dropna().unique())
+    data_available = True
 except Exception as e:
-    st.error(f"❌ Fehler beim Laden der Filme: {e}")
-    st.stop()
+    st.warning(f"❌ Filme konnten nicht geladen werden: {e}")
+    data_available = False
 
-selected_movies = [
-    st.selectbox("Film 1", [""] + movie_titles, key="film1"),
-    st.selectbox("Film 2", [""] + movie_titles, key="film2"),
-    st.selectbox("Film 3", [""] + movie_titles, key="film3"),
-    st.selectbox("Film 4 (optional)", [""] + movie_titles, key="film4"),
-    st.selectbox("Film 5 (optional)", [""] + movie_titles, key="film5")
-]
-selected_movies = [f for f in selected_movies if f]
+if data_available:
+    selected_movies = [
+        st.selectbox("Film 1", [""] + movie_titles, key="film1"),
+        st.selectbox("Film 2", [""] + movie_titles, key="film2"),
+        st.selectbox("Film 3", [""] + movie_titles, key="film3"),
+        st.selectbox("Film 4 (optional)", [""] + movie_titles, key="film4"),
+        st.selectbox("Film 5 (optional)", [""] + movie_titles, key="film5")
+    ]
+    selected_movies = [f for f in selected_movies if f]
 
-if len(selected_movies) >= 3:
-    st.success("✅ Auswahl ausreichend – Empfehlung kann gestartet werden.")
-    if st.button("Empfehle 10 ähnliche Filme (lokal)"):
-        try:
-            movies_df = pd.read_csv("data/raw/movies.csv").dropna()
-            tags_df = pd.read_csv("data/raw/tags.csv").dropna(subset=["tag"])
-            scores_df = pd.read_csv("data/raw/genome-scores.csv")
+    if len(selected_movies) >= 3:
+        st.success("✅ Auswahl ausreichend – Empfehlung kann gestartet werden.")
+        if st.button("Empfehle 10 ähnliche Filme (lokal)"):
+            try:
+                movies_df = pd.read_csv("data/raw/movies.csv").dropna()
+                tags_df = pd.read_csv("data/raw/tags.csv").dropna(subset=["tag"])
+                scores_df = pd.read_csv("data/raw/genome-scores.csv")
 
-            tags_combined = tags_df.groupby("movieId")["tag"].apply(lambda t: " ".join(t)).reset_index()
-            movies_df = pd.merge(movies_df, tags_combined, on="movieId", how="left")
-            movies_df["combined"] = movies_df["genres"].str.replace("|", " ", regex=False) + " " + movies_df["tag"].fillna("")
+                tags_combined = tags_df.groupby("movieId")["tag"].apply(lambda t: " ".join(t)).reset_index()
+                movies_df = pd.merge(movies_df, tags_combined, on="movieId", how="left")
+                movies_df["combined"] = movies_df["genres"].str.replace("|", " ", regex=False) + " " + movies_df["tag"].fillna("")
 
-            tfidf = TfidfVectorizer(max_features=300, stop_words="english")
-            content_embeddings = tfidf.fit_transform(movies_df["combined"])
+                tfidf = TfidfVectorizer(max_features=300, stop_words="english")
+                content_embeddings = tfidf.fit_transform(movies_df["combined"])
 
-            collab = scores_df.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
+                collab = scores_df.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
 
-            common_ids = movies_df[movies_df["movieId"].isin(collab.index)].copy()
-            content_embeddings = content_embeddings[[i for i, mid in enumerate(movies_df["movieId"]) if mid in common_ids["movieId"].values]]
-            collab = collab.loc[common_ids["movieId"]]
+                common_ids = movies_df[movies_df["movieId"].isin(collab.index)].copy()
+                content_embeddings = content_embeddings[[i for i, mid in enumerate(movies_df["movieId"]) if mid in common_ids["movieId"].values]]
+                collab = collab.loc[common_ids["movieId"]]
 
-            scaler = MinMaxScaler()
-            collab_scaled = scaler.fit_transform(collab)
-            content_scaled = scaler.fit_transform(content_embeddings.toarray())
-            hybrid_matrix = np.hstack([collab_scaled, content_scaled])
+                scaler = MinMaxScaler()
+                collab_scaled = scaler.fit_transform(collab)
+                content_scaled = scaler.fit_transform(content_embeddings.toarray())
+                hybrid_matrix = np.hstack([collab_scaled, content_scaled])
 
-            knn = NearestNeighbors(n_neighbors=11, metric="cosine")
-            knn.fit(hybrid_matrix)
+                knn = NearestNeighbors(n_neighbors=11, metric="cosine")
+                knn.fit(hybrid_matrix)
 
-            selected_indices = []
-            for title in selected_movies:
-                match = common_ids[common_ids["title"].str.lower() == title.lower()]
-                if not match.empty:
-                    selected_indices.append(match.index[0])
+                selected_indices = []
+                for title in selected_movies:
+                    match = common_ids[common_ids["title"].str.lower() == title.lower()]
+                    if not match.empty:
+                        selected_indices.append(match.index[0])
 
-            if not selected_indices:
-                st.warning("⚠️ Keine gültigen Filme gefunden für Empfehlung.")
-                st.stop()
+                if not selected_indices:
+                    st.warning("⚠️ Keine gültigen Filme gefunden für Empfehlung.")
+                    st.stop()
 
-            user_vector = hybrid_matrix[selected_indices].mean(axis=0).reshape(1, -1)
-            distances, indices = knn.kneighbors(user_vector, n_neighbors=20)
-            recommended_ids = common_ids.iloc[indices[0][1:]]["movieId"].tolist()
+                user_vector = hybrid_matrix[selected_indices].mean(axis=0).reshape(1, -1)
+                distances, indices = knn.kneighbors(user_vector, n_neighbors=20)
+                recommended_ids = common_ids.iloc[indices[0][1:]]["movieId"].tolist()
 
-            all_titles = movies_df[movies_df["movieId"].isin(recommended_ids)]["title"].tolist()
-            recommended_titles = [t for t in all_titles if t not in selected_movies][:10]
+                all_titles = movies_df[movies_df["movieId"].isin(recommended_ids)]["title"].tolist()
+                recommended_titles = [t for t in all_titles if t not in selected_movies][:10]
 
-            st.subheader("🎬 Top 10 Empfehlungen")
-            st.write(pd.DataFrame(recommended_titles, columns=["Empfohlene Titel"]))
+                st.subheader("🎬 Top 10 Empfehlungen")
+                st.write(pd.DataFrame(recommended_titles, columns=["Empfohlene Titel"]))
 
-        except Exception as e:
-            st.error(f"❌ Fehler bei der Empfehlung (lokal): {e}")
-
+            except Exception as e:
+                st.error(f"❌ Fehler bei der Empfehlung (lokal): {e}")
+else:
+    st.info("ℹ️ Noch keine Filmdaten verfügbar. Bitte generiere die Daten per Admin-Panel.")
+    
 # === ADMIN-Bereich ===
 if role == "admin":
     st.subheader("⚙️ Admin Panel – Airflow & MLflow")

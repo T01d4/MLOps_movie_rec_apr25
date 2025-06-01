@@ -16,7 +16,7 @@ load_dotenv()
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 
-dagshub.init(repo_owner='sacer11', repo_name='MLOps_movie_rec_apr25', mlflow=True)
+#dagshub.init(repo_owner='sacer11', repo_name='MLOps_movie_rec_apr25', mlflow=True)
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 mlflow.set_experiment("model_validation")
 
