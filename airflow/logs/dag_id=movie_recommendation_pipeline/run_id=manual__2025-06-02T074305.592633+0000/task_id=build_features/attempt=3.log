@@ -1,0 +1,16 @@
+[2025-06-02T07:52:19.330+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.build_features manual__2025-06-02T07:43:05.592633+00:00 [queued]>
+[2025-06-02T07:52:19.338+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.build_features manual__2025-06-02T07:43:05.592633+00:00 [queued]>
+[2025-06-02T07:52:19.339+0000] {taskinstance.py:2170} INFO - Starting attempt 3 of 3
+[2025-06-02T07:52:19.351+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): build_features> on 2025-06-02 07:43:05.592633+00:00
+[2025-06-02T07:52:19.357+0000] {standard_task_runner.py:60} INFO - Started process 455 to run task
+[2025-06-02T07:52:19.358+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'build_features', 'manual__2025-06-02T07:43:05.592633+00:00', '--job-id', '1575', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpilw48yp5']
+[2025-06-02T07:52:19.359+0000] {standard_task_runner.py:88} INFO - Job 1575: Subtask build_features
+[2025-06-02T07:52:19.395+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.build_features manual__2025-06-02T07:43:05.592633+00:00 [running]> on host 799e7d5ce072
+[2025-06-02T07:52:19.454+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='build_features' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T07:43:05.592633+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T07:43:05.592633+00:00'
+[2025-06-02T07:52:19.456+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/features/build_features.py --tfidf_features=300
+[2025-06-02T07:52:40.117+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+[2025-06-02T07:52:40.119+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-02T07:52:40.133+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=build_features, execution_date=20250602T074305, start_date=20250602T075219, end_date=20250602T075240
+[2025-06-02T07:52:40.187+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-02T07:52:40.212+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

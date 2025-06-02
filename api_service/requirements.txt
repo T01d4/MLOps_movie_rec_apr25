@@ -2,7 +2,7 @@ fastapi
 uvicorn
 pandas
 python-dotenv
-mlflow==2.9.2
+mlflow==2.22.0
 dagshub>=0.3
 dvc
 python-multipart

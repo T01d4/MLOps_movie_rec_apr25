@@ -1,16 +1,22 @@
+#dockerfile.airflow
 FROM apache/airflow:2.8.1-python3.10
 
-# Arbeitsverzeichnis
-WORKDIR /
+# Arbeitsverzeichnis: Bleibe bei /opt/airflow für Airflow-Kompatibilität!
+WORKDIR /opt/airflow
 
-# Wechsel zu Root für apt-get (nur falls Git o.ä. benötigt wird)
+# --- Root-User für System-Tools (git, bash) und Build-Dependencies ---
 USER root
-RUN apt-get update && apt-get install -y git && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        bash \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# requirements kopieren
+# --- requirements kopieren und installieren ---
 COPY airflow/requirements.airflow.txt /requirements.txt
 
-# Wechsel zurück zu airflow-User für pip!
+# Wechsel zurück zum airflow-User für pip und airflow Kommandos
 USER airflow
 RUN pip install --no-cache-dir -r /requirements.txt
 
@@ -19,3 +25,8 @@ COPY ./src /src
 
 # PYTHONPATH korrekt setzen
 ENV PYTHONPATH="/src:/opt/airflow:${PYTHONPATH}"
+
+# (Optional) Test: DVC- und dagshub-Installation prüfen (nur zur Kontrolle beim Build)
+# RUN dvc --version && python -c "import dagshub; print('dagshub OK')"
+
+# Airflow-Entrypoint wird vom Baseimage gesetzt; kein CMD nötig

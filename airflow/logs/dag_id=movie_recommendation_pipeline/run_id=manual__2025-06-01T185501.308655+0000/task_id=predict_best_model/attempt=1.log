@@ -1,0 +1,22 @@
+[2025-06-01T19:00:08.203+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T18:55:01.308655+00:00 [queued]>
+[2025-06-01T19:00:08.220+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T18:55:01.308655+00:00 [queued]>
+[2025-06-01T19:00:08.222+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T19:00:08.244+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-01 18:55:01.308655+00:00
+[2025-06-01T19:00:08.257+0000] {standard_task_runner.py:60} INFO - Started process 751 to run task
+[2025-06-01T19:00:08.261+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'predict_best_model', 'manual__2025-06-01T18:55:01.308655+00:00', '--job-id', '1226', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpo44a2mye']
+[2025-06-01T19:00:08.266+0000] {standard_task_runner.py:88} INFO - Job 1226: Subtask predict_best_model
+[2025-06-01T19:00:08.332+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T18:55:01.308655+00:00 [running]> on host 85b8892dac5f
+[2025-06-01T19:00:08.459+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T18:55:01.308655+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T18:55:01.308655+00:00'
+[2025-06-01T19:05:25.456+0000] {mlops_movie_dag.py:13} INFO - 2025-06-01 19:00:11,838 - INFO - 🚀 Starte Vorhersage mit MLflow Registry & DVC-Modell
+2025-06-01 19:00:15,751 - INFO - 📥 User-Matrix geladen: /opt/***/data/processed/user_matrix.csv – Shape: (138493, 20)
+2025-06-01 19:00:15,807 - WARNING - Retrying (Retry(total=6, connect=6, read=7, redirect=7, status=7)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f5d784d4c40>: Failed to resolve 'dagshub.com' ([Errno -2] Name or service not known)")': /sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow/registered-models/alias?name=movie_model&alias=best_model
+2025-06-01 19:05:23,686 - WARNING - Retrying (Retry(total=5, connect=5, read=7, redirect=7, status=7)) after connection broken by 'NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f5d784a98a0>: Failed to resolve 'dagshub.com' ([Errno -2] Name or service not known)")': /sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow/registered-models/alias?name=movie_model&alias=best_model
+2025-06-01 19:05:23,932 - INFO - 🔎 Bestes Modell laut Registry: Typ=hybrid, Version=97
+2025-06-01 19:05:23,933 - INFO - 📦 Modell bereits lokal vorhanden: /opt/***/models/hybrid_model.pkl
+2025-06-01 19:05:24,997 - INFO - 📦 Modell geladen: /opt/***/models/hybrid_model.pkl
+2025-06-01 19:05:24,997 - ERROR - ❌ Fehler bei der Vorhersage oder dem Logging: 'NearestNeighbors' object has no attribute 'predict'
+
+[2025-06-01T19:05:25.457+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T19:05:25.466+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=predict_best_model, execution_date=20250601T185501, start_date=20250601T190008, end_date=20250601T190525
+[2025-06-01T19:05:25.483+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T19:05:25.499+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

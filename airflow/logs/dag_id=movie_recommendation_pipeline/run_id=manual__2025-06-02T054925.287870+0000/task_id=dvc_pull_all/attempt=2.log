@@ -1,0 +1,34 @@
+[2025-06-02T05:57:02.524+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_pull_all manual__2025-06-02T05:49:25.287870+00:00 [queued]>
+[2025-06-02T05:57:02.531+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_pull_all manual__2025-06-02T05:49:25.287870+00:00 [queued]>
+[2025-06-02T05:57:02.531+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-02T05:57:02.540+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): dvc_pull_all> on 2025-06-02 05:49:25.287870+00:00
+[2025-06-02T05:57:02.545+0000] {standard_task_runner.py:60} INFO - Started process 1429 to run task
+[2025-06-02T05:57:02.547+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'dvc_pull_all', 'manual__2025-06-02T05:49:25.287870+00:00', '--job-id', '1516', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmprspzp9uk']
+[2025-06-02T05:57:02.548+0000] {standard_task_runner.py:88} INFO - Job 1516: Subtask dvc_pull_all
+[2025-06-02T05:57:02.580+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.dvc_pull_all manual__2025-06-02T05:49:25.287870+00:00 [running]> on host 0e6e1ff1f8df
+[2025-06-02T05:57:02.635+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='dvc_pull_all' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T05:49:25.287870+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T05:49:25.287870+00:00'
+[2025-06-02T05:57:02.636+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: dvc pull /opt/***/models/hybrid_model.pkl
+[2025-06-02T05:57:05.522+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+[2025-06-02T05:57:05.523+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+ERROR: failed to pull data from the cloud - Unable to acquire lock. Most likely another DVC process is running or was terminated abruptly. Check the page <https://dvc.org/doc/user-guide/troubleshooting#lock-issue> for other possible reasons and to learn how to resolve this.
+
+[2025-06-02T05:57:05.523+0000] {mlops_movie_dag.py:29} ERROR - ❌ Subprozess-Fehler (exit code 1): dvc pull /opt/***/models/hybrid_model.pkl
+[2025-06-02T05:57:05.524+0000] {mlops_movie_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Command '['dvc', 'pull', '/opt/***/models/hybrid_model.pkl']' returned non-zero exit status 1.
+[2025-06-02T05:57:05.524+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 139, in dvc_pull_all
+    run_and_log(["dvc", "pull", art])
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 30, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['dvc', 'pull', '/opt/airflow/models/hybrid_model.pkl']' returned non-zero exit status 1.
+[2025-06-02T05:57:05.536+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=dvc_pull_all, execution_date=20250602T054925, start_date=20250602T055702, end_date=20250602T055705
+[2025-06-02T05:57:05.545+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1516 for task dvc_pull_all (Command '['dvc', 'pull', '/opt/airflow/models/hybrid_model.pkl']' returned non-zero exit status 1.; 1429)
+[2025-06-02T05:57:05.568+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-02T05:57:05.585+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

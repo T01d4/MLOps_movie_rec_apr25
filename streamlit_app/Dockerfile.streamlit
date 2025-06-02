@@ -1,3 +1,4 @@
+#Dockerfile.streamlit
 FROM python:3.10-slim
 
 WORKDIR /app
@@ -8,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py ./app.py
 COPY auth.py ./auth.py
-COPY .env ./.env
+
 
 # Optional: Erstelle leeres Verzeichnis, falls nicht vorhanden
 RUN mkdir -p ./data/predictions

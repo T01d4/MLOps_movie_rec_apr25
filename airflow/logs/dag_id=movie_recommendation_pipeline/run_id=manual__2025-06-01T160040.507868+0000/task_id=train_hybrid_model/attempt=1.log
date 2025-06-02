@@ -1,0 +1,547 @@
+[2025-06-01T16:01:06.872+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T16:00:40.507868+00:00 [queued]>
+[2025-06-01T16:01:06.879+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T16:00:40.507868+00:00 [queued]>
+[2025-06-01T16:01:06.880+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T16:01:06.889+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_hybrid_model> on 2025-06-01 16:00:40.507868+00:00
+[2025-06-01T16:01:06.896+0000] {standard_task_runner.py:60} INFO - Started process 305 to run task
+[2025-06-01T16:01:06.898+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_hybrid_model', 'manual__2025-06-01T16:00:40.507868+00:00', '--job-id', '1133', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpsge37cun']
+[2025-06-01T16:01:06.899+0000] {standard_task_runner.py:88} INFO - Job 1133: Subtask train_hybrid_model
+[2025-06-01T16:01:06.928+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T16:00:40.507868+00:00 [running]> on host dadf03d8dbb4
+[2025-06-01T16:01:06.978+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T16:00:40.507868+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T16:00:40.507868+00:00'
+[2025-06-01T16:01:27.071+0000] {mlops_movie_dag.py:13} INFO - 
+To track the changes with git, run:
+
+	git add models/hybrid_model_v1.pkl.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    .devcontainer/devcontainer.json
+	modified:   .dvc/.gitignore
+	modified:   .dvc/config
+	deleted:    .dvcignore
+	deleted:    .github/workflows/python-app.yml
+	deleted:    .github/workflows/test.yml
+	deleted:    Dockerfile
+	deleted:    LICENSE
+	deleted:    README.md
+	deleted:    ***/Dockerfile.***
+	deleted:    ***/***.cfg
+	deleted:    ***/***.db
+	deleted:    ***/dags/mlops_movie_dag.py
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T14\357\200\27233\357\200\27221.956770+00\357\200\27200/task_id=check_structure/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T14\357\200\27233\357\200\27221.956770+00\357\200\27200/task_id=check_structure/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T14\357\200\27243\357\200\27222.940762+00\357\200\27200/task_id=check_structure/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T14\357\200\27243\357\200\27222.940762+00\357\200\27200/task_id=check_structure/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27205\357\200\27208.209074+00\357\200\27200/task_id=check_if_import_needed/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27205\357\200\27208.209074+00\357\200\27200/task_id=check_structure/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27214\357\200\27259.980280+00\357\200\27200/task_id=check_structure_and_branch/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27226\357\200\27225.665968+00\357\200\27200/task_id=check_structure_and_branch/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=import_raw_data/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=make_dataset/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=predict_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=predict_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27253\357\200\27212.907073+00\357\200\27200/task_id=train_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=build_features/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=make_dataset/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=predict_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T15\357\200\27259\357\200\27205.906637+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=predict_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=predict_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27201\357\200\27228.293747+00\357\200\27200/task_id=train_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27205\357\200\27242.474566+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27205\357\200\27242.474566+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27205\357\200\27242.474566+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27205\357\200\27242.474566+00\357\200\27200/task_id=predict_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27205\357\200\27242.474566+00\357\200\27200/task_id=predict_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27205\357\200\27242.474566+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27210\357\200\27214.525464+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27210\357\200\27214.525464+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27210\357\200\27214.525464+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27210\357\200\27214.525464+00\357\200\27200/task_id=predict_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T16\357\200\27210\357\200\27214.525464+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T19\357\200\27223\357\200\27224.231753+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T19\357\200\27223\357\200\27224.231753+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T19\357\200\27223\357\200\27224.231753+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T19\357\200\27223\357\200\27224.231753+00\357\200\27200/task_id=predict_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-30T19\357\200\27223\357\200\27224.231753+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T12\357\200\27248\357\200\27215.180341+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27201\357\200\27239.257819+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27226.838748+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27202\357\200\27236.135095+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27211\357\200\27226.373693+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27223\357\200\27250.395858+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27228\357\200\27243.503313+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27228\357\200\27243.503313+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27228\357\200\27243.503313+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27228\357\200\27243.503313+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27228\357\200\27243.503313+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27228\357\200\27243.503313+00\357\200\27200/task_id=train_user_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=train_user_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27230\357\200\27200.934691+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T13\357\200\27235\357\200\27243.899877+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=predict_best_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=predict_best_model/attempt=3.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27213\357\200\27253.452558+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=predict_best_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=predict_best_model/attempt=3.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27218\357\200\27234.337068+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=predict_best_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=predict_best_model/attempt=3.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T14\357\200\27246\357\200\27208.419468+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27225\357\200\27231.274836+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27234\357\200\27214.121660+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T15\357\200\27254\357\200\27258.574433+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27202\357\200\27226.085851+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27223\357\200\27258.089566+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27236\357\200\27201.251219+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T16\357\200\27245\357\200\27223.301023+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27204\357\200\27223.836855+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27213\357\200\27257.646872+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T17\357\200\27229\357\200\27201.130501+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27207\357\200\27249.465412+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T18\357\200\27235\357\200\27229.795647+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27219\357\200\27243.279904+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T19\357\200\27250\357\200\27245.029050+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27200\357\200\27241.642781+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27211\357\200\27259.014875+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T20\357\200\27235\357\200\27215.386496+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27201\357\200\27250.237695+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27217\357\200\27237.847852+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27237\357\200\27232.705262+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T21\357\200\27252\357\200\27202.301878+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27211\357\200\27216.825787+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=check_model_registry/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=check_model_registry/attempt=3.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T22\357\200\27251\357\200\27225.084600+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-05-31T23\357\200\27206\357\200\27244.905617+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=predict_best_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=predict_best_model/attempt=3.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27214\357\200\27257.071102+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=validate_models/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27232\357\200\27233.819204+00\357\200\27200/task_id=validate_models/attempt=3.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T10\357\200\27246\357\200\27248.932772+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=predict_best_model/attempt=2.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27218\357\200\27244.472799+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=build_features/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=check_model_registry/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=debug_env/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=import_raw_data/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=make_dataset/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=predict_best_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=train_hybrid_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=train_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=train_user_model/attempt=1.log"
+	deleted:    "***/logs/dag_id=movie_recommendation_pipeline/run_id=manual__2025-06-01T11\357\200\27234\357\200\27246.516239+00\357\200\27200/task_id=validate_models/attempt=1.log"
+	deleted:    ***/logs/dag_processor_manager/dag_processor_manager.log
+	deleted:    ***/logs/scheduler/2025-05-30/mlops_movie_dag.py.log
+	deleted:    ***/logs/scheduler/2025-05-30/predict_model_dag.py.log
+	deleted:    ***/logs/scheduler/2025-05-31/mlops_movie_dag.py.log
+	deleted:    ***/logs/scheduler/2025-06-01/mlops_movie_dag.py.log
+	deleted:    ***/logs/scheduler/latest
+	deleted:    ***/requirements.***.txt
+	deleted:    ***/webserver_config.py
+	deleted:    api_service/Dockerfile
+	deleted:    api_service/auth.py
+	deleted:    api_service/main.py
+	deleted:    api_service/requirements.txt
+	modified:   data/raw/README.txt
+	deleted:    docker-compose.yml
+	deleted:    models/hybrid_model.pkl.dvc
+	deleted:    models/user_model.pkl.dvc
+	deleted:    notebooks/.gitkeep
+	deleted:    notebooks/movie_recomm.ipynb
+	deleted:    notebooks/movie_recomm_reduced.ipynb
+	deleted:    references/.gitkeep
+	deleted:    reports/.gitkeep
+	deleted:    reports/figures/.gitkeep
+	deleted:    requirements.txt
+	deleted:    setup.py
+	modified:   src/data/make_dataset.py
+	modified:   src/features/build_features.py
+	deleted:    src/models/checkreg.py
+	modified:   src/models/predict_best_model.py
+	modified:   src/models/predict_model.py
+	modified:   src/models/train_hybrid_model.py
+	modified:   src/models/train_model.py
+	modified:   src/models/train_user_model.py
+	modified:   src/models/validate_model.py
+	deleted:    streamlit_app/.dockerignore
+	deleted:    streamlit_app/Dockerfile.streamlit
+	deleted:    streamlit_app/app.py
+	deleted:    streamlit_app/auth.py
+	deleted:    streamlit_app/requirements.streamlit.txt
+	deleted:    test/***/dags/generate_columns_dag.py
+	deleted:    test/***/dags/mlops_movie_dag.py
+	deleted:    test/***/dags/movie_dag.py
+	deleted:    test/***/dags/predict_model_dag.py
+	deleted:    test/src/__init__.py
+	deleted:    test/src/config
+	deleted:    test/src/data/.gitkeep
+	deleted:    test/src/data/__init__.py
+	deleted:    test/src/data/check_structure.py
+	deleted:    test/src/data/import_raw_data.py
+	deleted:    test/src/data/make_dataset.py
+	deleted:    test/src/features/.gitkeep
+	deleted:    test/src/features/__init__.py
+	deleted:    test/src/features/build_features.py
+	deleted:    test/src/models/.gitkeep
+	deleted:    test/src/models/__init__.py
+	deleted:    test/src/models/predict_model.py
+	deleted:    test/src/models/train_model.py
+	deleted:    test/src/regmlflow.py
+	deleted:    test/src/visualization/.gitkeep
+	deleted:    test/src/visualization/__init__.py
+	deleted:    test/src/visualization/predict_titles.py
+	deleted:    test/src/visualization/validate_predictions.py
+	deleted:    test/src/wrappers.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	***.cfg
+	dags/
+	data/processed/
+	data/raw/genome-scores.csv
+	data/raw/genome-tags.csv
+	data/raw/links.csv
+	data/raw/movies.csv
+	data/raw/ratings.csv
+	data/raw/tags.csv
+	logs/
+	models/.gitignore
+	src/__pycache__/
+	src/models/__pycache__/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Traceback (most recent call last):
+  File "/opt/***/src/models/train_hybrid_model.py", line 82, in train_hybrid_model
+    subprocess.run(["git", "commit", "-m", f"Add hybrid model {model_version_str}"], check=True)
+  File "/usr/local/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'commit', '-m', 'Add hybrid model v1']' returned non-zero exit status 1.
+🚀 Starte Hybrid-Modelltraining
+📥 Rohdaten erfolgreich geladen
+📐 Hybrid-Matrix erstellt mit Shape: (10381, 1428)
+🤖 KNN-Modell trainiert
+✅ Modell gespeichert unter /opt/***/models/hybrid_model_v1.pkl
+❌ Fehler im Hybrid-Training: Command '['git', 'commit', '-m', 'Add hybrid model v1']' returned non-zero exit status 1.
+
+[2025-06-01T16:01:27.076+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T16:01:27.085+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_hybrid_model, execution_date=20250601T160040, start_date=20250601T160106, end_date=20250601T160127
+[2025-06-01T16:01:27.128+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T16:01:27.147+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -1,0 +1,72 @@
+[2025-06-02T01:41:19.014+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_add_and_push_hybrid manual__2025-06-02T01:35:37.362369+00:00 [queued]>
+[2025-06-02T01:41:19.021+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_add_and_push_hybrid manual__2025-06-02T01:35:37.362369+00:00 [queued]>
+[2025-06-02T01:41:19.022+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-02T01:41:19.032+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): dvc_add_and_push_hybrid> on 2025-06-02 01:35:37.362369+00:00
+[2025-06-02T01:41:19.040+0000] {standard_task_runner.py:60} INFO - Started process 1020 to run task
+[2025-06-02T01:41:19.041+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'dvc_add_and_push_hybrid', 'manual__2025-06-02T01:35:37.362369+00:00', '--job-id', '1382', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpvinub52s']
+[2025-06-02T01:41:19.043+0000] {standard_task_runner.py:88} INFO - Job 1382: Subtask dvc_add_and_push_hybrid
+[2025-06-02T01:41:19.074+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.dvc_add_and_push_hybrid manual__2025-06-02T01:35:37.362369+00:00 [running]> on host b181c6c0b130
+[2025-06-02T01:41:19.128+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='dvc_add_and_push_hybrid' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T01:35:37.362369+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T01:35:37.362369+00:00'
+[2025-06-02T01:41:19.129+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: dvc add /opt/***/models/hybrid_model.pkl
+[2025-06-02T01:41:29.569+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+To track the changes with git, run:
+
+	git add models/hybrid_model.pkl.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+[2025-06-02T01:41:29.570+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: dvc add /opt/***/data/processed/hybrid_matrix.csv
+[2025-06-02T01:41:41.796+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+To track the changes with git, run:
+
+	git add data/processed/hybrid_matrix.csv.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+[2025-06-02T01:41:41.797+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: dvc add /opt/***/data/processed/hybrid_matrix_features.txt
+[2025-06-02T01:41:49.793+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+To track the changes with git, run:
+
+	git add data/processed/hybrid_matrix_features.txt.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+[2025-06-02T01:41:49.794+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: git add /opt/***/models/hybrid_model.pkl.dvc /opt/***/data/processed/hybrid_matrix.csv.dvc /opt/***/data/processed/hybrid_matrix_features.txt.dvc
+[2025-06-02T01:41:49.801+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+[2025-06-02T01:41:49.801+0000] {mlops_movie_dag.py:20} WARNING - 🟨 [stderr]:
+fatal: detected dubious ownership in repository at '/opt/***'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /opt/***
+
+[2025-06-02T01:41:49.801+0000] {mlops_movie_dag.py:22} ERROR - ❌ Subprozess-Fehler (exit code 128): git add /opt/***/models/hybrid_model.pkl.dvc /opt/***/data/processed/hybrid_matrix.csv.dvc /opt/***/data/processed/hybrid_matrix_features.txt.dvc
+[2025-06-02T01:41:49.802+0000] {mlops_movie_dag.py:25} ERROR - ❌ Subprozess-Ausnahme: Command '['git', 'add', '/opt/***/models/hybrid_model.pkl.dvc', '/opt/***/data/processed/hybrid_matrix.csv.dvc', '/opt/***/data/processed/hybrid_matrix_features.txt.dvc']' returned non-zero exit status 128.
+[2025-06-02T01:41:49.803+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 75, in dvc_add_and_push_hybrid
+    dvc_add_and_push(artifacts)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 65, in dvc_add_and_push
+    run_and_log(["git", "add"] + [a + ".dvc" for a in artifacts])
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 23, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['git', 'add', '/opt/airflow/models/hybrid_model.pkl.dvc', '/opt/airflow/data/processed/hybrid_matrix.csv.dvc', '/opt/airflow/data/processed/hybrid_matrix_features.txt.dvc']' returned non-zero exit status 128.
+[2025-06-02T01:41:49.814+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=dvc_add_and_push_hybrid, execution_date=20250602T013537, start_date=20250602T014119, end_date=20250602T014149
+[2025-06-02T01:41:49.824+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1382 for task dvc_add_and_push_hybrid (Command '['git', 'add', '/opt/airflow/models/hybrid_model.pkl.dvc', '/opt/airflow/data/processed/hybrid_matrix.csv.dvc', '/opt/airflow/data/processed/hybrid_matrix_features.txt.dvc']' returned non-zero exit status 128.; 1020)
+[2025-06-02T01:41:49.859+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-02T01:41:49.877+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

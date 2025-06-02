@@ -1,0 +1,51 @@
+[2025-06-01T20:43:33.003+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T20:26:05.207554+00:00 [queued]>
+[2025-06-01T20:43:33.012+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T20:26:05.207554+00:00 [queued]>
+[2025-06-01T20:43:33.012+0000] {taskinstance.py:2170} INFO - Starting attempt 3 of 3
+[2025-06-01T20:43:33.023+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-01 20:26:05.207554+00:00
+[2025-06-01T20:43:33.028+0000] {standard_task_runner.py:60} INFO - Started process 2197 to run task
+[2025-06-01T20:43:33.031+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'predict_best_model', 'manual__2025-06-01T20:26:05.207554+00:00', '--job-id', '1275', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpc5bbp81i']
+[2025-06-01T20:43:33.033+0000] {standard_task_runner.py:88} INFO - Job 1275: Subtask predict_best_model
+[2025-06-01T20:43:33.076+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T20:26:05.207554+00:00 [running]> on host 232dd595ceb7
+[2025-06-01T20:43:33.139+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T20:26:05.207554+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T20:26:05.207554+00:00'
+[2025-06-01T20:43:33.140+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-01T20:43:42.852+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+[2025-06-01T20:43:42.852+0000] {mlops_movie_dag.py:20} WARNING - 🟨 [stderr]:
+2025-06-01 20:43:35,302 - INFO - 🚀 Starte Vorhersage mit MLflow Registry & DVC-Modell
+2025-06-01 20:43:35,494 - INFO - 🔎 Bestes Modell laut Registry: Typ=	 hybrid, Version=96
+2025-06-01 20:43:35,495 - INFO - 🟦 Starte DVC Pull für: /opt/***/models/	 hybrid_model.pkl
+2025-06-01 20:43:42,597 - INFO - 🟩 [stdout]:
+
+2025-06-01 20:43:42,597 - WARNING - 🟨 [stderr]:
+WARNING: failed to collect 'workspace', skipping
+ERROR: failed to pull data from the cloud - '/opt/***/models/	 hybrid_model.pkl' does not exist as an output or a stage name in 'dvc.yaml': 'dvc.yaml' does not exist
+
+2025-06-01 20:43:42,597 - ERROR - ❌ DVC Pull fehlgeschlagen (exit code 1) für /opt/***/models/	 hybrid_model.pkl
+2025-06-01 20:43:42,597 - ERROR - ❌ Modell konnte nicht per DVC gepullt werden: /opt/***/models/	 hybrid_model.pkl
+2025-06-01 20:43:42,597 - ERROR - ❌ Fehler bei der Vorhersage oder dem Logging: Modell konnte nicht per DVC gepullt werden: /opt/***/models/	 hybrid_model.pkl
+Traceback (most recent call last):
+  File "/opt/***/src/models/predict_best_model.py", line 131, in <module>
+    predict_best_model()
+  File "/opt/***/src/models/predict_best_model.py", line 78, in predict_best_model
+    raise FileNotFoundError(f"Modell konnte nicht per DVC gepullt werden: {model_path}")
+FileNotFoundError: Modell konnte nicht per DVC gepullt werden: /opt/***/models/	 hybrid_model.pkl
+
+[2025-06-01T20:43:42.853+0000] {mlops_movie_dag.py:22} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/predict_best_model.py
+[2025-06-01T20:43:42.853+0000] {mlops_movie_dag.py:25} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-01T20:43:42.854+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 47, in run_predict_best_model
+    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 23, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-01T20:43:42.867+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=movie_recommendation_pipeline, task_id=predict_best_model, execution_date=20250601T202605, start_date=20250601T204333, end_date=20250601T204342
+[2025-06-01T20:43:42.879+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1275 for task predict_best_model (Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.; 2197)
+[2025-06-01T20:43:42.909+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-01T20:43:42.922+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

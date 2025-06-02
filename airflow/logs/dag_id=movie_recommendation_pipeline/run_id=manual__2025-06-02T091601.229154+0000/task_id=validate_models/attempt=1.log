@@ -1,0 +1,30 @@
+[2025-06-02T09:25:24.268+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T09:16:01.229154+00:00 [queued]>
+[2025-06-02T09:25:24.279+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T09:16:01.229154+00:00 [queued]>
+[2025-06-02T09:25:24.280+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T09:25:24.293+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-06-02 09:16:01.229154+00:00
+[2025-06-02T09:25:24.302+0000] {standard_task_runner.py:60} INFO - Started process 1185 to run task
+[2025-06-02T09:25:24.304+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-06-02T09:16:01.229154+00:00', '--job-id', '1643', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp8j36d7oj']
+[2025-06-02T09:25:24.306+0000] {standard_task_runner.py:88} INFO - Job 1643: Subtask validate_models
+[2025-06-02T09:25:24.347+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T09:16:01.229154+00:00 [running]> on host da28efa6d6d8
+[2025-06-02T09:25:24.405+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T09:16:01.229154+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T09:16:01.229154+00:00'
+[2025-06-02T09:25:24.406+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/validate_model.py --test_user_count=100 --test_user_seed=42
+[2025-06-02T09:26:35.925+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+🏃 View run validate_predictions at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3/runs/6f2f91505c394edf8f2e3c51a98e7520
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3
+
+[2025-06-02T09:26:35.926+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+2025-06-02 09:25:26,390 - INFO - 🚀 Starte Validierung der Modelle
+2025-06-02 09:25:39,654 - INFO - 📥 Daten & Modelle geladen – Beginne Evaluation
+2025-06-02 09:25:39,656 - INFO - 🟢 Verwende die ersten 100 User (Original-Reihenfolge, alt).
+2025-06-02 09:26:03,625 - WARNING - ⚠️ Fehler bei User 51: 51
+2025-06-02 09:26:22,012 - WARNING - ⚠️ Fehler bei User 91: 91
+2025-06-02 09:26:26,345 - INFO - 📊 precision_10_hybrid: 0.45
+2025-06-02 09:26:26,345 - INFO - 📊 precision_10_user:   0.05
+2025-06-02 09:26:27,509 - INFO - 📝 Tags für Modellversion 106 gesetzt: validation_user_count=100, validation_user_seed=42
+2025-06-02 09:26:28,249 - INFO - 🎉 NEUES BESTES MODELL: Version 106 mit precision_10_hybrid 0.4489795918367347 – Alias @best_model gesetzt.
+2025-06-02 09:26:35,573 - INFO - 🎉 Validation & Registry update abgeschlossen.
+
+[2025-06-02T09:26:35.927+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-02T09:26:35.938+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250602T091601, start_date=20250602T092524, end_date=20250602T092635
+[2025-06-02T09:26:35.977+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-02T09:26:35.995+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

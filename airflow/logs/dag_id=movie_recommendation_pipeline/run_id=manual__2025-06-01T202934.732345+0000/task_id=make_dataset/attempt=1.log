@@ -1,0 +1,20 @@
+[2025-06-01T20:29:37.280+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.make_dataset manual__2025-06-01T20:29:34.732345+00:00 [queued]>
+[2025-06-01T20:29:37.287+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.make_dataset manual__2025-06-01T20:29:34.732345+00:00 [queued]>
+[2025-06-01T20:29:37.288+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T20:29:37.297+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): make_dataset> on 2025-06-01 20:29:34.732345+00:00
+[2025-06-01T20:29:37.306+0000] {standard_task_runner.py:60} INFO - Started process 402 to run task
+[2025-06-01T20:29:37.307+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'make_dataset', 'manual__2025-06-01T20:29:34.732345+00:00', '--job-id', '1254', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpk_3m4t9q']
+[2025-06-01T20:29:37.308+0000] {standard_task_runner.py:88} INFO - Job 1254: Subtask make_dataset
+[2025-06-01T20:29:37.341+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.make_dataset manual__2025-06-01T20:29:34.732345+00:00 [running]> on host 232dd595ceb7
+[2025-06-01T20:29:37.398+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='make_dataset' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T20:29:34.732345+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T20:29:34.732345+00:00'
+[2025-06-01T20:29:37.399+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/data/make_dataset.py
+[2025-06-01T20:29:38.030+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+[2025-06-01T20:29:38.031+0000] {mlops_movie_dag.py:20} WARNING - 🟨 [stderr]:
+2025-06-01 20:29:37,986 - __main__ - INFO - 📦 Starte Verarbeitung der Rohdaten.
+2025-06-01 20:29:37,987 - __main__ - INFO - ✅ movies_matrix.csv bereits vorhanden – Verarbeitung wird übersprungen.
+
+[2025-06-01T20:29:38.032+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T20:29:38.039+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=make_dataset, execution_date=20250601T202934, start_date=20250601T202937, end_date=20250601T202938
+[2025-06-01T20:29:38.082+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T20:29:38.104+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
