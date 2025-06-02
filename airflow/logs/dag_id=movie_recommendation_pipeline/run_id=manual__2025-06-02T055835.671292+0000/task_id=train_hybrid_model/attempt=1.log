@@ -1,0 +1,35 @@
+[2025-06-02T06:00:36.964+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-02T05:58:35.671292+00:00 [queued]>
+[2025-06-02T06:00:36.972+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-02T05:58:35.671292+00:00 [queued]>
+[2025-06-02T06:00:36.973+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T06:00:36.982+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_hybrid_model> on 2025-06-02 05:58:35.671292+00:00
+[2025-06-02T06:00:36.988+0000] {standard_task_runner.py:60} INFO - Started process 348 to run task
+[2025-06-02T06:00:36.989+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_hybrid_model', 'manual__2025-06-02T05:58:35.671292+00:00', '--job-id', '1525', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpgub5eeuy']
+[2025-06-02T06:00:36.991+0000] {standard_task_runner.py:88} INFO - Job 1525: Subtask train_hybrid_model
+[2025-06-02T06:00:37.022+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-02T05:58:35.671292+00:00 [running]> on host b538f1038008
+[2025-06-02T06:00:37.082+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T05:58:35.671292+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T05:58:35.671292+00:00'
+[2025-06-02T06:00:37.083+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_model.py
+[2025-06-02T06:03:06.733+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+🚀 Starte Hybrid-Modelltraining
+📥 Rohdaten erfolgreich geladen
+📐 Hybrid-Matrix erstellt mit Shape: (10381, 1429), Feature-Namen: 1429
+🤖 KNN-Modell trainiert
+✅ Feature-Schema gespeichert unter /opt/***/data/processed/hybrid_matrix_features.txt
+🏃 View run train_hybrid_model at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/4/runs/fc2344d1ad544cbca2dce6417dc2c1e8
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/4
+✅ Modell & Matrix erfolgreich gespeichert und in MLflow geloggt
+
+[2025-06-02T06:03:06.734+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+2025/06/02 06:01:08 INFO mlflow.pyfunc: Validating input example against model signature
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.03s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.03s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it]
+Registered model 'movie_model' already exists. Creating a new version of this model...
+2025/06/02 06:02:09 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: movie_model, version 100
+Created version '100' of model 'movie_model'.
+
+[2025-06-02T06:03:06.734+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-02T06:03:06.744+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_hybrid_model, execution_date=20250602T055835, start_date=20250602T060036, end_date=20250602T060306
+[2025-06-02T06:03:06.786+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-02T06:03:06.808+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -1,0 +1,21 @@
+[2025-06-01T13:11:05.048+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T13:04:46.954150+00:00 [queued]>
+[2025-06-01T13:11:05.055+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T13:04:46.954150+00:00 [queued]>
+[2025-06-01T13:11:05.056+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T13:11:05.066+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-01 13:04:46.954150+00:00
+[2025-06-01T13:11:05.073+0000] {standard_task_runner.py:60} INFO - Started process 934 to run task
+[2025-06-01T13:11:05.075+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'predict_best_model', 'manual__2025-06-01T13:04:46.954150+00:00', '--job-id', '1027', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp2p37_n7_']
+[2025-06-01T13:11:05.077+0000] {standard_task_runner.py:88} INFO - Job 1027: Subtask predict_best_model
+[2025-06-01T13:11:05.110+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.predict_best_model manual__2025-06-01T13:04:46.954150+00:00 [running]> on host 4a9fead72780
+[2025-06-01T13:11:05.159+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T13:04:46.954150+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T13:04:46.954150+00:00'
+[2025-06-01T13:11:15.837+0000] {mlops_movie_dag.py:15} INFO - 2025-06-01 13:11:06,464 - INFO - 🚀 Starte Vorhersage mit MLflow Registry-Modell
+2025-06-01 13:11:06,664 - INFO - 🔎 Alias @best_model zeigt auf Version 85 (hybrid)
+2025-06-01 13:11:09,364 - INFO - 📥 Input-Matrix geladen: /opt/***/data/processed/hybrid_matrix.csv – Shape: (10381, 1427)
+Everything is up to date.
+2025-06-01 13:11:14,680 - INFO - ✅ Modell hybrid_model.pkl erfolgreich per DVC geladen.
+2025-06-01 13:11:15,633 - INFO - 🤖 Modell erfolgreich geladen (pickle)
+2025-06-01 13:11:15,634 - ERROR - ❌ Fehler bei der Vorhersage oder dem Logging: X has 1427 features, but NearestNeighbors is expecting 1428 features as input.
+
+[2025-06-01T13:11:15.838+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T13:11:15.846+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=predict_best_model, execution_date=20250601T130446, start_date=20250601T131105, end_date=20250601T131115
+[2025-06-01T13:11:15.900+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T13:11:15.915+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

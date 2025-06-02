@@ -1,0 +1,43 @@
+[2025-06-02T07:52:44.563+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-02T07:43:05.592633+00:00 [queued]>
+[2025-06-02T07:52:44.571+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-02T07:43:05.592633+00:00 [queued]>
+[2025-06-02T07:52:44.571+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T07:52:44.581+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_user_model> on 2025-06-02 07:43:05.592633+00:00
+[2025-06-02T07:52:44.587+0000] {standard_task_runner.py:60} INFO - Started process 656 to run task
+[2025-06-02T07:52:44.589+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_user_model', 'manual__2025-06-02T07:43:05.592633+00:00', '--job-id', '1578', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpzga_f_7a']
+[2025-06-02T07:52:44.590+0000] {standard_task_runner.py:88} INFO - Job 1578: Subtask train_user_model
+[2025-06-02T07:52:44.623+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-02T07:43:05.592633+00:00 [running]> on host 799e7d5ce072
+[2025-06-02T07:52:44.682+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_user_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T07:43:05.592633+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T07:43:05.592633+00:00'
+[2025-06-02T07:52:44.683+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/train_user_model.py
+[2025-06-02T07:54:05.223+0000] {local_task_job_runner.py:121} ERROR - Received SIGTERM. Terminating subprocesses
+[2025-06-02T07:54:05.233+0000] {process_utils.py:131} INFO - Sending 15 to group 656. PIDs of all processes in the group: [661, 656]
+[2025-06-02T07:54:05.235+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 656
+[2025-06-02T07:54:05.244+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-02T07:54:05.297+0000] {mlops_movie_dag.py:31} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-02T07:54:05.299+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=661, status='terminated', started='07:52:44') (661) terminated with exit code None
+[2025-06-02T07:54:05.308+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 143, in run_train_user_model
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 13, in run_and_log
+    result = subprocess.run(
+  File "/usr/local/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/usr/local/lib/python3.10/subprocess.py", line 1154, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/usr/local/lib/python3.10/subprocess.py", line 2021, in _communicate
+    ready = selector.select(timeout)
+  File "/usr/local/lib/python3.10/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 2452, in signal_handler
+    raise AirflowException("Task received SIGTERM signal")
+airflow.exceptions.AirflowException: Task received SIGTERM signal
+[2025-06-02T07:54:05.316+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=train_user_model, execution_date=20250602T074305, start_date=20250602T075244, end_date=20250602T075405
+[2025-06-02T07:54:05.329+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1578 for task train_user_model (Task received SIGTERM signal; 656)
+[2025-06-02T07:54:05.353+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=656, status='terminated', exitcode=1, started='07:52:44') (656) terminated with exit code 1
+[2025-06-02T07:54:05.354+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 143
+[2025-06-02T07:54:05.393+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

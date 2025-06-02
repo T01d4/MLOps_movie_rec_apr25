@@ -1,0 +1,18 @@
+[2025-06-02T07:55:24.389+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-02T07:43:05.592633+00:00 [queued]>
+[2025-06-02T07:55:24.397+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-02T07:43:05.592633+00:00 [queued]>
+[2025-06-02T07:55:24.398+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-02T07:55:24.407+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_hybrid_model> on 2025-06-02 07:43:05.592633+00:00
+[2025-06-02T07:55:24.414+0000] {standard_task_runner.py:60} INFO - Started process 199 to run task
+[2025-06-02T07:55:24.416+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_hybrid_model', 'manual__2025-06-02T07:43:05.592633+00:00', '--job-id', '1581', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpikssugjq']
+[2025-06-02T07:55:24.417+0000] {standard_task_runner.py:88} INFO - Job 1581: Subtask train_hybrid_model
+[2025-06-02T07:55:24.447+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-02T07:43:05.592633+00:00 [running]> on host db2b0a85f52a
+[2025-06-02T07:55:24.507+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T07:43:05.592633+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T07:43:05.592633+00:00'
+[2025-06-02T07:55:24.508+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_model.py --n_neighbors=10 --tfidf_features=300
+[2025-06-02T07:55:59.707+0000] {local_task_job_runner.py:302} WARNING - State of this instance has been externally set to failed. Terminating instance.
+[2025-06-02T07:55:59.709+0000] {process_utils.py:131} INFO - Sending 15 to group 199. PIDs of all processes in the group: [200, 379, 199]
+[2025-06-02T07:55:59.709+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 199
+[2025-06-02T07:55:59.712+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-02T07:55:59.730+0000] {mlops_movie_dag.py:31} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-02T07:55:59.738+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=200, status='terminated', started='07:55:24') (200) terminated with exit code None
+[2025-06-02T07:55:59.739+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=379, status='terminated', started='07:55:56') (379) terminated with exit code None
+[2025-06-02T07:55:59.753+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=199, status='terminated', exitcode=0, started='07:55:24') (199) terminated with exit code 0

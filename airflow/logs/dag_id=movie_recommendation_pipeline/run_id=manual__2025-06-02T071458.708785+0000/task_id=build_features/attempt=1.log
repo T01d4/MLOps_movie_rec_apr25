@@ -1,0 +1,54 @@
+[2025-06-02T07:15:01.932+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.build_features manual__2025-06-02T07:14:58.708785+00:00 [queued]>
+[2025-06-02T07:15:01.939+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.build_features manual__2025-06-02T07:14:58.708785+00:00 [queued]>
+[2025-06-02T07:15:01.939+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T07:15:01.949+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): build_features> on 2025-06-02 07:14:58.708785+00:00
+[2025-06-02T07:15:01.955+0000] {standard_task_runner.py:60} INFO - Started process 247 to run task
+[2025-06-02T07:15:01.957+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'build_features', 'manual__2025-06-02T07:14:58.708785+00:00', '--job-id', '1556', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpg4r_o5bf']
+[2025-06-02T07:15:01.959+0000] {standard_task_runner.py:88} INFO - Job 1556: Subtask build_features
+[2025-06-02T07:15:01.995+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.build_features manual__2025-06-02T07:14:58.708785+00:00 [running]> on host 58d6e449ccb1
+[2025-06-02T07:15:02.057+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='build_features' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T07:14:58.708785+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T07:14:58.708785+00:00'
+[2025-06-02T07:15:02.058+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/features/build_features.py --tfidf_features=300
+[2025-06-02T07:15:07.573+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+[2025-06-02T07:15:07.574+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+Traceback (most recent call last):
+  File "/home/***/.local/lib/python3.10/site-packages/pandas/core/indexes/base.py", line 3802, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "pandas/_libs/index.pyx", line 138, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 165, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5745, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5753, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'genres'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/***/src/features/build_features.py", line 53, in <module>
+    main(args)
+  File "/opt/***/src/features/build_features.py", line 19, in main
+    movies["combined"] = movies["genres"].str.replace("|", " ", regex=False) + " " + movies["tag"].fillna("")
+  File "/home/***/.local/lib/python3.10/site-packages/pandas/core/frame.py", line 3807, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/home/***/.local/lib/python3.10/site-packages/pandas/core/indexes/base.py", line 3804, in get_loc
+    raise KeyError(key) from err
+KeyError: 'genres'
+
+[2025-06-02T07:15:07.575+0000] {mlops_movie_dag.py:28} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/features/build_features.py --tfidf_features=300
+[2025-06-02T07:15:07.575+0000] {mlops_movie_dag.py:31} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/features/build_features.py', '--tfidf_features=300']' returned non-zero exit status 1.
+[2025-06-02T07:15:07.576+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 47, in run_build_features
+    run_and_log([
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 29, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/features/build_features.py', '--tfidf_features=300']' returned non-zero exit status 1.
+[2025-06-02T07:15:07.587+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=build_features, execution_date=20250602T071458, start_date=20250602T071501, end_date=20250602T071507
+[2025-06-02T07:15:07.601+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1556 for task build_features (Command '['python', '/opt/airflow/src/features/build_features.py', '--tfidf_features=300']' returned non-zero exit status 1.; 247)
+[2025-06-02T07:15:07.620+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-02T07:15:07.639+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

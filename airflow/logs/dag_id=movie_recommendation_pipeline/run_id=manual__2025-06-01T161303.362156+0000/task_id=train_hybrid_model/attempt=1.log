@@ -1,0 +1,39 @@
+[2025-06-01T16:13:30.253+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T16:13:03.362156+00:00 [queued]>
+[2025-06-01T16:13:30.258+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T16:13:03.362156+00:00 [queued]>
+[2025-06-01T16:13:30.259+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T16:13:30.270+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_hybrid_model> on 2025-06-01 16:13:03.362156+00:00
+[2025-06-01T16:13:30.276+0000] {standard_task_runner.py:60} INFO - Started process 304 to run task
+[2025-06-01T16:13:30.278+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_hybrid_model', 'manual__2025-06-01T16:13:03.362156+00:00', '--job-id', '1141', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpc_l0hent']
+[2025-06-01T16:13:30.280+0000] {standard_task_runner.py:88} INFO - Job 1141: Subtask train_hybrid_model
+[2025-06-01T16:13:30.311+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T16:13:03.362156+00:00 [running]> on host 9269b0e4c044
+[2025-06-01T16:13:30.361+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T16:13:03.362156+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T16:13:03.362156+00:00'
+[2025-06-01T16:13:49.496+0000] {mlops_movie_dag.py:13} INFO - 
+To track the changes with git, run:
+
+	git add models/hybrid_model.pkl.dvc models/.gitignore
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+fatal: detected dubious ownership in repository at '/opt/***'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /opt/***
+Traceback (most recent call last):
+  File "/opt/***/src/models/train_hybrid_model.py", line 87, in train_hybrid_model
+    subprocess.run(["git", "add", f"{model_path}.dvc"], check=True)
+  File "/usr/local/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'add', '/opt/***/models/hybrid_model.pkl.dvc']' returned non-zero exit status 128.
+🚀 Starte Hybrid-Modelltraining
+📥 Rohdaten geladen in 4.0s
+🔀 Embeddings erstellt & skaliert in 1.8s
+📐 Hybrid-Matrix erstellt mit Shape: (10381, 1428) in 0.0s
+🤖 KNN-Modell trainiert in 0.0s
+✅ Modell gespeichert unter /opt/***/models/hybrid_model.pkl
+❌ Fehler im Hybrid-Training: Command '['git', 'add', '/opt/***/models/hybrid_model.pkl.dvc']' returned non-zero exit status 128.
+
+[2025-06-01T16:13:49.497+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T16:13:49.506+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_hybrid_model, execution_date=20250601T161303, start_date=20250601T161330, end_date=20250601T161349
+[2025-06-01T16:13:49.525+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T16:13:49.542+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

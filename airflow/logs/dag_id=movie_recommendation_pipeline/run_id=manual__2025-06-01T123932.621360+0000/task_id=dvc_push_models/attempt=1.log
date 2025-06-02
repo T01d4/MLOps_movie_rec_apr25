@@ -1,0 +1,27 @@
+[2025-06-01T12:43:27.430+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_push_models manual__2025-06-01T12:39:32.621360+00:00 [queued]>
+[2025-06-01T12:43:27.436+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_push_models manual__2025-06-01T12:39:32.621360+00:00 [queued]>
+[2025-06-01T12:43:27.436+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T12:43:27.448+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): dvc_push_models> on 2025-06-01 12:39:32.621360+00:00
+[2025-06-01T12:43:27.454+0000] {standard_task_runner.py:60} INFO - Started process 676 to run task
+[2025-06-01T12:43:27.456+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'dvc_push_models', 'manual__2025-06-01T12:39:32.621360+00:00', '--job-id', '1001', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpeyrydlp4']
+[2025-06-01T12:43:27.458+0000] {standard_task_runner.py:88} INFO - Job 1001: Subtask dvc_push_models
+[2025-06-01T12:43:27.492+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.dvc_push_models manual__2025-06-01T12:39:32.621360+00:00 [running]> on host cb5a5580c980
+[2025-06-01T12:43:27.546+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='dvc_push_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T12:39:32.621360+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T12:39:32.621360+00:00'
+[2025-06-01T12:43:27.547+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2025-06-01T12:43:27.548+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', '\n        cd /opt/*** &&\n        dvc add models/hybrid_model.pkl &&\n        dvc add models/user_model.pkl &&\n        git add models/hybrid_model.pkl.dvc models/user_model.pkl.dvc .gitignore &&\n        git commit -m "Update hybrid_model and user_model with DVC" || echo "No changes to commit" &&\n        dvc push\n        ']
+[2025-06-01T12:43:27.558+0000] {subprocess.py:86} INFO - Output:
+[2025-06-01T12:43:28.050+0000] {subprocess.py:93} INFO - ERROR: /opt/*** is not a git repository
+[2025-06-01T12:43:28.161+0000] {subprocess.py:93} INFO - No changes to commit
+[2025-06-01T12:43:28.431+0000] {subprocess.py:93} INFO - ERROR: /opt/*** is not a git repository
+[2025-06-01T12:43:28.506+0000] {subprocess.py:97} INFO - Command exited with return code 255
+[2025-06-01T12:43:28.516+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/bash.py", line 212, in execute
+    raise AirflowException(
+airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 255.
+[2025-06-01T12:43:28.519+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=dvc_push_models, execution_date=20250601T123932, start_date=20250601T124327, end_date=20250601T124328
+[2025-06-01T12:43:28.532+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1001 for task dvc_push_models (Bash command failed. The command returned a non-zero exit code 255.; 676)
+[2025-06-01T12:43:28.552+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-01T12:43:28.570+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

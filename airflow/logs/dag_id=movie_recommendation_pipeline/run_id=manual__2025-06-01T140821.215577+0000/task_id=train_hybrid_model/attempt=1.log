@@ -1,0 +1,25 @@
+[2025-06-01T14:09:21.030+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T14:08:21.215577+00:00 [queued]>
+[2025-06-01T14:09:21.043+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T14:08:21.215577+00:00 [queued]>
+[2025-06-01T14:09:21.044+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T14:09:21.060+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_hybrid_model> on 2025-06-01 14:08:21.215577+00:00
+[2025-06-01T14:09:21.066+0000] {standard_task_runner.py:60} INFO - Started process 682 to run task
+[2025-06-01T14:09:21.068+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_hybrid_model', 'manual__2025-06-01T14:08:21.215577+00:00', '--job-id', '1064', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp7pz50j4a']
+[2025-06-01T14:09:21.070+0000] {standard_task_runner.py:88} INFO - Job 1064: Subtask train_hybrid_model
+[2025-06-01T14:09:21.113+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-01T14:08:21.215577+00:00 [running]> on host 7f785d67be4d
+[2025-06-01T14:09:21.188+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T14:08:21.215577+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T14:08:21.215577+00:00'
+[2025-06-01T14:10:37.939+0000] {mlops_movie_dag.py:15} INFO - 🚀 Starte Hybrid-Modelltraining
+📥 Rohdaten erfolgreich geladen
+📐 Hybrid-Matrix erstellt mit Shape: (10381, 1428)
+🤖 KNN-Modell trainiert
+💾 Featureliste gespeichert unter /opt/***/data/processed/hybrid_features.csv
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.27s/it]
+✅ Modell & Matrix & Featureliste erfolgreich gespeichert und in MLflow geloggt
+
+[2025-06-01T14:10:37.942+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-01T14:10:37.955+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_hybrid_model, execution_date=20250601T140821, start_date=20250601T140921, end_date=20250601T141037
+[2025-06-01T14:10:38.008+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T14:10:38.033+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

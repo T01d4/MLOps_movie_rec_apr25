@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Data: Nur CSV ausschließen, Struktur und Platzhalter bleiben
+data/*.csv
+data/**/*.csv
+!data/README.txt
+!data/.gitkeep
+!data/processed/
+!data/raw/
+
+# Models: Nur PKL ausschließen, Struktur und Platzhalter bleiben
+models/*.pkl
+!models/.gitkeep
+
+# (Optional: Wenn du andere Formate erzeugst, ergänzen)
+# models/*.joblib
+# models/*.h5
+# models/*.pt
+
+# VS Code & PyCharm
+.vscode/
+.idea/
+
+# Env/Secrets/Build
+.env
+env/
+*.env
+build/
+dist/
+*.egg-info/
+
+# Notebooks, Jupyter-Checkpoints (optional)
+#.ipynb_checkpoints/
+
+# System
+.DS_Store
+
+# DVC/MLflow/Cache-Ordner (falls nötig)
+mlruns/
+model_cache/

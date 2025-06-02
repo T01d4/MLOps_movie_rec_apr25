@@ -1,0 +1,23 @@
+[2025-06-02T00:11:51.437+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T00:07:10.719562+00:00 [queued]>
+[2025-06-02T00:11:51.446+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T00:07:10.719562+00:00 [queued]>
+[2025-06-02T00:11:51.446+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T00:11:51.457+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-06-02 00:07:10.719562+00:00
+[2025-06-02T00:11:51.462+0000] {standard_task_runner.py:60} INFO - Started process 858 to run task
+[2025-06-02T00:11:51.464+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-06-02T00:07:10.719562+00:00', '--job-id', '1336', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp8n73iumc']
+[2025-06-02T00:11:51.466+0000] {standard_task_runner.py:88} INFO - Job 1336: Subtask validate_models
+[2025-06-02T00:11:51.499+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T00:07:10.719562+00:00 [running]> on host 2db812b1b691
+[2025-06-02T00:11:51.560+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T00:07:10.719562+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T00:07:10.719562+00:00'
+[2025-06-02T00:11:51.561+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/validate_model.py
+[2025-06-02T00:12:02.419+0000] {mlops_movie_dag.py:18} INFO - 🟩 [stdout]:
+
+[2025-06-02T00:12:02.420+0000] {mlops_movie_dag.py:20} WARNING - 🟨 [stderr]:
+2025-06-02 00:11:53,514 - INFO - 🚀 Starte Validierung der Modelle
+WARNING: failed to collect 'workspace', skipping
+ERROR: failed to pull data from the cloud - '/opt/***/models/hybrid_model.pkl' does not exist as an output or a stage name in 'dvc.yaml': 'dvc.yaml' does not exist
+2025-06-02 00:12:02,127 - ERROR - ❌ Fehler bei DVC Pull für /opt/***/models/hybrid_model.pkl: Command '['dvc', 'pull', '/opt/***/models/hybrid_model.pkl']' returned non-zero exit status 1.
+2025-06-02 00:12:02,127 - ERROR - ❌ Konnte Modelle nicht von DVC holen!
+
+[2025-06-02T00:12:02.421+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-02T00:12:02.429+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250602T000710, start_date=20250602T001151, end_date=20250602T001202
+[2025-06-02T00:12:02.449+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-02T00:12:02.463+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

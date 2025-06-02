@@ -1,0 +1,120 @@
+[2025-06-02T08:07:33.605+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T07:55:50.533186+00:00 [queued]>
+[2025-06-02T08:07:33.612+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T07:55:50.533186+00:00 [queued]>
+[2025-06-02T08:07:33.612+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T08:07:33.624+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-06-02 07:55:50.533186+00:00
+[2025-06-02T08:07:33.630+0000] {standard_task_runner.py:60} INFO - Started process 1290 to run task
+[2025-06-02T08:07:33.632+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-06-02T07:55:50.533186+00:00', '--job-id', '1593', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpyv03m4i3']
+[2025-06-02T08:07:33.634+0000] {standard_task_runner.py:88} INFO - Job 1593: Subtask validate_models
+[2025-06-02T08:07:33.672+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-06-02T07:55:50.533186+00:00 [running]> on host db2b0a85f52a
+[2025-06-02T08:07:33.724+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T07:55:50.533186+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T07:55:50.533186+00:00'
+[2025-06-02T08:07:33.725+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/validate_model.py --test_user_count=100 --test_user_seed=42
+[2025-06-02T08:07:52.085+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+🏃 View run validate_predictions at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3/runs/f551b9ed72d8439b8e0aefa8fd9e74f2
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3
+
+[2025-06-02T08:07:52.097+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+2025-06-02 08:07:35,493 - INFO - 🚀 Starte Validierung der Modelle
+2025-06-02 08:07:46,406 - INFO - 📥 Daten & Modelle geladen – Beginne Evaluation
+2025-06-02 08:07:46,413 - WARNING - ⚠️ Fehler bei User 60535: 60535
+2025-06-02 08:07:46,414 - WARNING - ⚠️ Fehler bei User 130208: 130208
+2025-06-02 08:07:46,414 - WARNING - ⚠️ Fehler bei User 92752: 92752
+2025-06-02 08:07:46,414 - WARNING - ⚠️ Fehler bei User 64617: 64617
+2025-06-02 08:07:46,415 - WARNING - ⚠️ Fehler bei User 62355: 62355
+2025-06-02 08:07:46,415 - WARNING - ⚠️ Fehler bei User 107762: 107762
+2025-06-02 08:07:46,415 - WARNING - ⚠️ Fehler bei User 21362: 21362
+2025-06-02 08:07:46,416 - WARNING - ⚠️ Fehler bei User 45114: 45114
+2025-06-02 08:07:46,416 - WARNING - ⚠️ Fehler bei User 22874: 22874
+2025-06-02 08:07:46,416 - WARNING - ⚠️ Fehler bei User 99305: 99305
+2025-06-02 08:07:46,417 - WARNING - ⚠️ Fehler bei User 25268: 25268
+2025-06-02 08:07:46,417 - WARNING - ⚠️ Fehler bei User 68919: 68919
+2025-06-02 08:07:46,417 - WARNING - ⚠️ Fehler bei User 59929: 59929
+2025-06-02 08:07:46,418 - WARNING - ⚠️ Fehler bei User 113888: 113888
+2025-06-02 08:07:46,418 - WARNING - ⚠️ Fehler bei User 51295: 51295
+2025-06-02 08:07:46,418 - WARNING - ⚠️ Fehler bei User 96517: 96517
+2025-06-02 08:07:46,419 - WARNING - ⚠️ Fehler bei User 115254: 115254
+2025-06-02 08:07:46,767 - WARNING - ⚠️ Fehler bei User 122909: 122909
+2025-06-02 08:07:46,768 - WARNING - ⚠️ Fehler bei User 133959: 133959
+2025-06-02 08:07:46,768 - WARNING - ⚠️ Fehler bei User 31456: 31456
+2025-06-02 08:07:46,768 - WARNING - ⚠️ Fehler bei User 127728: 127728
+2025-06-02 08:07:46,769 - WARNING - ⚠️ Fehler bei User 123645: 123645
+2025-06-02 08:07:46,769 - WARNING - ⚠️ Fehler bei User 17733: 17733
+2025-06-02 08:07:46,770 - WARNING - ⚠️ Fehler bei User 22252: 22252
+2025-06-02 08:07:46,770 - WARNING - ⚠️ Fehler bei User 116232: 116232
+2025-06-02 08:07:46,770 - WARNING - ⚠️ Fehler bei User 110174: 110174
+2025-06-02 08:07:46,771 - WARNING - ⚠️ Fehler bei User 26236: 26236
+2025-06-02 08:07:46,771 - WARNING - ⚠️ Fehler bei User 105204: 105204
+2025-06-02 08:07:46,771 - WARNING - ⚠️ Fehler bei User 19355: 19355
+2025-06-02 08:07:46,772 - WARNING - ⚠️ Fehler bei User 33177: 33177
+2025-06-02 08:07:46,772 - WARNING - ⚠️ Fehler bei User 76770: 76770
+2025-06-02 08:07:46,772 - WARNING - ⚠️ Fehler bei User 96973: 96973
+2025-06-02 08:07:46,773 - WARNING - ⚠️ Fehler bei User 72867: 72867
+2025-06-02 08:07:46,773 - WARNING - ⚠️ Fehler bei User 75500: 75500
+2025-06-02 08:07:46,773 - WARNING - ⚠️ Fehler bei User 39931: 39931
+2025-06-02 08:07:46,774 - WARNING - ⚠️ Fehler bei User 125381: 125381
+2025-06-02 08:07:46,774 - WARNING - ⚠️ Fehler bei User 108799: 108799
+2025-06-02 08:07:46,774 - WARNING - ⚠️ Fehler bei User 89124: 89124
+2025-06-02 08:07:46,774 - WARNING - ⚠️ Fehler bei User 106333: 106333
+2025-06-02 08:07:46,775 - WARNING - ⚠️ Fehler bei User 12755: 12755
+2025-06-02 08:07:46,775 - WARNING - ⚠️ Fehler bei User 116563: 116563
+2025-06-02 08:07:46,775 - WARNING - ⚠️ Fehler bei User 75673: 75673
+2025-06-02 08:07:46,776 - WARNING - ⚠️ Fehler bei User 53661: 53661
+2025-06-02 08:07:46,776 - WARNING - ⚠️ Fehler bei User 61379: 61379
+2025-06-02 08:07:46,776 - WARNING - ⚠️ Fehler bei User 65871: 65871
+2025-06-02 08:07:46,777 - WARNING - ⚠️ Fehler bei User 87209: 87209
+2025-06-02 08:07:46,777 - WARNING - ⚠️ Fehler bei User 9403: 9403
+2025-06-02 08:07:46,777 - WARNING - ⚠️ Fehler bei User 105348: 105348
+2025-06-02 08:07:46,778 - WARNING - ⚠️ Fehler bei User 31421: 31421
+2025-06-02 08:07:46,778 - WARNING - ⚠️ Fehler bei User 90591: 90591
+2025-06-02 08:07:46,778 - WARNING - ⚠️ Fehler bei User 124375: 124375
+2025-06-02 08:07:46,779 - WARNING - ⚠️ Fehler bei User 94571: 94571
+2025-06-02 08:07:46,779 - WARNING - ⚠️ Fehler bei User 50764: 50764
+2025-06-02 08:07:46,779 - WARNING - ⚠️ Fehler bei User 61701: 61701
+2025-06-02 08:07:46,780 - WARNING - ⚠️ Fehler bei User 64102: 64102
+2025-06-02 08:07:46,780 - WARNING - ⚠️ Fehler bei User 128281: 128281
+2025-06-02 08:07:46,780 - WARNING - ⚠️ Fehler bei User 71036: 71036
+2025-06-02 08:07:46,781 - WARNING - ⚠️ Fehler bei User 101833: 101833
+2025-06-02 08:07:46,987 - WARNING - ⚠️ Fehler bei User 55703: 55703
+2025-06-02 08:07:46,987 - WARNING - ⚠️ Fehler bei User 51325: 51325
+2025-06-02 08:07:46,988 - WARNING - ⚠️ Fehler bei User 107112: 107112
+2025-06-02 08:07:46,988 - WARNING - ⚠️ Fehler bei User 10571: 10571
+2025-06-02 08:07:46,989 - WARNING - ⚠️ Fehler bei User 88187: 88187
+2025-06-02 08:07:46,989 - WARNING - ⚠️ Fehler bei User 94520: 94520
+2025-06-02 08:07:46,989 - WARNING - ⚠️ Fehler bei User 114570: 114570
+2025-06-02 08:07:46,990 - WARNING - ⚠️ Fehler bei User 11895: 11895
+2025-06-02 08:07:46,990 - WARNING - ⚠️ Fehler bei User 38313: 38313
+2025-06-02 08:07:46,990 - WARNING - ⚠️ Fehler bei User 13464: 13464
+2025-06-02 08:07:46,991 - WARNING - ⚠️ Fehler bei User 134383: 134383
+2025-06-02 08:07:46,991 - WARNING - ⚠️ Fehler bei User 104946: 104946
+2025-06-02 08:07:47,241 - WARNING - ⚠️ Fehler bei User 118830: 118830
+2025-06-02 08:07:47,241 - WARNING - ⚠️ Fehler bei User 96978: 96978
+2025-06-02 08:07:47,242 - WARNING - ⚠️ Fehler bei User 60271: 60271
+2025-06-02 08:07:47,758 - WARNING - ⚠️ Fehler bei User 50382: 50382
+2025-06-02 08:07:47,932 - WARNING - ⚠️ Fehler bei User 13035: 13035
+2025-06-02 08:07:47,932 - WARNING - ⚠️ Fehler bei User 69256: 69256
+2025-06-02 08:07:47,933 - WARNING - ⚠️ Fehler bei User 135032: 135032
+2025-06-02 08:07:47,933 - WARNING - ⚠️ Fehler bei User 60740: 60740
+2025-06-02 08:07:47,933 - WARNING - ⚠️ Fehler bei User 43257: 43257
+2025-06-02 08:07:47,934 - WARNING - ⚠️ Fehler bei User 111448: 111448
+2025-06-02 08:07:47,934 - WARNING - ⚠️ Fehler bei User 87444: 87444
+2025-06-02 08:07:47,935 - WARNING - ⚠️ Fehler bei User 93853: 93853
+2025-06-02 08:07:47,935 - WARNING - ⚠️ Fehler bei User 65017: 65017
+2025-06-02 08:07:47,935 - WARNING - ⚠️ Fehler bei User 108184: 108184
+2025-06-02 08:07:47,936 - WARNING - ⚠️ Fehler bei User 56886: 56886
+2025-06-02 08:07:47,936 - WARNING - ⚠️ Fehler bei User 49080: 49080
+2025-06-02 08:07:47,936 - WARNING - ⚠️ Fehler bei User 103117: 103117
+2025-06-02 08:07:47,937 - WARNING - ⚠️ Fehler bei User 17990: 17990
+2025-06-02 08:07:47,937 - WARNING - ⚠️ Fehler bei User 95056: 95056
+2025-06-02 08:07:47,937 - WARNING - ⚠️ Fehler bei User 45723: 45723
+2025-06-02 08:07:47,938 - WARNING - ⚠️ Fehler bei User 12352: 12352
+2025-06-02 08:07:47,938 - WARNING - ⚠️ Fehler bei User 78168: 78168
+2025-06-02 08:07:47,939 - WARNING - ⚠️ Fehler bei User 62340: 62340
+2025-06-02 08:07:47,939 - WARNING - ⚠️ Fehler bei User 115307: 115307
+2025-06-02 08:07:47,939 - INFO - 📊 precision_10_hybrid: 0.00
+2025-06-02 08:07:47,939 - INFO - 📊 precision_10_user:   0.00
+2025-06-02 08:07:48,767 - INFO - ⚠️ Modell war nicht besser als das aktuelle @best_model (Score: 0.0 vs. 0.19387755102040816) – Kein Alias-Update.
+2025-06-02 08:07:51,736 - INFO - 🎉 Validation & Registry update abgeschlossen.
+
+[2025-06-02T08:07:52.100+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-02T08:07:52.111+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250602T075550, start_date=20250602T080733, end_date=20250602T080752
+[2025-06-02T08:07:52.159+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-02T08:07:52.176+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

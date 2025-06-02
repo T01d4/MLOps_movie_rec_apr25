@@ -14,8 +14,8 @@ services:
       - ./data:/app/data
       - ./models:/app/models      # Modelle (optional, z. B. für local serving)
       - ./src:/app/src            # Trainingscode
-    env_file:
-      - ./streamlit_app/.env
+    env_file: .env
+
     networks:
       - airflow_net
 
@@ -27,8 +27,7 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data
-    env_file:
-      - ./api_service/.env
+    env_file: .env
     networks:
       - airflow_net
 
@@ -58,8 +57,7 @@ services:
     ports:
       - "8080:8080"
     working_dir: /opt/airflow
-    env_file:
-      - ./airflow/.env
+    env_file: .env
     environment:
       - PYTHONPATH=/opt/airflow
       - AIRFLOW_UID=50000
@@ -70,6 +68,9 @@ services:
       - ./src:/opt/airflow/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
+      - ./.dvc:/opt/airflow/.dvc           # <--- das hinzufügen!
+      - ./.git:/opt/airflow/.git             # <-- NEU!
+
     command: >
       bash -c "
         airflow db upgrade &&
@@ -88,8 +89,7 @@ services:
     depends_on:
       - postgres
     working_dir: /opt/airflow
-    env_file:
-      - ./airflow/.env
+    env_file: .env
     environment:
       - PYTHONPATH=/opt/airflow
       - AIRFLOW_UID=50000
@@ -100,6 +100,9 @@ services:
       - ./src:/opt/airflow/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
+      - ./.dvc:/opt/airflow/.dvc           # <--- das hinzufügen!
+      - ./.git:/opt/airflow/.git             # <-- NEU
+
     command: airflow scheduler
     networks:
       - airflow_net

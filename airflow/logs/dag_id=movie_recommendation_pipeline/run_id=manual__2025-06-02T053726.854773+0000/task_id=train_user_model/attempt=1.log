@@ -1,0 +1,49 @@
+[2025-06-02T05:37:56.507+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-02T05:37:26.854773+00:00 [queued]>
+[2025-06-02T05:37:56.516+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-02T05:37:26.854773+00:00 [queued]>
+[2025-06-02T05:37:56.517+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T05:37:56.528+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_user_model> on 2025-06-02 05:37:26.854773+00:00
+[2025-06-02T05:37:56.536+0000] {standard_task_runner.py:60} INFO - Started process 448 to run task
+[2025-06-02T05:37:56.539+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_user_model', 'manual__2025-06-02T05:37:26.854773+00:00', '--job-id', '1497', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpuz1npo8_']
+[2025-06-02T05:37:56.540+0000] {standard_task_runner.py:88} INFO - Job 1497: Subtask train_user_model
+[2025-06-02T05:37:56.576+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-02T05:37:26.854773+00:00 [running]> on host 0e5e5d16408e
+[2025-06-02T05:37:56.642+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_user_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T05:37:26.854773+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T05:37:26.854773+00:00'
+[2025-06-02T05:37:56.643+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/train_user_model.py
+[2025-06-02T05:41:21.054+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+🚀 Starte Training des user_model
+📥 Lade Bewertungen und Movie-Embeddings
+🔄 Erstelle User-Vektoren
+✅ 138493 User-Vektoren gespeichert unter /opt/***/data/processed/user_matrix.csv
+✅ Feature-Schema gespeichert unter /opt/***/data/processed/user_matrix_features.txt
+📊 Trainiere NearestNeighbors-Modell
+✅ Modell gespeichert unter /opt/***/models/user_model.pkl
+📡 Starte MLflow-Tracking
+🏃 View run train_user_model at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/2/runs/5e4df998aef445cf83ea26f7ca3be766
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/2
+
+[2025-06-02T05:41:21.056+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+Traceback (most recent call last):
+  File "/opt/***/src/models/train_user_model.py", line 109, in <module>
+    train_user_model()
+  File "/opt/***/src/models/train_user_model.py", line 100, in train_user_model
+    python_model=HybridKNNWrapper(),
+NameError: name 'HybridKNNWrapper' is not defined. Did you mean: 'UserKNNWrapper'?
+
+[2025-06-02T05:41:21.059+0000] {mlops_movie_dag.py:29} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/train_user_model.py
+[2025-06-02T05:41:21.060+0000] {mlops_movie_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/train_user_model.py']' returned non-zero exit status 1.
+[2025-06-02T05:41:21.061+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 113, in run_train_user_model
+    run_and_log(["python", "/opt/airflow/src/models/train_user_model.py"])
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 30, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/train_user_model.py']' returned non-zero exit status 1.
+[2025-06-02T05:41:21.076+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=train_user_model, execution_date=20250602T053726, start_date=20250602T053756, end_date=20250602T054121
+[2025-06-02T05:41:21.093+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1497 for task train_user_model (Command '['python', '/opt/airflow/src/models/train_user_model.py']' returned non-zero exit status 1.; 448)
+[2025-06-02T05:41:21.116+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-02T05:41:21.140+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

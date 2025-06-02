@@ -1,0 +1,35 @@
+[2025-06-01T13:35:24.219+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_push_models manual__2025-06-01T13:31:31.047616+00:00 [queued]>
+[2025-06-01T13:35:24.225+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_push_models manual__2025-06-01T13:31:31.047616+00:00 [queued]>
+[2025-06-01T13:35:24.226+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-01T13:35:24.237+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): dvc_push_models> on 2025-06-01 13:31:31.047616+00:00
+[2025-06-01T13:35:24.243+0000] {standard_task_runner.py:60} INFO - Started process 678 to run task
+[2025-06-01T13:35:24.245+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'dvc_push_models', 'manual__2025-06-01T13:31:31.047616+00:00', '--job-id', '1035', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpcm01ty3p']
+[2025-06-01T13:35:24.246+0000] {standard_task_runner.py:88} INFO - Job 1035: Subtask dvc_push_models
+[2025-06-01T13:35:24.281+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.dvc_push_models manual__2025-06-01T13:31:31.047616+00:00 [running]> on host b9fe32b2c3f2
+[2025-06-01T13:35:24.336+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='dvc_push_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T13:31:31.047616+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T13:31:31.047616+00:00'
+[2025-06-01T13:35:24.337+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2025-06-01T13:35:24.338+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', '\n        cd /opt/*** &&\n        git config --global --add safe.directory /opt/*** &&\n        git config --global user.email \'***@localhost\' &&\n        git config --global user.name \'Airflow CI\' &&\n        dvc add models/hybrid_model.pkl &&\n        dvc add models/user_model.pkl &&\n        git add models/hybrid_model.pkl.dvc models/user_model.pkl.dvc .gitignore &&\n        git commit -m "Update hybrid_model and user_model with DVC" || echo "No changes to commit" &&\n        dvc push\n        ']
+[2025-06-01T13:35:24.347+0000] {subprocess.py:86} INFO - Output:
+[2025-06-01T13:35:33.100+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:33.101+0000] {subprocess.py:93} INFO - To track the changes with git, run:
+[2025-06-01T13:35:33.101+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:33.102+0000] {subprocess.py:93} INFO - 	git add models/hybrid_model.pkl.dvc
+[2025-06-01T13:35:33.102+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:33.102+0000] {subprocess.py:93} INFO - To enable auto staging, run:
+[2025-06-01T13:35:33.103+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:33.103+0000] {subprocess.py:93} INFO - 	dvc config core.autostage true
+[2025-06-01T13:35:38.790+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:38.791+0000] {subprocess.py:93} INFO - To track the changes with git, run:
+[2025-06-01T13:35:38.791+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:38.792+0000] {subprocess.py:93} INFO - 	git add models/user_model.pkl.dvc
+[2025-06-01T13:35:38.792+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:38.792+0000] {subprocess.py:93} INFO - To enable auto staging, run:
+[2025-06-01T13:35:38.792+0000] {subprocess.py:93} INFO - 
+[2025-06-01T13:35:38.793+0000] {subprocess.py:93} INFO - 	dvc config core.autostage true
+[2025-06-01T13:35:38.961+0000] {subprocess.py:93} INFO - fatal: pathspec '.gitignore' did not match any files
+[2025-06-01T13:35:38.963+0000] {subprocess.py:93} INFO - No changes to commit
+[2025-06-01T13:35:44.080+0000] {subprocess.py:93} INFO - Everything is up to date.
+[2025-06-01T13:35:44.187+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2025-06-01T13:35:44.206+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=dvc_push_models, execution_date=20250601T133131, start_date=20250601T133524, end_date=20250601T133544
+[2025-06-01T13:35:44.239+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-01T13:35:44.257+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
