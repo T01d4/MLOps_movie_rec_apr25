@@ -1,5 +1,5 @@
 outs:
-- md5: 55c63243f89ca417adb04a9c20e4aa21
-  size: 234528054
+- md5: a7292f617bc3bc90e42a9071c68d7bc7
+  size: 250722414
   hash: md5
   path: hybrid_model.pkl
