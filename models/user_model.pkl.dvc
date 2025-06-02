@@ -3,4 +3,3 @@ outs:
   size: 24840572
   hash: md5
   path: user_model.pkl
-  isexec: true
