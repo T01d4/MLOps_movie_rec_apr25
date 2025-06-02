@@ -20,31 +20,50 @@ DagsHub Token is required for DVC and MLflow tracking.
 Required .env (root directory) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ==============================
 
-# --- Airflow ---
+
+# Required .env (root directory) !!!!!
+
+#--- Airflow ---
 AIRFLOW__CORE__EXECUTOR=LocalExecutor
+
 AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here
+
 AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+
 AIRFLOW__CORE__LOAD_EXAMPLES=False
+
 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+
 AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
+
 PYTHONPATH=/opt/airflow/src
+
 AIRFLOW_UID=50000
+
 AIRFLOW__API__AUTH_BACKEND=airflow.api.auth.backend.basic_auth
+
 AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
 
 # --- MLflow & DagsHub ---
 MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+
 MLFLOW_TRACKING_USERNAME=your_dagshub_username
+
 MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+
 DAGSHUB_USER=your_dagshub_username
+
 DAGSHUB_TOKEN=your_dagshub_token
 
 # --- Streamlit & API ---
 MODEL_PATH=/app/models/model.pkl
+
 JWT_SECRET=supersecretkey
+
 API_URL=http://airflow-webserver:8080
 
 TMDB_API_KEY=your API Key for Movie Pictures
+
 ##https://www.themoviedb.org/settings/api
 
 
@@ -59,8 +78,11 @@ DVC Configuration (.dvc/config.local or .dvc/config)
 ==============================
 
 ['remote "dagshub"']
+
     auth = basic
+
     user = your_dagshub_username
+
     password = your_dagshub_token
 
 ==============================
