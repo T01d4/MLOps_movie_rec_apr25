@@ -14,6 +14,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import NearestNeighbors
 from requests.auth import HTTPBasicAuth
+from mlflow.tracking import MlflowClient
+import requests
+
 
 load_dotenv(".env")
 
@@ -34,21 +37,7 @@ API_URL = os.getenv("API_URL")
 AIRFLOW_USER = "admin"
 AIRFLOW_PASS = "admin"
 
-def get_tmdb_poster_url(movie_id, links_df, api_key):
-    try:
-        tmdb_row = links_df[links_df["movieId"] == movie_id]
-        if not tmdb_row.empty and not pd.isna(tmdb_row["tmdbId"].values[0]):
-            tmdb_id = int(tmdb_row["tmdbId"].values[0])
-            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}?api_key={api_key}"
-            resp = requests.get(url)
-            if resp.status_code == 200:
-                poster_path = resp.json().get("poster_path")
-                if poster_path:
-                    return f"https://image.tmdb.org/t/p/w342{poster_path}"
-        return None
-    except Exception as e:
-        return None
-    
+
 
 def fetch_dag_task_statuses():
     try:
@@ -69,6 +58,77 @@ def fetch_dag_task_statuses():
     except Exception as e:
         st.error(f"❌ Fehler beim Abrufen der DAG-Task-Status: {e}")
         return [], None
+
+def compare_with_tmdb(recommended_titles, api_key):
+    """Vergleicht die empfohlenen Titel mit TMDb-Similar Movies."""
+    def get_tmdb_movie_id(title):
+        url = "https://api.themoviedb.org/3/search/movie"
+        params = {"api_key": api_key, "query": title}
+        resp = requests.get(url, params=params)
+        results = resp.json().get("results", [])
+        return results[0]['id'] if results else None
+
+    def get_similar_movies(movie_id):
+        url = f"https://api.themoviedb.org/3/movie/{movie_id}/similar"
+        params = {"api_key": api_key}
+        resp = requests.get(url, params=params)
+        return [m['title'] for m in resp.json().get("results", [])]
+
+    overlaps = []
+    for title in recommended_titles:
+        tmdb_id = get_tmdb_movie_id(title)
+        if tmdb_id:
+            tmdb_similar = get_similar_movies(tmdb_id)
+            # Schnittmenge
+            overlap = set(recommended_titles) & set(tmdb_similar)
+            overlaps.extend(overlap)
+    return list(set(overlaps)), len(overlaps)
+
+def get_movie_rating(title, api_key):
+    url = "https://api.themoviedb.org/3/search/movie"
+    params = {"api_key": api_key, "query": title}
+    resp = requests.get(url, params=params)
+    results = resp.json().get("results", [])
+    if results:
+        movie_id = results[0]['id']
+        url = f"https://api.themoviedb.org/3/movie/{movie_id}"
+        params = {"api_key": api_key}
+        resp = requests.get(url, params=params)
+        if resp.status_code == 200:
+            return resp.json().get("vote_average")
+    return None
+
+def get_tmdb_poster_url(movie_id, links_df, api_key):
+    try:
+        tmdb_row = links_df[links_df["movieId"] == movie_id]
+        if not tmdb_row.empty and not pd.isna(tmdb_row["tmdbId"].values[0]):
+            tmdb_id = int(tmdb_row["tmdbId"].values[0])
+            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}?api_key={api_key}"
+            resp = requests.get(url)
+            if resp.status_code == 200:
+                poster_path = resp.json().get("poster_path")
+                if poster_path:
+                    return f"https://image.tmdb.org/t/p/w342{poster_path}"
+        return None
+    except Exception as e:
+        return None
+    
+
+def get_tmdb_poster_url(movie_id, links_df, api_key):
+    try:
+        tmdb_row = links_df[links_df["movieId"] == movie_id]
+        if not tmdb_row.empty and not pd.isna(tmdb_row["tmdbId"].values[0]):
+            tmdb_id = int(tmdb_row["tmdbId"].values[0])
+            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}?api_key={api_key}"
+            resp = requests.get(url)
+            if resp.status_code == 200:
+                poster_path = resp.json().get("poster_path")
+                if poster_path:
+                    return f"https://image.tmdb.org/t/p/w342{poster_path}"
+        return None
+    except Exception as e:
+        return None
+    
 
 st.set_page_config(page_title="🎬 Movie Recommender", layout="wide")
 
@@ -134,6 +194,145 @@ if data_available:
 
     if len(selected_movies) >= 3:
         st.success("✅ Auswahl ausreichend – Empfehlung kann gestartet werden.")
+        #hybrid modell
+        if st.button("Empfehle 10 ähnliche Filme (MLflow-Bestmodell, Genre-dynamisch)"):
+            try:
+                # Laden...
+                matrix_path = "data/processed/hybrid_matrix.csv"
+                movies_path = "data/raw/movies.csv"
+                links_path = "data/raw/links.csv"
+                model_path = "models/hybrid_model.pkl"
+
+                # MovieId als Index!
+                hybrid_df = pd.read_csv(matrix_path, index_col=0)
+                movies = pd.read_csv(movies_path)
+                links_df = pd.read_csv(links_path)
+                api_key = os.getenv("TMDB_API_KEY")
+
+                # Finde MovieIds deiner Auswahl
+                selected_movie_ids = movies[movies["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+
+                # Zeige Genres der Auswahl
+                selected_genres = set()
+                for mid in selected_movie_ids:
+                    g = movies[movies["movieId"] == mid]["genres"].iloc[0]
+                    selected_genres.update(g.split("|"))
+                st.write(f"⚡️ Genres deiner Auswahl: {selected_genres}")
+
+                # Finde Indexe im hybrid_df
+                selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
+                if not selected_indices:
+                    st.warning("Keine gültigen Filme gefunden.")
+                    st.stop()
+
+                # Lade Modell
+                with open(model_path, "rb") as f:
+                    knn = pickle.load(f)
+
+                # Nutzervektor
+                user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
+                _, rec_indices = knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
+                rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
+
+                # Filtere Empfehlungen nach dynamischen Genres
+                recommended_movies = movies[movies["movieId"].isin(rec_movie_ids)]
+                filtered = recommended_movies[recommended_movies["genres"].apply(
+                    lambda g: any(genre in g.split("|") for genre in selected_genres)
+                )]
+                st.subheader("🎬 Top 10 Empfehlungen (MLflow-Bestmodell, Genre-dynamisch)")
+                recommended = filtered.head(10)
+                recommended_titles = recommended["title"].tolist()
+                recommended_ids = recommended["movieId"].tolist()
+
+                if not filtered.empty:
+                    for _, row in recommended.iterrows():
+                        poster_url = get_tmdb_poster_url(row["movieId"], links_df, api_key)
+                        cols = st.columns([1, 5])
+                        with cols[0]:
+                            if poster_url:
+                                st.image(poster_url, width=100)
+                            else:
+                                st.write("Kein Poster")
+                        with cols[1]:
+                            st.markdown(f"**{row['title']}**")
+                            st.write(f"Genres: {row['genres']}")
+
+                # --- Automatischer TMDb-Benchmark via tmdbId ---
+                if api_key:
+                    st.markdown("#### 🌎 TMDb Similar Benchmark")
+
+                    # Hole die tmdbId des *ersten* empfohlenen Films
+                    def get_tmdb_recommendations(movie_id, links_df, api_key):
+                        row = links_df[links_df["movieId"] == movie_id]
+                        if not row.empty and not pd.isna(row["tmdbId"].values[0]):
+                            tmdb_id = int(row["tmdbId"].values[0])
+                            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/recommendations"
+                            params = {"api_key": api_key}
+                            resp = requests.get(url, params=params)
+                            if resp.status_code == 200:
+                                return resp.json().get("results", [])
+                        return []
+
+                    # Nehme die erste Empfehlung (wenn du mehrere möchtest, erweitere hier)
+                    benchmark_similars = []
+                    for mid in recommended_ids[:1]:
+                        benchmark_similars = get_tmdb_recommendations(mid, links_df, api_key)
+                        if benchmark_similars:
+                            break
+
+                    st.markdown("##### TMDb-Similar für deinen besten Treffer:")
+                    sim_cols = st.columns(5)
+                    for i, movie in enumerate(benchmark_similars[:10]):
+                        with sim_cols[i % 5]:
+                            if movie.get('poster_path'):
+                                st.image(f"https://image.tmdb.org/t/p/w185{movie['poster_path']}", width=90)
+                            st.caption(movie['title'])
+
+                    # Overlap-Score
+                    # Overlap-Score nun TMDb-ID-basiert!
+                    your_tmdb_ids = set()
+                    for mid in recommended_ids:
+                        row = links_df[links_df["movieId"] == mid]
+                        if not row.empty and not pd.isna(row["tmdbId"].values[0]):
+                            your_tmdb_ids.add(int(row["tmdbId"].values[0]))
+
+                    tmdb_similar_ids = set([movie['id'] for movie in benchmark_similars[:10]])
+                    overlap = your_tmdb_ids & tmdb_similar_ids
+                    overlap_score = len(overlap) / 10
+
+                    st.metric("TMDb Overlap-Score", f"{overlap_score:.2f}", help="Anteil deiner Top 10, die bei TMDb als ähnlich gelten")
+
+                    if overlap:
+                        overlap_titles = [movie['title'] for movie in benchmark_similars[:10] if movie['id'] in overlap]
+                        st.write("🟢 Überschneidungen (nach TMDb-ID):", overlap_titles)
+                    else:
+                        st.info("Keine Überschneidungen mit TMDb Similar gefunden (nach TMDb-ID).")
+
+                    avg_ratings = [get_movie_rating(title, api_key) for title in recommended_titles]
+                    avg_ratings = [r for r in avg_ratings if r is not None]
+                    if avg_ratings:
+                        st.write(f"Durchschnittliches TMDb-User-Rating deiner Empfehlungen: {np.mean(avg_ratings):.2f}")
+
+                    # --- In MLflow loggen (DagsHub) ---
+                    try:
+                        mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+                        client = MlflowClient()
+                        model_name = "movie_model"
+                        versions = client.search_model_versions(f"name='{model_name}'")
+                        # Nimm das neueste Modell mit passendem Tag (hybrid_knn)
+                        newest = sorted(versions, key=lambda v: int(v.version), reverse=True)[0]
+                        run_id = newest.run_id
+                        client.log_metric(run_id, "tmdb_overlap", overlap_score)
+                        st.success(f"✅ TMDb-Benchmark-Score ({overlap_score:.2f}) wurde in MLflow für das Hybridmodell geloggt (Version {newest.version}).")
+                    except Exception as e:
+                        st.warning(f"⚠️ MLflow Logging Fehler (DagsHub): {e}")
+
+                else:
+                    st.info("ℹ️ Kein TMDb-API-Key gesetzt, Benchmark-Vergleich übersprungen.")
+
+            except Exception as e:
+                st.error(f"❌ Fehler bei dynamischer Genre-Empfehlung: {e}")
+        #user model
         if st.button("Empfehle 10 ähnliche Filme (User-Based Neighbors, optimiert)"):
             try:
                 # Daten laden
@@ -211,73 +410,26 @@ if data_available:
                         with cols[1]:
                             st.markdown(f"**{row['title']}**")
                             st.write(f"Genres: {row['genres']}")
+                if st.button("🔍 Vergleiche meine Top-10 mit TMDb Similar Movies"):
+                    # Extrahiere die empfohlenen Titel als Liste (aus deinem DataFrame 'filtered' oder 'recommended')
+                    recommended_titles = filtered.head(10)["title"].tolist()  # oder 'recommended' je nach Modell/Block
+                    api_key = os.getenv("TMDB_API_KEY")
+                    overlaps, overlap_count = compare_with_tmdb(recommended_titles, api_key)
+                    st.info(f"Überschneidungen mit TMDb Similar: {overlap_count}")
+                    if overlaps:
+                        st.write("Folgende Filme sind sowohl in deiner Empfehlung als auch TMDb-Similar:", overlaps)
+                        avg_ratings = [get_movie_rating(title, api_key) for title in recommended_titles]
+                        avg_ratings = [r for r in avg_ratings if r is not None]
+                        if avg_ratings:
+                            st.write(f"Durchschnittliches TMDb-User-Rating deiner Empfehlungen: {np.mean(avg_ratings):.2f}")
+
+                    else:
+                        st.write("Keine Überschneidungen gefunden.")
                 else:
                     st.info("⚠️ Keine passenden Empfehlungen gefunden. Probiere andere Auswahl.")
 
             except Exception as e:
                 st.error(f"❌ Fehler bei user-based Empfehlung: {e}")
- 
-
-        #hybrid-modell
-        if st.button("Empfehle 10 ähnliche Filme (MLflow-Bestmodell, Genre-dynamisch)"):
-            try:
-                # Laden...
-                matrix_path = "data/processed/hybrid_matrix.csv"
-                movies_path = "data/raw/movies.csv"
-                model_path = "models/hybrid_model.pkl"
-
-                # MovieId als Index!
-                hybrid_df = pd.read_csv(matrix_path, index_col=0)
-                movies = pd.read_csv(movies_path)
-
-                # Finde MovieIds deiner Auswahl
-                selected_movie_ids = movies[movies["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
-
-                # Zeige Genres der Auswahl
-                selected_genres = set()
-                for mid in selected_movie_ids:
-                    g = movies[movies["movieId"] == mid]["genres"].iloc[0]
-                    selected_genres.update(g.split("|"))
-                st.write(f"⚡️ Genres deiner Auswahl: {selected_genres}")
-
-                # Finde Indexe im hybrid_df
-                selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
-                if not selected_indices:
-                    st.warning("Keine gültigen Filme gefunden.")
-                    st.stop()
-
-                # Lade Modell
-                with open(model_path, "rb") as f:
-                    knn = pickle.load(f)
-
-                # Nutzervektor
-                user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
-                _, rec_indices = knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
-                rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
-
-                # Filtere Empfehlungen nach dynamischen Genres
-                recommended_movies = movies[movies["movieId"].isin(rec_movie_ids)]
-                filtered = recommended_movies[recommended_movies["genres"].apply(
-                    lambda g: any(genre in g.split("|") for genre in selected_genres)
-                )]
-                st.subheader("🎬 Top 10 Empfehlungen (MLflow-Bestmodell, Genre-dynamisch)")
-                if not filtered.empty:
-                    for _, row in filtered.head(10).iterrows():
-                        poster_url = get_tmdb_poster_url(row["movieId"], links_df, api_key)
-                        cols = st.columns([1, 5])
-                        with cols[0]:
-                            if poster_url:
-                                st.image(poster_url, width=100)
-                            else:
-                                st.write("Kein Poster")
-                        with cols[1]:
-                            st.markdown(f"**{row['title']}**")
-                            st.write(f"Genres: {row['genres']}")
-                else:
-                    st.info("⚠️ Keine passenden Empfehlungen gefunden. Probiere andere Filme.")
-
-            except Exception as e:
-                st.error(f"❌ Fehler bei dynamischer Genre-Empfehlung: {e}")   
         #basic model            
         if st.button("Empfehle 10 ähnliche Filme (lokal, wie Hybrid-Modell)"):
             try:
@@ -358,6 +510,7 @@ if data_available:
                         with cols[1]:
                             st.markdown(f"**{row['title']}**")
                             st.write(f"Genres: {row['genres']}")
+
                 else:
                     st.info("⚠️ Keine passenden Empfehlungen gefunden. Probiere andere Filme.")
 
@@ -393,7 +546,7 @@ if role == "admin":
     }
     st.subheader("⚙️ Admin Panel – Airflow & MLflow")
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     if "dag_triggered" not in st.session_state:
         st.session_state["dag_triggered"] = False
@@ -430,15 +583,56 @@ if role == "admin":
                     auth=auth
                 )
                 if response.status_code == 200:
-                    st.success("✅ DAG wurde erfolgreich getriggert")
+                    st.success("✅ DAG Movie Recommendation Pipeline wurde erfolgreich getriggert")
                     st.session_state["dag_triggered"] = True
                     st.session_state["progress"] = 0
+                    st.session_state["last_dag"] = "movie_recommendation_pipeline"
                 else:
                     st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
             except Exception as e:
                 st.error(f"❌ Fehler bei API-Aufruf: {e}")
-
+        
     with col2:
+        #update Pipeline dl
+        if st.button("▶️ Starte DAG: Deep_Learning_pipeline"):
+            try:
+                # 1. Laufende DAG-Runs finden und stoppen!
+                dag_id = "deep_models_pipeline"
+                airflow_url = API_URL
+                auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
+
+                # Step 1: Suche alle laufenden Runs
+                running_runs_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?state=running"
+                runs_resp = requests.get(running_runs_url, auth=auth)
+                runs_resp.raise_for_status()
+                running_runs = runs_resp.json().get("dag_runs", [])
+
+                # Step 2: Setze alle laufenden Runs auf "failed"
+                for run in running_runs:
+                    run_id = run["dag_run_id"]
+                    patch_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns/{run_id}"
+                    patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
+                    if patch_resp.status_code == 200:
+                        st.info(f"❗ Abgebrochen: Run {run_id}")
+                    else:
+                        st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
+
+                # Step 3: Starte neuen DAG-Run
+                response = requests.post(
+                    f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns",
+                    json={"conf": st.session_state["pipeline_conf"]},
+                    auth=auth
+                )
+                if response.status_code == 200:
+                    st.success("✅ DAG Deep Learning wurde erfolgreich getriggert")
+                    st.session_state["dag_triggered"] = True
+                    st.session_state["progress"] = 0
+                    st.session_state["last_dag"] = "deep_models_pipeline"
+                else:
+                    st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
+            except Exception as e:
+                st.error(f"❌ Fehler bei API-Aufruf: {e}")
+    with col3:
     #Charts Mlflow
         #
         if st.button("📊 Zeige MLflow Metriken"):
@@ -521,15 +715,24 @@ if role == "admin":
             "no_status": "⚪"
         }
 
-        task_order = [
-            "import_raw_data", "make_dataset", "build_features",
-            "train_user_model", "train_hybrid_model",
-            "validate_models", "predict_best_model"
-        ]
+        # Entscheide, welches task_order zu verwenden ist
+        if st.session_state.get("last_dag") == "deep_models_pipeline":
+            task_order = [
+                "train_deep_user_model",
+                "train_deep_hybrid_model",
+                "validate_models",          # Falls du einen eigenen DL-Validator hast!
+                "predict_best_model"
+            ]
+        else:
+            task_order = [
+                "import_raw_data", "make_dataset", "build_features",
+                "train_user_model", "train_hybrid_model",
+                "validate_models", "predict_best_model"
+            ]
 
         import time
 
-        for attempt in range(40):  # 40 × 3s = 2 Minuten max.
+        for attempt in range(40):
             tasks, run_id = fetch_dag_task_statuses()
             if tasks:
                 task_states = {task["task_id"]: (task["state"] or "no_status") for task in tasks}

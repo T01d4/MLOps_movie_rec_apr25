@@ -1,0 +1,45 @@
+[2025-06-02T18:19:58.599+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_user_model manual__2025-06-02T18:19:58.315624+00:00 [queued]>
+[2025-06-02T18:19:58.605+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_user_model manual__2025-06-02T18:19:58.315624+00:00 [queued]>
+[2025-06-02T18:19:58.606+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-06-02T18:19:58.618+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): train_deep_user_model> on 2025-06-02 18:19:58.315624+00:00
+[2025-06-02T18:19:58.625+0000] {standard_task_runner.py:60} INFO - Started process 201 to run task
+[2025-06-02T18:19:58.628+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_deep_user_model', 'manual__2025-06-02T18:19:58.315624+00:00', '--job-id', '1717', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp6307ww6z']
+[2025-06-02T18:19:58.630+0000] {standard_task_runner.py:88} INFO - Job 1717: Subtask train_deep_user_model
+[2025-06-02T18:19:58.668+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_deep_user_model manual__2025-06-02T18:19:58.315624+00:00 [running]> on host 787de945a6ba
+[2025-06-02T18:19:58.727+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_deep_user_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T18:19:58.315624+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T18:19:58.315624+00:00'
+[2025-06-02T18:19:58.729+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2025-06-02T18:19:58.730+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'python /opt/***/src/models/train_user_deep_model.py']
+[2025-06-02T18:19:58.738+0000] {subprocess.py:86} INFO - Output:
+[2025-06-02T19:30:59.238+0000] {subprocess.py:93} INFO - Epoch 1/25: Loss = 0.0005
+[2025-06-02T19:30:59.239+0000] {subprocess.py:93} INFO - Epoch 2/25: Loss = 0.0000
+[2025-06-02T19:30:59.240+0000] {subprocess.py:93} INFO - Epoch 3/25: Loss = 0.0000
+[2025-06-02T19:30:59.240+0000] {subprocess.py:93} INFO - Epoch 4/25: Loss = 0.0000
+[2025-06-02T19:30:59.241+0000] {subprocess.py:93} INFO - Epoch 5/25: Loss = 0.0000
+[2025-06-02T19:30:59.241+0000] {subprocess.py:93} INFO - Epoch 6/25: Loss = 0.0000
+[2025-06-02T19:30:59.241+0000] {subprocess.py:93} INFO - Epoch 7/25: Loss = 0.0000
+[2025-06-02T19:30:59.242+0000] {subprocess.py:93} INFO - Epoch 8/25: Loss = 0.0000
+[2025-06-02T19:30:59.242+0000] {subprocess.py:93} INFO - Epoch 9/25: Loss = 0.0000
+[2025-06-02T19:30:59.243+0000] {subprocess.py:93} INFO - Epoch 10/25: Loss = 0.0000
+[2025-06-02T19:30:59.243+0000] {subprocess.py:93} INFO - Epoch 11/25: Loss = 0.0000
+[2025-06-02T19:30:59.243+0000] {subprocess.py:93} INFO - Epoch 12/25: Loss = 0.0000
+[2025-06-02T19:30:59.244+0000] {subprocess.py:93} INFO - Epoch 13/25: Loss = 0.0000
+[2025-06-02T19:30:59.244+0000] {subprocess.py:93} INFO - Epoch 14/25: Loss = 0.0000
+[2025-06-02T19:30:59.245+0000] {subprocess.py:93} INFO - Epoch 15/25: Loss = 0.0000
+[2025-06-02T19:30:59.245+0000] {subprocess.py:93} INFO - Epoch 16/25: Loss = 0.0000
+[2025-06-02T19:30:59.246+0000] {subprocess.py:93} INFO - Epoch 17/25: Loss = 0.0000
+[2025-06-02T19:30:59.246+0000] {subprocess.py:93} INFO - Epoch 18/25: Loss = 0.0000
+[2025-06-02T19:30:59.247+0000] {subprocess.py:93} INFO - Epoch 19/25: Loss = 0.0000
+[2025-06-02T19:30:59.247+0000] {subprocess.py:93} INFO - Epoch 20/25: Loss = 0.0000
+[2025-06-02T19:30:59.247+0000] {subprocess.py:93} INFO - Epoch 21/25: Loss = 0.0000
+[2025-06-02T19:30:59.248+0000] {subprocess.py:93} INFO - Epoch 22/25: Loss = 0.0000
+[2025-06-02T19:30:59.248+0000] {subprocess.py:93} INFO - Epoch 23/25: Loss = 0.0000
+[2025-06-02T19:30:59.248+0000] {subprocess.py:93} INFO - Epoch 24/25: Loss = 0.0000
+[2025-06-02T19:30:59.249+0000] {subprocess.py:93} INFO - Epoch 25/25: Loss = 0.0000
+[2025-06-02T19:30:59.250+0000] {subprocess.py:93} INFO - ✅ User-Embeddings gespeichert unter /opt/***/data/processed/user_deep_embedding.csv
+[2025-06-02T19:30:59.251+0000] {subprocess.py:93} INFO - ✅ Deep KNN Modell gespeichert unter /opt/***/models/user_deep_knn.pkl
+[2025-06-02T19:30:59.251+0000] {subprocess.py:93} INFO - ⚠️ Fehler beim MLflow-Logging: API request to https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow/experiments/get-by-name failed with exception HTTPSConnectionPool(host='dagshub.com', port=443): Max retries exceeded with url: /sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow/experiments/get-by-name?experiment_name=movie_user_deep_model (Caused by ResponseError('too many 500 error responses'))
+[2025-06-02T19:30:59.252+0000] {subprocess.py:93} INFO - → Das Modell wurde trotzdem lokal gespeichert (deep_knn_path).
+[2025-06-02T19:31:00.200+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2025-06-02T19:31:00.223+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=train_deep_user_model, execution_date=20250602T181958, start_date=20250602T181958, end_date=20250602T193100
+[2025-06-02T19:31:00.276+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-02T19:31:00.289+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

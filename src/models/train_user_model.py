@@ -100,8 +100,8 @@ def train_user_model(run_name="train_user_model"):
             python_model=UserKNNWrapper(),
             artifacts={"knn_model": model_path},
             signature=signature,
-            input_example=pd.DataFrame(X[:5], columns=feature_names)
-            #registered_model_name="movie_model"  
+            input_example=pd.DataFrame(X[:5], columns=feature_names),
+            registered_model_name="user_model"  
         )
     print("🏁 Training abgeschlossen und geloggt.")
 

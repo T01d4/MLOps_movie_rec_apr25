@@ -1,0 +1,62 @@
+[2025-06-02T11:22:54.581+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_add_and_push_all manual__2025-06-02T11:17:55.612538+00:00 [queued]>
+[2025-06-02T11:22:54.592+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.dvc_add_and_push_all manual__2025-06-02T11:17:55.612538+00:00 [queued]>
+[2025-06-02T11:22:54.592+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-02T11:22:54.660+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): dvc_add_and_push_all> on 2025-06-02 11:17:55.612538+00:00
+[2025-06-02T11:22:54.669+0000] {standard_task_runner.py:60} INFO - Started process 3502 to run task
+[2025-06-02T11:22:54.671+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'dvc_add_and_push_all', 'manual__2025-06-02T11:17:55.612538+00:00', '--job-id', '1694', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp5oz48dmd']
+[2025-06-02T11:22:54.672+0000] {standard_task_runner.py:88} INFO - Job 1694: Subtask dvc_add_and_push_all
+[2025-06-02T11:22:54.713+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.dvc_add_and_push_all manual__2025-06-02T11:17:55.612538+00:00 [running]> on host 6520fa36f146
+[2025-06-02T11:22:54.775+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='dvc_add_and_push_all' AIRFLOW_CTX_EXECUTION_DATE='2025-06-02T11:17:55.612538+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-02T11:17:55.612538+00:00'
+[2025-06-02T11:22:54.780+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: git config --global --add safe.directory /opt/***
+[2025-06-02T11:22:54.800+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+[2025-06-02T11:22:54.800+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: git config --global user.email ***@mlops.local
+[2025-06-02T11:22:54.816+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+[2025-06-02T11:22:54.816+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: git config --global user.name Airflow
+[2025-06-02T11:22:54.832+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+[2025-06-02T11:22:54.833+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: dvc add /opt/***/models/hybrid_model.pkl
+[2025-06-02T14:33:11.346+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+
+To track the changes with git, run:
+
+	git add models/hybrid_model.pkl.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+[2025-06-02T14:33:11.347+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: dvc add /opt/***/data/processed/hybrid_matrix.csv
+[2025-06-02T14:33:11.488+0000] {local_task_job_runner.py:302} WARNING - State of this instance has been externally set to up_for_retry. Terminating instance.
+[2025-06-02T14:33:11.492+0000] {process_utils.py:131} INFO - Sending 15 to group 3502. PIDs of all processes in the group: [3527, 3502]
+[2025-06-02T14:33:11.493+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 3502
+[2025-06-02T14:33:11.494+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-02T14:33:11.496+0000] {mlops_movie_dag.py:31} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-02T14:33:11.496+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=3527, status='terminated', started='11:23:29') (3527) terminated with exit code None
+[2025-06-02T14:33:11.504+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 111, in dvc_add_and_push_all
+    run_and_log(["dvc", "add", art])
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 13, in run_and_log
+    result = subprocess.run(
+  File "/usr/local/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/usr/local/lib/python3.10/subprocess.py", line 1154, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/usr/local/lib/python3.10/subprocess.py", line 2021, in _communicate
+    ready = selector.select(timeout)
+  File "/usr/local/lib/python3.10/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 2452, in signal_handler
+    raise AirflowException("Task received SIGTERM signal")
+airflow.exceptions.AirflowException: Task received SIGTERM signal
+[2025-06-02T14:33:11.513+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=movie_recommendation_pipeline, task_id=dvc_add_and_push_all, execution_date=20250602T111755, start_date=20250602T112254, end_date=20250602T143311
+[2025-06-02T14:33:11.522+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1694 for task dvc_add_and_push_all (Task received SIGTERM signal; 3502)
+[2025-06-02T14:33:11.549+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=3502, status='terminated', exitcode=1, started='11:22:53') (3502) terminated with exit code 1
