@@ -13,3 +13,11 @@ pandas>=1.5
 numpy>=1.24
 seaborn==0.12.2
 cryptography
+# Deep Learning
+torch==2.3.0
+# Für CUDA (optional): +cu121 (nur bei passender Base und GPU)
+# torch==2.3.0+cu121 -f https://download.pytorch.org/whl/torch_stable.html
+torchvision==0.18.0
+# Hilfreich für Deep Learning
+matplotlib
+plotly
