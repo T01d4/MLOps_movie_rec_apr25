@@ -41,22 +41,8 @@ jobs:
         pytest -v --tb=short --disable-warnings --junitxml=test-results/results.xml > test-results/testlog.txt || true
         cat test-results/testlog.txt
 
-    - name: Run pytest and show output
-      run: |
-<<<<<<< HEAD
-<<<<<<< HEAD
-        mkdir -p test-results
-        pytest -v --tb=short --disable-warnings > test-results/testlog.txt || true
-        echo "-------- BEGIN pytest log --------"
-        cat test-results/testlog.txt
-        echo "-------- END pytest log ----------"
-=======
-        pytest || true  # vorübergehend tolerieren, falls keine Tests da sind
->>>>>>> e7fe277 (neuer python-app.yml)
-=======
-        mkdir -p test-results
-        pytest -c pytest.ini tests -v --tb=short --disable-warnings > test-results/testlog.txt || true
-        echo "-------- BEGIN pytest log --------"
-        cat test-results/testlog.txt
-        echo "-------- END pytest log ----------"
->>>>>>> 6b77991 (neuer python-app.yml)
+    #- name: Upload test results artifact
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: pytest-logs
+    #    path: test-results/
