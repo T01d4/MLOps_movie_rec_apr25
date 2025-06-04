@@ -1,5 +1,5 @@
 outs:
-- md5: 2966273026a272a43963c85a8ff70577
-  size: 32127
+- md5: 92125d93803bc818511915a047c52db9
+  size: 15326
   hash: md5
   path: hybrid_matrix_features.txt
