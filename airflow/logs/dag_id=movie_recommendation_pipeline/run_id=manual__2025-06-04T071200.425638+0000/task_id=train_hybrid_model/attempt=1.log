@@ -1,0 +1,36 @@
+[2025-06-04T07:12:29.630+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-04T07:12:00.425638+00:00 [queued]>
+[2025-06-04T07:12:29.640+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-04T07:12:00.425638+00:00 [queued]>
+[2025-06-04T07:12:29.640+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-04T07:12:29.651+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_hybrid_model> on 2025-06-04 07:12:00.425638+00:00
+[2025-06-04T07:12:29.656+0000] {standard_task_runner.py:60} INFO - Started process 1181 to run task
+[2025-06-04T07:12:29.660+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_hybrid_model', 'manual__2025-06-04T07:12:00.425638+00:00', '--job-id', '1818', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpfu2dhsg3']
+[2025-06-04T07:12:29.663+0000] {standard_task_runner.py:88} INFO - Job 1818: Subtask train_hybrid_model
+[2025-06-04T07:12:29.717+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_hybrid_model manual__2025-06-04T07:12:00.425638+00:00 [running]> on host e71253cfdb88
+[2025-06-04T07:12:29.775+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-04T07:12:00.425638+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-04T07:12:00.425638+00:00'
+[2025-06-04T07:12:29.776+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_model.py --n_neighbors=10 --tfidf_features=300
+[2025-06-04T07:14:59.769+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+🏃 View run train_hybrid_model at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/9/runs/38988f61cb6940558ce6ba57f182d5f8
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/9
+
+[2025-06-04T07:14:59.771+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+2025-06-04 07:12:32,075 - __main__ - INFO - 🚀 Starte Hybrid-Modelltraining
+2025-06-04 07:12:37,097 - __main__ - INFO - 📥 Rohdaten erfolgreich geladen
+2025-06-04 07:12:39,414 - __main__ - INFO - 📐 Hybrid-Matrix erstellt mit Shape: (10381, 1429), Feature-Namen: 1429
+2025-06-04 07:12:39,436 - __main__ - INFO - 🤖 KNN-Modell trainiert
+2025-06-04 07:12:50,725 - __main__ - INFO - ✅ Feature-Schema gespeichert unter /opt/***/data/processed/hybrid_matrix_features.txt
+2025/06/04 07:13:02 INFO mlflow.pyfunc: Validating input example against model signature
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.09s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.09s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.09s/it]
+Registered model 'hybrid_model' already exists. Creating a new version of this model...
+2025/06/04 07:14:04 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: hybrid_model, version 4
+Created version '4' of model 'hybrid_model'.
+2025-06-04 07:14:58,887 - __main__ - WARNING - ⚠️ Konnte Modellversion für Tagging nicht bestimmen.
+2025-06-04 07:14:59,262 - __main__ - INFO - ✅ Modell & Matrix erfolgreich gespeichert und in MLflow geloggt
+
+[2025-06-04T07:14:59.772+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-04T07:14:59.800+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_hybrid_model, execution_date=20250604T071200, start_date=20250604T071229, end_date=20250604T071459
+[2025-06-04T07:14:59.864+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-04T07:14:59.884+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

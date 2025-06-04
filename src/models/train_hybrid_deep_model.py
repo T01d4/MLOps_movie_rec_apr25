@@ -1,4 +1,5 @@
 # src/models/train_hybrid_deep_model.py
+
 import torch
 import torch.nn as nn
 import pandas as pd
@@ -10,6 +11,8 @@ from dotenv import load_dotenv
 import mlflow
 from mlflow.models.signature import infer_signature
 import mlflow.pyfunc
+import argparse
+from mlflow.tracking import MlflowClient
 
 class HybridAutoEncoder(nn.Module):
     def __init__(self, input_dim, latent_dim=64):
@@ -61,36 +64,38 @@ def train_autoencoder(X, latent_dim=64, epochs=30, lr=1e-3, batch_size=128):
             optimizer.step()
             losses.append(loss.item())
         print(f"Epoch {epoch+1}/{epochs}: Loss = {np.mean(losses):.4f}")
-    # Embeddings nach dem Training
     model.eval()
     with torch.no_grad():
         embeddings = model.get_embedding(torch.from_numpy(X).to(device)).cpu().numpy()
     return model, embeddings
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--n_neighbors", type=int, default=10)
+    parser.add_argument("--latent_dim", type=int, default=64)
+    args = parser.parse_args()
+    n_neighbors = args.n_neighbors
+    latent_dim = args.latent_dim
+
     load_dotenv()
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-    mlflow.set_experiment("movie_hybrid_deep_model")
+    mlflow.set_experiment("hybrid_deep_model_exp")  # <--- KLARER EXPERIMENT-NAME!
 
-    # === Daten laden ===
     matrix_path = "/opt/airflow/data/processed/hybrid_matrix.csv"
     features_path = "/opt/airflow/data/processed/hybrid_matrix_features.txt"
     df = pd.read_csv(matrix_path)
     with open(features_path, "r") as f:
         features = [line.strip() for line in f.readlines()]
-    # movieId nicht als Feature
     X = df.drop(columns=["movieId"]).values.astype(np.float32)
     movie_ids = df["movieId"].values
 
-    # === Deep Embedding ===
-    model, hybrid_embeddings = train_autoencoder(X, latent_dim=64, epochs=30)
+    model, hybrid_embeddings = train_autoencoder(X, latent_dim=latent_dim, epochs=30)
     embedding_df = pd.DataFrame(hybrid_embeddings, index=movie_ids)
     embedding_path = "/opt/airflow/data/processed/hybrid_deep_embedding.csv"
     embedding_df.to_csv(embedding_path)
     print(f"✅ Hybrid-Embeddings gespeichert unter {embedding_path}")
 
-    # === Trainiere KNN auf Embeddings ===
-    knn = NearestNeighbors(n_neighbors=10, metric="cosine")
+    knn = NearestNeighbors(n_neighbors=n_neighbors, metric="cosine")
     knn.fit(hybrid_embeddings)
     model_dir = "/opt/airflow/models"
     os.makedirs(model_dir, exist_ok=True)
@@ -99,13 +104,12 @@ def main():
         pickle.dump(knn, f)
     print(f"✅ Deep KNN Modell gespeichert unter {knn_path}")
 
-    # === MLflow Logging ===
     with mlflow.start_run(run_name="train_hybrid_deep_model") as run:
         mlflow.set_tag("source", "airflow")
         mlflow.set_tag("task", "train_hybrid_deep_model")
         mlflow.log_param("model_type", "hybrid_deep_knn")
-        mlflow.log_param("latent_dim", 64)
-        mlflow.log_param("n_neighbors", 10)
+        mlflow.log_param("latent_dim", latent_dim)
+        mlflow.log_param("n_neighbors", n_neighbors)
         mlflow.log_metric("n_movies", len(embedding_df))
         mlflow.log_artifact(embedding_path, artifact_path="features")
         mlflow.log_artifact(knn_path, artifact_path="backup_model")
@@ -119,8 +123,25 @@ def main():
             python_model=KNNPyFuncWrapper(),
             artifacts={"knn_model": knn_path},
             signature=signature,
-            input_example=pd.DataFrame(hybrid_embeddings[:5], columns=embedding_feature_names)
+            input_example=pd.DataFrame(hybrid_embeddings[:5], columns=embedding_feature_names),
+            registered_model_name="hybrid_deep_model"  # <--- KLARE REGISTRY!
         )
+        client = MlflowClient()
+        model_name = "hybrid_deep_model"
+        run_id = run.info.run_id
+        model_version = None
+        versions = client.search_model_versions(f"name='{model_name}'")
+        for v in versions:
+            if v.run_id == run_id:
+                model_version = v.version
+                break
+        if model_version:
+            client.set_model_version_tag(model_name, model_version, "n_neighbors", str(n_neighbors))
+            client.set_model_version_tag(model_name, model_version, "latent_dim", str(latent_dim))
+            print(f"📝 Tags für Modellversion {model_version} gesetzt: n_neighbors={n_neighbors}, latent_dim={latent_dim}")
+        else:
+            print("⚠️ Konnte Modellversion für Tagging nicht bestimmen.")
+
     print("🏁 Deep Hybrid-Model Training abgeschlossen und geloggt.")
 
 if __name__ == "__main__":

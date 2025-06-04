@@ -1,0 +1,66 @@
+[2025-06-04T05:08:48.132+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model_user manual__2025-06-04T04:56:49.379738+00:00 [queued]>
+[2025-06-04T05:08:48.139+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.predict_best_model_user manual__2025-06-04T04:56:49.379738+00:00 [queued]>
+[2025-06-04T05:08:48.140+0000] {taskinstance.py:2170} INFO - Starting attempt 3 of 3
+[2025-06-04T05:08:48.151+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model_user> on 2025-06-04 04:56:49.379738+00:00
+[2025-06-04T05:08:48.156+0000] {standard_task_runner.py:60} INFO - Started process 2737 to run task
+[2025-06-04T05:08:48.158+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'predict_best_model_user', 'manual__2025-06-04T04:56:49.379738+00:00', '--job-id', '1774', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmp7kcp8uao']
+[2025-06-04T05:08:48.159+0000] {standard_task_runner.py:88} INFO - Job 1774: Subtask predict_best_model_user
+[2025-06-04T05:08:48.195+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.predict_best_model_user manual__2025-06-04T04:56:49.379738+00:00 [running]> on host 2271837a197c
+[2025-06-04T05:08:48.254+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model_user' AIRFLOW_CTX_EXECUTION_DATE='2025-06-04T04:56:49.379738+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-04T04:56:49.379738+00:00'
+[2025-06-04T05:08:48.255+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py --model_type=user --input_path=/opt/***/data/processed/user_matrix.csv --output_path=/opt/***/data/processed/predictions_user.csv
+[2025-06-04T05:08:50.568+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+🚀 Lade Modell: models:/user_model@best_model
+
+[2025-06-04T05:08:50.568+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+Traceback (most recent call last):
+  File "/opt/***/src/models/predict_best_model.py", line 44, in <module>
+    predict_best_model(args.model_type, args.input_path, args.output_path)
+  File "/opt/***/src/models/predict_best_model.py", line 28, in predict_best_model
+    model = mlflow.pyfunc.load_model(model_uri)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/tracing/provider.py", line 422, in wrapper
+    is_func_called, result = True, f(*args, **kwargs)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 1099, in load_model
+    local_path = _download_artifact_from_uri(
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/tracking/artifact_utils.py", line 108, in _download_artifact_from_uri
+    repo = get_artifact_repository(artifact_uri=root_uri)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/artifact/artifact_repository_registry.py", line 133, in get_artifact_repository
+    return _artifact_repository_registry.get_artifact_repository(artifact_uri)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/artifact/artifact_repository_registry.py", line 77, in get_artifact_repository
+    return repository(artifact_uri)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/artifact/models_artifact_repo.py", line 69, in __init__
+    ) = ModelsArtifactRepository._get_model_uri_infos(artifact_uri)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/artifact/models_artifact_repo.py", line 112, in _get_model_uri_infos
+    name, version = get_model_name_and_version(client, uri)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/artifact/utils/models.py", line 97, in get_model_name_and_version
+    mv = client.get_model_version_by_alias(model_name, model_alias)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/tracking/_model_registry/client.py", line 433, in get_model_version_by_alias
+    return self.store.get_model_version_by_alias(name, alias)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/model_registry/rest_store.py", line 473, in get_model_version_by_alias
+    response_proto = self._call_endpoint(GetModelVersionByAlias, req_body)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/model_registry/base_rest_store.py", line 44, in _call_endpoint
+    return call_endpoint(
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/utils/rest_utils.py", line 402, in call_endpoint
+    response = verify_rest_response(response, endpoint)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/utils/rest_utils.py", line 259, in verify_rest_response
+    raise RestException(json.loads(response.text))
+mlflow.exceptions.RestException: INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}
+
+[2025-06-04T05:08:50.569+0000] {mlops_movie_dag.py:28} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/predict_best_model.py --model_type=user --input_path=/opt/***/data/processed/user_matrix.csv --output_path=/opt/***/data/processed/predictions_user.csv
+[2025-06-04T05:08:50.570+0000] {mlops_movie_dag.py:31} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/predict_best_model.py', '--model_type=user', '--input_path=/opt/***/data/processed/user_matrix.csv', '--output_path=/opt/***/data/processed/predictions_user.csv']' returned non-zero exit status 1.
+[2025-06-04T05:08:50.570+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 73, in run_predict_best_model_user
+    run_and_log([
+  File "/opt/airflow/dags/mlops_movie_dag.py", line 29, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/predict_best_model.py', '--model_type=user', '--input_path=/opt/airflow/data/processed/user_matrix.csv', '--output_path=/opt/airflow/data/processed/predictions_user.csv']' returned non-zero exit status 1.
+[2025-06-04T05:08:50.582+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=movie_recommendation_pipeline, task_id=predict_best_model_user, execution_date=20250604T045649, start_date=20250604T050848, end_date=20250604T050850
+[2025-06-04T05:08:50.592+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 1774 for task predict_best_model_user (Command '['python', '/opt/airflow/src/models/predict_best_model.py', '--model_type=user', '--input_path=/opt/airflow/data/processed/user_matrix.csv', '--output_path=/opt/airflow/data/processed/predictions_user.csv']' returned non-zero exit status 1.; 2737)
+[2025-06-04T05:08:50.622+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-04T05:08:50.636+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
