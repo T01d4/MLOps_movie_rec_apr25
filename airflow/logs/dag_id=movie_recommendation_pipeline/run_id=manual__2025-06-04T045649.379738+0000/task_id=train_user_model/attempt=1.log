@@ -1,0 +1,31 @@
+[2025-06-04T04:57:27.538+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-04T04:56:49.379738+00:00 [queued]>
+[2025-06-04T04:57:27.549+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-04T04:56:49.379738+00:00 [queued]>
+[2025-06-04T04:57:27.549+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-04T04:57:27.567+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_user_model> on 2025-06-04 04:56:49.379738+00:00
+[2025-06-04T04:57:27.575+0000] {standard_task_runner.py:60} INFO - Started process 1508 to run task
+[2025-06-04T04:57:27.577+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'train_user_model', 'manual__2025-06-04T04:56:49.379738+00:00', '--job-id', '1764', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpf70r_ywq']
+[2025-06-04T04:57:27.578+0000] {standard_task_runner.py:88} INFO - Job 1764: Subtask train_user_model
+[2025-06-04T04:57:27.614+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.train_user_model manual__2025-06-04T04:56:49.379738+00:00 [running]> on host 2271837a197c
+[2025-06-04T04:57:27.744+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='train_user_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-04T04:56:49.379738+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-04T04:56:49.379738+00:00'
+[2025-06-04T04:57:27.746+0000] {mlops_movie_dag.py:12} INFO - 🟦 Running command: python /opt/***/src/models/train_user_model.py --n_neighbors=10
+[2025-06-04T05:01:12.789+0000] {mlops_movie_dag.py:19} INFO - 🟩 [stdout]:
+📝 Tags für Modellversion 1 gesetzt: n_neighbors=10
+🏃 View run train_user_model at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/8/runs/4ee41ea4406440fd8c3e18b1d8391719
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/8
+
+[2025-06-04T05:01:12.791+0000] {mlops_movie_dag.py:21} WARNING - 🟨 [stderr]:
+2025/06/04 04:57:31 INFO mlflow.tracking.fluent: Experiment with name 'user_model_exp' does not exist. Creating a new experiment.
+2025/06/04 05:00:53 INFO mlflow.pyfunc: Validating input example against model signature
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00,  4.80it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00,  4.80it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00,  4.79it/s]
+Successfully registered model 'user_model'.
+2025/06/04 05:01:10 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: user_model, version 1
+Created version '1' of model 'user_model'.
+
+[2025-06-04T05:01:12.792+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-04T05:01:12.806+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=train_user_model, execution_date=20250604T045649, start_date=20250604T045727, end_date=20250604T050112
+[2025-06-04T05:01:12.883+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-04T05:01:12.907+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

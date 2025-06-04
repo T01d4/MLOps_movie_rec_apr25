@@ -5,7 +5,6 @@ import pandas as pd
 import numpy as np
 import os
 import pickle
-import logging
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
@@ -14,6 +13,7 @@ from mlflow.models.signature import infer_signature
 import mlflow.pyfunc
 from mlflow.tracking import MlflowClient
 import argparse
+import logging
 
 class HybridKNNWrapper(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
@@ -39,7 +39,7 @@ def train_hybrid_model(n_neighbors=10, tfidf_features=300):
         # === .env laden und MLflow setzen ===
         load_dotenv()
         mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-        mlflow.set_experiment("movie_hybrid_model")
+        mlflow.set_experiment("hybrid_model_exp")  # <--- KLARER EXPERIMENT-NAME!
 
         # === Daten laden ===
         movies = pd.read_csv("/opt/airflow/data/raw/movies.csv")
@@ -119,7 +119,7 @@ def train_hybrid_model(n_neighbors=10, tfidf_features=300):
                 artifacts={"knn_model": model_path},
                 signature=signature,
                 input_example=hybrid_df.drop(columns=["movieId"]).iloc[:2],
-                registered_model_name="movie_model"
+                registered_model_name="hybrid_model"  # <--- KLARE REGISTRY!
             )
             mlflow.log_artifact(matrix_path, artifact_path="features")
             mlflow.log_artifact(features_path, artifact_path="features")

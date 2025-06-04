@@ -16,7 +16,8 @@ from sklearn.neighbors import NearestNeighbors
 from requests.auth import HTTPBasicAuth
 from mlflow.tracking import MlflowClient
 import requests
-
+import logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 
 load_dotenv(".env")
 
@@ -173,352 +174,235 @@ if data_available:
         st.selectbox("Film 5 (optional)", [""] + movie_titles, key="film5")
     ]
     selected_movies = [f for f in selected_movies if f]
-
-
     links_df = pd.read_csv("data/raw/links.csv")
     api_key = os.getenv("TMDB_API_KEY")
 
-    def filter_by_genre(recommended_ids, selected_movies, movies_df):
-        selected_genres = set()
-        for title in selected_movies:
-            genres = movies_df[movies_df["title"] == title]["genres"]
-            if not genres.empty:
-                selected_genres.update([g.strip() for g in genres.values[0].split('|')])
-        result = []
-        for mid in recommended_ids:
-            movie_genres = movies_df[movies_df["movieId"] == mid]["genres"]
-            if not movie_genres.empty:
-                if any(g in movie_genres.values[0].split('|') for g in selected_genres):
-                    result.append(mid)
-        return result
+    # --- Empfehlungsfunktionen ---
+    def get_user_knn_recommendations(selected_movies):
+        try:
+            matrix_path = "data/processed/user_matrix.csv"
+            model_path = "models/user_model.pkl"
+            movies_df = pd.read_csv("data/raw/movies.csv")
+            ratings_df = pd.read_csv("data/raw/ratings.csv")
+            user_df = pd.read_csv(matrix_path, index_col=0)
+            selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+            min_overlap = 2
+            user_movie_counts = ratings_df[ratings_df["movieId"].isin(selected_movie_ids)].groupby("userId")["movieId"].nunique()
+            matching_users = user_movie_counts[user_movie_counts >= min_overlap].index.tolist()
+            if not matching_users:
+                return []
+            user_vec = user_df.loc[user_df.index.intersection(matching_users)].values.mean(axis=0).reshape(1, -1)
+            with open(model_path, "rb") as f:
+                knn_user = pickle.load(f)
+            _, user_neighbor_indices = knn_user.kneighbors(user_vec, n_neighbors=15)
+            similar_user_ids = [user_df.index[idx] for idx in user_neighbor_indices[0]]
+            neighbors_ratings = ratings_df[
+                (ratings_df["userId"].isin(similar_user_ids)) &
+                (~ratings_df["movieId"].isin(selected_movie_ids))
+            ]
+            movie_counts = neighbors_ratings.groupby("movieId")["rating"].agg(["mean", "count"])
+            movie_counts = movie_counts.sort_values(by=["count", "mean"], ascending=[False, False])
+            top_movie_candidates = movie_counts.head(20).index.tolist()
+            recommended = movies_df[movies_df["movieId"].isin(top_movie_candidates)].copy()
+            recommended = recommended.drop_duplicates("movieId")
+            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
+        except Exception as e:
+            return []
 
-    if len(selected_movies) >= 3:
-        st.success("✅ Auswahl ausreichend – Empfehlung kann gestartet werden.")
-        #hybrid modell
-        if st.button("Empfehle 10 ähnliche Filme (MLflow-Bestmodell, Genre-dynamisch)"):
-            try:
-                # Laden...
-                matrix_path = "data/processed/hybrid_matrix.csv"
-                movies_path = "data/raw/movies.csv"
-                links_path = "data/raw/links.csv"
-                model_path = "models/hybrid_model.pkl"
+    def get_hybrid_knn_recommendations(selected_movies):
+        try:
+            matrix_path = "data/processed/hybrid_matrix.csv"
+            model_path = "models/hybrid_model.pkl"
+            movies_df = pd.read_csv("data/raw/movies.csv")
+            hybrid_df = pd.read_csv(matrix_path, index_col=0)
+            with open(model_path, "rb") as f:
+                knn = pickle.load(f)
+            selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+            selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
+            if not selected_indices:
+                return []
+            user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
+            _, rec_indices = knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
+            rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
+            recommended = movies_df[movies_df["movieId"].isin(rec_movie_ids)].copy()
+            recommended = recommended.drop_duplicates("movieId")
+            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
+        except Exception as e:
+            return []
 
-                # MovieId als Index!
-                hybrid_df = pd.read_csv(matrix_path, index_col=0)
-                movies = pd.read_csv(movies_path)
-                links_df = pd.read_csv(links_path)
-                api_key = os.getenv("TMDB_API_KEY")
+    def get_deep_user_knn_recommendations(selected_movies):
+        try:
+            matrix_path = "data/processed/user_deep_embedding.csv"
+            model_path = "models/user_deep_knn.pkl"
+            movies_df = pd.read_csv("data/raw/movies.csv")
+            ratings_df = pd.read_csv("data/raw/ratings.csv")
+            embedding_df = pd.read_csv(matrix_path, index_col=0)
+            selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+            min_overlap = 2
+            user_movie_counts = ratings_df[ratings_df["movieId"].isin(selected_movie_ids)].groupby("userId")["movieId"].nunique()
+            matching_users = user_movie_counts[user_movie_counts >= min_overlap].index.tolist()
+            if not matching_users:
+                return []
+            # Mittelwert-Embedding der passenden User
+            # (Du könntest die Embeddings auch direkt für User bauen, aber für Demo so)
+            user_vec = embedding_df.loc[embedding_df.index.intersection(matching_users)].values.mean(axis=0).reshape(1, -1)
+            with open(model_path, "rb") as f:
+                deep_knn = pickle.load(f)
+            _, user_neighbor_indices = deep_knn.kneighbors(user_vec, n_neighbors=15)
+            similar_user_ids = [embedding_df.index[idx] for idx in user_neighbor_indices[0]]
+            # Finde Movies, die diese User hoch bewertet haben
+            neighbors_ratings = ratings_df[
+                (ratings_df["userId"].isin(similar_user_ids)) &
+                (~ratings_df["movieId"].isin(selected_movie_ids))
+            ]
+            movie_counts = neighbors_ratings.groupby("movieId")["rating"].agg(["mean", "count"])
+            movie_counts = movie_counts.sort_values(by=["count", "mean"], ascending=[False, False])
+            top_movie_candidates = movie_counts.head(20).index.tolist()
+            recommended = movies_df[movies_df["movieId"].isin(top_movie_candidates)].copy()
+            recommended = recommended.drop_duplicates("movieId")
+            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
+        except Exception as e:
+            return []
 
-                # Finde MovieIds deiner Auswahl
-                selected_movie_ids = movies[movies["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+    def get_deep_hybrid_knn_recommendations(selected_movies):
+        try:
+            matrix_path = "data/processed/hybrid_deep_embedding.csv"
+            model_path = "models/hybrid_deep_knn.pkl"
+            movies_df = pd.read_csv("data/raw/movies.csv")
+            embedding_df = pd.read_csv(matrix_path, index_col=0)
+            with open(model_path, "rb") as f:
+                deep_knn = pickle.load(f)
+            selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+            selected_indices = [embedding_df.index.get_loc(mid) for mid in selected_movie_ids if mid in embedding_df.index]
+            if not selected_indices:
+                return []
+            user_vec = embedding_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
+            _, rec_indices = deep_knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
+            rec_movie_ids = [embedding_df.index[idx] for idx in rec_indices[0] if embedding_df.index[idx] not in selected_movie_ids]
+            recommended = movies_df[movies_df["movieId"].isin(rec_movie_ids)].copy()
+            recommended = recommended.drop_duplicates("movieId")
+            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
+        except Exception as e:
+            return []
 
-                # Zeige Genres der Auswahl
-                selected_genres = set()
-                for mid in selected_movie_ids:
-                    g = movies[movies["movieId"] == mid]["genres"].iloc[0]
-                    selected_genres.update(g.split("|"))
-                st.write(f"⚡️ Genres deiner Auswahl: {selected_genres}")
+    def get_baseline_recommendations(selected_movies):
+        try:
+            # Baseline: klassisches Hybrid aus Genres, Tags, genome-scores, NearestNeighbors (ohne externes Modell)
+            movies = pd.read_csv("data/raw/movies.csv")
+            tags = pd.read_csv("data/raw/tags.csv").dropna(subset=["tag"])
+            scores = pd.read_csv("data/raw/genome-scores.csv")
+            tags_combined = tags.groupby("movieId")["tag"].apply(lambda t: " ".join(t)).reset_index()
+            movies = pd.merge(movies, tags_combined, on="movieId", how="left")
+            movies["combined"] = movies["genres"].str.replace("|", " ", regex=False) + " " + movies["tag"].fillna("")
+            tfidf = TfidfVectorizer(max_features=300, stop_words="english")
+            content_embeddings = tfidf.fit_transform(movies["combined"])
+            collab = scores.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
+            valid_movies = movies[movies["movieId"].isin(collab.index)].copy()
+            content_embeddings = content_embeddings[[i for i, mid in enumerate(movies["movieId"]) if mid in valid_movies["movieId"].values]]
+            collab = collab.loc[valid_movies["movieId"]]
+            scaler = MinMaxScaler()
+            collab_scaled = scaler.fit_transform(collab)
+            content_scaled = scaler.fit_transform(content_embeddings.toarray())
+            hybrid_matrix = np.hstack([collab_scaled, content_scaled])
+            hybrid_df = pd.DataFrame(hybrid_matrix, index=valid_movies["movieId"])
+            selected_movie_ids = valid_movies[valid_movies["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+            selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
+            if not selected_indices:
+                return []
+            knn = NearestNeighbors(n_neighbors=10 + len(selected_indices), metric="cosine")
+            knn.fit(hybrid_df.values)
+            user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
+            _, rec_indices = knn.kneighbors(user_vec)
+            rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
+            recommended = valid_movies[valid_movies["movieId"].isin(rec_movie_ids)].copy()
+            recommended = recommended.drop_duplicates("movieId")
+            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
+        except Exception as e:
+            return []
+    #tmdb
 
-                # Finde Indexe im hybrid_df
-                selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
-                if not selected_indices:
-                    st.warning("Keine gültigen Filme gefunden.")
-                    st.stop()
+    @st.cache_data(show_spinner="Lade TMDb Similar…")
+    def get_tmdb_similar_recommendations_cached(selected_movie, movies_df, links_df, api_key):
+        try:
+            logging.info(f"Starte TMDb-Similar-Call für: {selected_movie}")
+            # 1. MovieId im movies_df suchen
+            row = movies_df[movies_df["title"] == selected_movie]
+            if row.empty:
+                row = movies_df[movies_df["title"].str.lower() == selected_movie.lower()]
+                logging.info(f"Case-insensitive Suche (movies_df): {row}")
+            if not row.empty:
+                movie_id = row["movieId"].values[0]
+            else:
+                movie_id = None
 
-                # Lade Modell
-                with open(model_path, "rb") as f:
-                    knn = pickle.load(f)
+            # 2. tmdbId aus links_df holen
+            tmdb_id = None
+            if movie_id is not None:
+                row = links_df[links_df["movieId"] == movie_id]
+                if not row.empty and not pd.isna(row["tmdbId"].values[0]):
+                    tmdb_id = int(row["tmdbId"].values[0])
+            logging.info(f"Ermittelte tmdb_id: {tmdb_id}")
 
-                # Nutzervektor
-                user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
-                _, rec_indices = knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
-                rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
+            # 3. TMDb-API-Call (nur wenn ID existiert)
+            if tmdb_id:
+                url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/recommendations"
+                params = {"api_key": api_key}
+                resp = requests.get(url, params=params, timeout=8)
+                logging.info(f"TMDb API-Response: {resp.status_code}")
+                if resp.status_code == 200:
+                    results = resp.json().get("results", [])[:10]
+                    out = []
+                    for movie in results:
+                        poster_url = f"https://image.tmdb.org/t/p/w342{movie['poster_path']}" if movie.get("poster_path") else None
+                        logging.info(f"Movie: {movie['title']} | Poster: {poster_url}")
+                        out.append({
+                            "title": movie["title"],
+                            "tmdbId": movie["id"],
+                            "poster_url": poster_url
+                        })
+                    return out
+                else:
+                    logging.error(f"TMDb API Fehler: {resp.text}")
+            else:
+                logging.warning("Keine tmdb_id gefunden!")
+        except Exception as e:
+            logging.exception("Fehler beim Laden von TMDb Similar!")
+        return []
 
-                # Filtere Empfehlungen nach dynamischen Genres
-                recommended_movies = movies[movies["movieId"].isin(rec_movie_ids)]
-                filtered = recommended_movies[recommended_movies["genres"].apply(
-                    lambda g: any(genre in g.split("|") for genre in selected_genres)
-                )]
-                st.subheader("🎬 Top 10 Empfehlungen (MLflow-Bestmodell, Genre-dynamisch)")
-                recommended = filtered.head(10)
-                recommended_titles = recommended["title"].tolist()
-                recommended_ids = recommended["movieId"].tolist()
+    # --- TABLE: Empfehlungen aller 6 Modelle ---
+    if len(selected_movies) >= 3 and st.button("Empfehle 10 Filme mit allen 6 Modellen"):
+        recommendations = {
+            "User-KNN": get_user_knn_recommendations(selected_movies),
+            "Hybrid-KNN": get_hybrid_knn_recommendations(selected_movies),
+            "Deep User-KNN": get_deep_user_knn_recommendations(selected_movies),
+            "Deep Hybrid-KNN": get_deep_hybrid_knn_recommendations(selected_movies),
+            "Basis Modell": get_baseline_recommendations(selected_movies),
+        }
+        tmdb_similar = get_tmdb_similar_recommendations_cached(selected_movies[0], movies_df, links_df, api_key)
+        recommendations["TMDb-Similar"] = tmdb_similar
 
-                if not filtered.empty:
-                    for _, row in recommended.iterrows():
-                        poster_url = get_tmdb_poster_url(row["movieId"], links_df, api_key)
-                        cols = st.columns([1, 5])
-                        with cols[0]:
-                            if poster_url:
-                                st.image(poster_url, width=100)
-                            else:
-                                st.write("Kein Poster")
-                        with cols[1]:
-                            st.markdown(f"**{row['title']}**")
-                            st.write(f"Genres: {row['genres']}")
-
-                # --- Automatischer TMDb-Benchmark via tmdbId ---
-                if api_key:
-                    st.markdown("#### 🌎 TMDb Similar Benchmark")
-
-                    # Hole die tmdbId des *ersten* empfohlenen Films
-                    def get_tmdb_recommendations(movie_id, links_df, api_key):
-                        row = links_df[links_df["movieId"] == movie_id]
-                        if not row.empty and not pd.isna(row["tmdbId"].values[0]):
-                            tmdb_id = int(row["tmdbId"].values[0])
-                            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/recommendations"
-                            params = {"api_key": api_key}
-                            resp = requests.get(url, params=params)
-                            if resp.status_code == 200:
-                                return resp.json().get("results", [])
-                        return []
-
-                    # Nehme die erste Empfehlung (wenn du mehrere möchtest, erweitere hier)
-                    benchmark_similars = []
-                    for mid in recommended_ids[:1]:
-                        benchmark_similars = get_tmdb_recommendations(mid, links_df, api_key)
-                        if benchmark_similars:
-                            break
-
-                    st.markdown("##### TMDb-Similar für deinen besten Treffer:")
-                    sim_cols = st.columns(5)
-                    for i, movie in enumerate(benchmark_similars[:10]):
-                        with sim_cols[i % 5]:
-                            if movie.get('poster_path'):
-                                st.image(f"https://image.tmdb.org/t/p/w185{movie['poster_path']}", width=90)
-                            st.caption(movie['title'])
-
-                    # Overlap-Score
-                    # Overlap-Score nun TMDb-ID-basiert!
-                    your_tmdb_ids = set()
-                    for mid in recommended_ids:
-                        row = links_df[links_df["movieId"] == mid]
-                        if not row.empty and not pd.isna(row["tmdbId"].values[0]):
-                            your_tmdb_ids.add(int(row["tmdbId"].values[0]))
-
-                    tmdb_similar_ids = set([movie['id'] for movie in benchmark_similars[:10]])
-                    overlap = your_tmdb_ids & tmdb_similar_ids
-                    overlap_score = len(overlap) / 10
-
-                    st.metric("TMDb Overlap-Score", f"{overlap_score:.2f}", help="Anteil deiner Top 10, die bei TMDb als ähnlich gelten")
-
-                    if overlap:
-                        overlap_titles = [movie['title'] for movie in benchmark_similars[:10] if movie['id'] in overlap]
-                        st.write("🟢 Überschneidungen (nach TMDb-ID):", overlap_titles)
+        model_names = list(recommendations.keys())
+        n_models = len(model_names)
+        cols = st.columns(n_models)
+        for i, name in enumerate(model_names):
+            with cols[i]:
+                st.markdown(f"#### {name}")
+                recs = recommendations[name]
+                if not recs:
+                    st.write("— (keine Empfehlungen) —")
+                for rec in recs:
+                    if name == "TMDb-Similar":
+                        poster_url = rec.get("poster_url", None)
                     else:
-                        st.info("Keine Überschneidungen mit TMDb Similar gefunden (nach TMDb-ID).")
-
-                    avg_ratings = [get_movie_rating(title, api_key) for title in recommended_titles]
-                    avg_ratings = [r for r in avg_ratings if r is not None]
-                    if avg_ratings:
-                        st.write(f"Durchschnittliches TMDb-User-Rating deiner Empfehlungen: {np.mean(avg_ratings):.2f}")
-
-                    # --- In MLflow loggen (DagsHub) ---
-                    try:
-                        mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-                        client = MlflowClient()
-                        model_name = "movie_model"
-                        versions = client.search_model_versions(f"name='{model_name}'")
-                        # Nimm das neueste Modell mit passendem Tag (hybrid_knn)
-                        newest = sorted(versions, key=lambda v: int(v.version), reverse=True)[0]
-                        run_id = newest.run_id
-                        client.log_metric(run_id, "tmdb_overlap", overlap_score)
-                        st.success(f"✅ TMDb-Benchmark-Score ({overlap_score:.2f}) wurde in MLflow für das Hybridmodell geloggt (Version {newest.version}).")
-                    except Exception as e:
-                        st.warning(f"⚠️ MLflow Logging Fehler (DagsHub): {e}")
-
-                else:
-                    st.info("ℹ️ Kein TMDb-API-Key gesetzt, Benchmark-Vergleich übersprungen.")
-
-            except Exception as e:
-                st.error(f"❌ Fehler bei dynamischer Genre-Empfehlung: {e}")
-        #user model
-        if st.button("Empfehle 10 ähnliche Filme (User-Based Neighbors, optimiert)"):
-            try:
-                # Daten laden
-                matrix_path = "data/processed/user_matrix.csv"
-                movies_path = "data/raw/movies.csv"
-                ratings_path = "data/raw/ratings.csv"
-                model_path = "models/user_model.pkl"
-                links_path = "data/raw/links.csv"
-                api_key = os.getenv("TMDB_API_KEY")
-
-                user_df = pd.read_csv(matrix_path, index_col=0)
-                movies_df = pd.read_csv(movies_path)
-                ratings_df = pd.read_csv(ratings_path)
-                links_df = pd.read_csv(links_path) if os.path.exists(links_path) else None
-
-                # 1. Filme der Auswahl (MovieIDs)
-                selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
-                if not selected_movie_ids:
-                    st.warning("Keine gültigen Filme in User-Modell gefunden.")
-                    st.stop()
-
-                # 2. User, die mindestens X deiner Filme bewertet haben
-                min_overlap = 2  # Du kannst hier 3 oder mehr testen!
-                user_movie_counts = ratings_df[ratings_df["movieId"].isin(selected_movie_ids)].groupby("userId")["movieId"].nunique()
-                matching_users = user_movie_counts[user_movie_counts >= min_overlap].index.tolist()
-                if not matching_users:
-                    st.warning("Keine passenden User mit ausreichend Überlappung gefunden. Verringere min_overlap oder wähle andere Filme.")
-                    st.stop()
-
-                # 3. Query-User-Vektor als Mittelwert dieser User-Vektoren
-                user_vec = user_df.loc[user_df.index.intersection(matching_users)].values.mean(axis=0).reshape(1, -1)
-
-                # 4. KNN: ähnlichste User (neighbors) finden
-                with open(model_path, "rb") as f:
-                    knn_user = pickle.load(f)
-                _, user_neighbor_indices = knn_user.kneighbors(user_vec, n_neighbors=15)
-                similar_user_ids = [user_df.index[idx] for idx in user_neighbor_indices[0]]
-
-                # 5. Empfehlungen: Nur Filme, die diese User hoch bewertet haben, aber du nicht ausgewählt hast
-                neighbors_ratings = ratings_df[
-                    (ratings_df["userId"].isin(similar_user_ids)) & 
-                    (~ratings_df["movieId"].isin(selected_movie_ids))
-                ]
-                # Filme, die von möglichst vielen der ähnlichen Nutzer bewertet wurden
-                movie_counts = neighbors_ratings.groupby("movieId")["rating"].agg(["mean", "count"])
-                # Score: erst nach Anzahl der Bewertungen, dann Durchschnittsbewertung sortieren
-                movie_counts = movie_counts.sort_values(by=["count", "mean"], ascending=[False, False])
-                top_movie_candidates = movie_counts.head(30).index.tolist()
-
-                # Genrefilter wie gehabt
-                selected_genres = set()
-                for mid in selected_movie_ids:
-                    genres = movies_df[movies_df["movieId"] == mid]["genres"]
-                    if not genres.empty:
-                        selected_genres.update(genres.iloc[0].split("|"))
-
-                recommended = movies_df[movies_df["movieId"].isin(top_movie_candidates)].copy()
-                if not recommended.empty and selected_genres:
-                    recommended = recommended[recommended["genres"].apply(
-                        lambda g: any(genre in g.split("|") for genre in selected_genres)
-                    )]
-
-                st.subheader("🎬 Top 10 Empfehlungen (User-Based Neighbors, optimiert)")
-                if not recommended.empty:
-                    for _, row in recommended.head(10).iterrows():
-                        poster_url = None
-                        if links_df is not None:
-                            poster_url = get_tmdb_poster_url(row["movieId"], links_df, api_key)
-                        cols = st.columns([1, 5])
-                        with cols[0]:
-                            if poster_url:
-                                st.image(poster_url, width=100)
-                            else:
-                                st.write("Kein Poster")
-                        with cols[1]:
-                            st.markdown(f"**{row['title']}**")
-                            st.write(f"Genres: {row['genres']}")
-                if st.button("🔍 Vergleiche meine Top-10 mit TMDb Similar Movies"):
-                    # Extrahiere die empfohlenen Titel als Liste (aus deinem DataFrame 'filtered' oder 'recommended')
-                    recommended_titles = filtered.head(10)["title"].tolist()  # oder 'recommended' je nach Modell/Block
-                    api_key = os.getenv("TMDB_API_KEY")
-                    overlaps, overlap_count = compare_with_tmdb(recommended_titles, api_key)
-                    st.info(f"Überschneidungen mit TMDb Similar: {overlap_count}")
-                    if overlaps:
-                        st.write("Folgende Filme sind sowohl in deiner Empfehlung als auch TMDb-Similar:", overlaps)
-                        avg_ratings = [get_movie_rating(title, api_key) for title in recommended_titles]
-                        avg_ratings = [r for r in avg_ratings if r is not None]
-                        if avg_ratings:
-                            st.write(f"Durchschnittliches TMDb-User-Rating deiner Empfehlungen: {np.mean(avg_ratings):.2f}")
-
+                        poster_url = get_tmdb_poster_url(rec["movieId"], links_df, api_key)
+                    short_title = rec['title'][:22] + "…" if len(rec['title']) > 24 else rec['title']
+                    if poster_url:
+                        st.image(poster_url, width=95)
                     else:
-                        st.write("Keine Überschneidungen gefunden.")
-                else:
-                    st.info("⚠️ Keine passenden Empfehlungen gefunden. Probiere andere Auswahl.")
+                        st.write("—")
+                    st.caption(short_title)
 
-            except Exception as e:
-                st.error(f"❌ Fehler bei user-based Empfehlung: {e}")
-        #basic model            
-        if st.button("Empfehle 10 ähnliche Filme (lokal, wie Hybrid-Modell)"):
-            try:
-                # --- Pfade wie oben ---
-                movies_path = "data/raw/movies.csv"
-                tags_path = "data/raw/tags.csv"
-                scores_path = "data/raw/genome-scores.csv"
-
-                # --- Lade Daten ---
-                movies = pd.read_csv(movies_path)
-                tags = pd.read_csv(tags_path).dropna(subset=["tag"])
-                scores = pd.read_csv(scores_path)
-
-                # --- Kombiniere Genres & Tags wie im Preprocessing ---
-                tags_combined = tags.groupby("movieId")["tag"].apply(lambda t: " ".join(t)).reset_index()
-                movies = pd.merge(movies, tags_combined, on="movieId", how="left")
-                movies["combined"] = movies["genres"].str.replace("|", " ", regex=False) + " " + movies["tag"].fillna("")
-
-                tfidf = TfidfVectorizer(max_features=300, stop_words="english")
-                content_embeddings = tfidf.fit_transform(movies["combined"])
-
-                collab = scores.pivot(index="movieId", columns="tagId", values="relevance").fillna(0)
-
-                # Nur Movies mit genome-scores verwenden (wie hybrid_matrix)
-                valid_movies = movies[movies["movieId"].isin(collab.index)].copy()
-                content_embeddings = content_embeddings[[i for i, mid in enumerate(movies["movieId"]) if mid in valid_movies["movieId"].values]]
-                collab = collab.loc[valid_movies["movieId"]]
-
-                # Skaliere beide Matrizen
-                scaler = MinMaxScaler()
-                collab_scaled = scaler.fit_transform(collab)
-                content_scaled = scaler.fit_transform(content_embeddings.toarray())
-                hybrid_matrix = np.hstack([collab_scaled, content_scaled])
-
-                # === Index == MovieId! ===
-                hybrid_df = pd.DataFrame(hybrid_matrix, index=valid_movies["movieId"])
-
-                # --- User-Auswahl umsetzen wie oben ---
-                selected_movie_ids = valid_movies[valid_movies["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
-
-                selected_genres = set()
-                for mid in selected_movie_ids:
-                    g = valid_movies[valid_movies["movieId"] == mid]["genres"].iloc[0]
-                    selected_genres.update(g.split("|"))
-                st.write(f"⚡️ Genres deiner Auswahl: {selected_genres}")
-
-                # Index in der Matrix suchen
-                selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
-                if not selected_indices:
-                    st.warning("Keine gültigen Filme gefunden.")
-                    st.stop()
-
-                # --- Modell auf dem neuen Schema trainieren ---
-                knn = NearestNeighbors(n_neighbors=10 + len(selected_indices), metric="cosine")
-                knn.fit(hybrid_df.values)
-
-                # --- User-Vektor analog ---
-                user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
-                _, rec_indices = knn.kneighbors(user_vec)
-                rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
-
-                # --- Empfehlungen wie oben filtern ---
-                recommended_movies = valid_movies[valid_movies["movieId"].isin(rec_movie_ids)]
-                filtered = recommended_movies[recommended_movies["genres"].apply(
-                    lambda g: any(genre in g.split("|") for genre in selected_genres)
-                )]
-
-                st.subheader("🎬 Top 10 Empfehlungen (Lokal, Hybrid-Style)")
-                if not filtered.empty:
-                    for _, row in filtered.head(10).iterrows():
-                        poster_url = get_tmdb_poster_url(row["movieId"], links_df, api_key)
-                        cols = st.columns([1, 5])
-                        with cols[0]:
-                            if poster_url:
-                                st.image(poster_url, width=100)
-                            else:
-                                st.write("Kein Poster")
-                        with cols[1]:
-                            st.markdown(f"**{row['title']}**")
-                            st.write(f"Genres: {row['genres']}")
-
-                else:
-                    st.info("⚠️ Keine passenden Empfehlungen gefunden. Probiere andere Filme.")
-
-            except Exception as e:
-                st.error(f"❌ Fehler bei der lokalen Hybrid-Empfehlung: {e}")
-else:
-    st.info("ℹ️ Noch keine Filmdaten verfügbar. Bitte generiere die Daten per Admin-Panel.")
-    
+                    
 # === ADMIN-Bereich ===
 if role == "admin":
 
@@ -537,12 +421,15 @@ if role == "admin":
     n_neighbors = st.slider("KNN Nachbarn (n_neighbors)", 1, 50, 10)
     tfidf_features = st.slider("TF-IDF max_features", 50, 2000, 300)
 
+    latent_dim = st.slider("Latente Dimension (latent_dim, nur DL)", 8, 128, 32, step=8)
+
     # Optionen speichern (z. B. als dict in st.session_state, um sie in der Trigger-API zu übergeben)
     st.session_state["pipeline_conf"] = {
         #"force_rebuild": force_rebuild,
         "test_user_count": test_user_count,
         "n_neighbors": n_neighbors,
         "tfidf_features": tfidf_features,
+        "latent_dim": latent_dim,  # NEU
     }
     st.subheader("⚙️ Admin Panel – Airflow & MLflow")
 
@@ -552,13 +439,19 @@ if role == "admin":
         st.session_state["dag_triggered"] = False
 
     with col1:
-        #update Pipeline
+        # Klassische Pipeline (kein latent_dim!)
         if st.button("▶️ Starte DAG: movie_recommendation_pipeline"):
             try:
-                # 1. Laufende DAG-Runs finden und stoppen!
                 dag_id = "movie_recommendation_pipeline"
                 airflow_url = API_URL
                 auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
+
+                # Nur passende Keys für diesen DAG
+                classic_conf = {
+                    "test_user_count": test_user_count,
+                    "n_neighbors": n_neighbors,
+                    "tfidf_features": tfidf_features,
+                }
 
                 # Step 1: Suche alle laufenden Runs
                 running_runs_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?state=running"
@@ -579,7 +472,7 @@ if role == "admin":
                 # Step 3: Starte neuen DAG-Run
                 response = requests.post(
                     f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns",
-                    json={"conf": st.session_state["pipeline_conf"]},
+                    json={"conf": classic_conf},
                     auth=auth
                 )
                 if response.status_code == 200:
@@ -591,15 +484,21 @@ if role == "admin":
                     st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
             except Exception as e:
                 st.error(f"❌ Fehler bei API-Aufruf: {e}")
-        
+
     with col2:
-        #update Pipeline dl
+        # Deep Learning Pipeline (kein tfidf_features!)
         if st.button("▶️ Starte DAG: Deep_Learning_pipeline"):
             try:
-                # 1. Laufende DAG-Runs finden und stoppen!
                 dag_id = "deep_models_pipeline"
                 airflow_url = API_URL
                 auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
+
+                # Nur passende Keys für diesen DAG
+                dl_conf = {
+                    "test_user_count": test_user_count,
+                    "n_neighbors": n_neighbors,
+                    "latent_dim": latent_dim,
+                }
 
                 # Step 1: Suche alle laufenden Runs
                 running_runs_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?state=running"
@@ -620,7 +519,7 @@ if role == "admin":
                 # Step 3: Starte neuen DAG-Run
                 response = requests.post(
                     f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns",
-                    json={"conf": st.session_state["pipeline_conf"]},
+                    json={"conf": dl_conf},
                     auth=auth
                 )
                 if response.status_code == 200:
