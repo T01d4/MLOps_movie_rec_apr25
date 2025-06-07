@@ -1,0 +1,100 @@
+[2025-06-05T21:24:18.311+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model_user manual__2025-06-05T21:15:55.562459+00:00 [queued]>
+[2025-06-05T21:24:18.319+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model_user manual__2025-06-05T21:15:55.562459+00:00 [queued]>
+[2025-06-05T21:24:18.319+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-05T21:24:18.329+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model_user> on 2025-06-05 21:15:55.562459+00:00
+[2025-06-05T21:24:18.336+0000] {standard_task_runner.py:60} INFO - Started process 5086 to run task
+[2025-06-05T21:24:18.338+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model_user', 'manual__2025-06-05T21:15:55.562459+00:00', '--job-id', '2028', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp9icky7vk']
+[2025-06-05T21:24:18.340+0000] {standard_task_runner.py:88} INFO - Job 2028: Subtask predict_best_model_user
+[2025-06-05T21:24:18.374+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model_user manual__2025-06-05T21:15:55.562459+00:00 [running]> on host 3f2696f940ac
+[2025-06-05T21:24:18.428+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model_user' AIRFLOW_CTX_EXECUTION_DATE='2025-06-05T21:15:55.562459+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-05T21:15:55.562459+00:00'
+[2025-06-05T21:24:18.429+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py --model_type=user --pipeline_type=dl --n_users=100
+[2025-06-05T21:24:31.034+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+[2025-06-05T21:24:31.034+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-05 21:24:20,294 - INFO - 🚀 Starte Prediction über MLflow Registry – Typ: user, Pipeline: dl
+2025-06-05 21:24:20,294 - INFO - 📦 Lade Modell aus MLflow Registry: models:/user_deep_model@best_model
+
+Downloading artifacts:   0%|          | 0/8 [00:00<?, ?it/s]
+Downloading artifacts:  12%|█▎        | 1/8 [00:00<00:00, 13617.87it/s]
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:00,  7.67it/s]   
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:00,  7.67it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:00<00:00,  7.67it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:00<00:00, 11.83it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:00<00:00, 11.83it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:01<00:00, 11.83it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:02<00:01,  1.81it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:02<00:01,  1.81it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:04<00:00,  1.19it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:04<00:00,  1.19it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:07<00:00,  1.42s/it]
+Downloading artifacts: 100%|██████████| 8/8 [00:07<00:00,  1.42s/it]
+Downloading artifacts: 100%|██████████| 8/8 [00:07<00:00,  1.08it/s]
+2025-06-05 21:24:30,478 - INFO - 📥 Eingabematrix geladen: /opt/***/data/processed/user_deep_embedding.csv – Shape: (138493, 32)
+2025-06-05 21:24:30,499 - ERROR - ❌ Fehler bei der Modellvorhersage: Failed to enforce schema of data '            0         1         2  ...        29        30        31
+1   -0.346355  0.004128  0.261798  ... -0.372179  0.002203  0.142707
+2   -0.560009  0.027637  0.233155  ... -0.154401 -0.160107  0.075668
+3   -0.472834  0.100807  0.319682  ... -0.172484 -0.207587  0.105220
+4   -0.307440  0.100905  0.230389  ... -0.199462 -0.023888  0.242590
+5   -0.374146 -0.014549  0.272053  ... -0.201226  0.063258  0.191086
+..        ...       ...       ...  ...       ...       ...       ...
+96  -0.308682  0.080777  0.255479  ... -0.252388  0.002459  0.225242
+97  -0.358323 -0.163267  0.148723  ... -0.242028 -0.104815  0.286018
+98  -0.399723  0.053832  0.360392  ... -0.200237  0.028849  0.113850
+99  -0.170506 -0.009449  0.081145  ... -0.280950 -0.123950  0.089448
+100 -0.326905 -0.054022  0.104682  ... -0.225264 -0.193057  0.121407
+
+[100 rows x 32 columns]' with schema '['emb_0': float (required), 'emb_1': float (required), 'emb_2': float (required), 'emb_3': float (required), 'emb_4': float (required), 'emb_5': float (required), 'emb_6': float (required), 'emb_7': float (required), 'emb_8': float (required), 'emb_9': float (required), 'emb_10': float (required), 'emb_11': float (required), 'emb_12': float (required), 'emb_13': float (required), 'emb_14': float (required), 'emb_15': float (required), 'emb_16': float (required), 'emb_17': float (required), 'emb_18': float (required), 'emb_19': float (required), 'emb_20': float (required), 'emb_21': float (required), 'emb_22': float (required), 'emb_23': float (required), 'emb_24': float (required), 'emb_25': float (required), 'emb_26': float (required), 'emb_27': float (required), 'emb_28': float (required), 'emb_29': float (required), 'emb_30': float (required), 'emb_31': float (required)]'. Error: Model is missing inputs ['emb_0', 'emb_1', 'emb_2', 'emb_3', 'emb_4', 'emb_5', 'emb_6', 'emb_7', 'emb_8', 'emb_9', 'emb_10', 'emb_11', 'emb_12', 'emb_13', 'emb_14', 'emb_15', 'emb_16', 'emb_17', 'emb_18', 'emb_19', 'emb_20', 'emb_21', 'emb_22', 'emb_23', 'emb_24', 'emb_25', 'emb_26', 'emb_27', 'emb_28', 'emb_29', 'emb_30', 'emb_31']. Note that there were extra inputs: ['0', '23', '1', '18', '19', '29', '24', '21', '26', '30', '5', '15', '10', '2', '25', '14', '31', '6', '11', '27', '8', '4', '22', '13', '28', '20', '9', '7', '3', '17', '12', '16']
+Traceback (most recent call last):
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 730, in _validate_prediction_input
+    data = _enforce_schema(data, input_schema, flavor)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/models/utils.py", line 1259, in _enforce_schema
+    raise MlflowException(message)
+mlflow.exceptions.MlflowException: Model is missing inputs ['emb_0', 'emb_1', 'emb_2', 'emb_3', 'emb_4', 'emb_5', 'emb_6', 'emb_7', 'emb_8', 'emb_9', 'emb_10', 'emb_11', 'emb_12', 'emb_13', 'emb_14', 'emb_15', 'emb_16', 'emb_17', 'emb_18', 'emb_19', 'emb_20', 'emb_21', 'emb_22', 'emb_23', 'emb_24', 'emb_25', 'emb_26', 'emb_27', 'emb_28', 'emb_29', 'emb_30', 'emb_31']. Note that there were extra inputs: ['0', '23', '1', '18', '19', '29', '24', '21', '26', '30', '5', '15', '10', '2', '25', '14', '31', '6', '11', '27', '8', '4', '22', '13', '28', '20', '9', '7', '3', '17', '12', '16']
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/***/src/models/predict_best_model.py", line 120, in <module>
+    predict_best_model(model_type=args.model_type, pipeline_type=args.pipeline_type, n_users=args.n_users)
+  File "/opt/***/src/models/predict_best_model.py", line 68, in predict_best_model
+    predictions = model.predict(input_df)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 812, in predict
+    return self._predict(data, params)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 851, in _predict
+    data, params = _validate_prediction_input(
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 733, in _validate_prediction_input
+    raise MlflowException.invalid_parameter_value(
+mlflow.exceptions.MlflowException: Failed to enforce schema of data '            0         1         2  ...        29        30        31
+1   -0.346355  0.004128  0.261798  ... -0.372179  0.002203  0.142707
+2   -0.560009  0.027637  0.233155  ... -0.154401 -0.160107  0.075668
+3   -0.472834  0.100807  0.319682  ... -0.172484 -0.207587  0.105220
+4   -0.307440  0.100905  0.230389  ... -0.199462 -0.023888  0.242590
+5   -0.374146 -0.014549  0.272053  ... -0.201226  0.063258  0.191086
+..        ...       ...       ...  ...       ...       ...       ...
+96  -0.308682  0.080777  0.255479  ... -0.252388  0.002459  0.225242
+97  -0.358323 -0.163267  0.148723  ... -0.242028 -0.104815  0.286018
+98  -0.399723  0.053832  0.360392  ... -0.200237  0.028849  0.113850
+99  -0.170506 -0.009449  0.081145  ... -0.280950 -0.123950  0.089448
+100 -0.326905 -0.054022  0.104682  ... -0.225264 -0.193057  0.121407
+
+[100 rows x 32 columns]' with schema '['emb_0': float (required), 'emb_1': float (required), 'emb_2': float (required), 'emb_3': float (required), 'emb_4': float (required), 'emb_5': float (required), 'emb_6': float (required), 'emb_7': float (required), 'emb_8': float (required), 'emb_9': float (required), 'emb_10': float (required), 'emb_11': float (required), 'emb_12': float (required), 'emb_13': float (required), 'emb_14': float (required), 'emb_15': float (required), 'emb_16': float (required), 'emb_17': float (required), 'emb_18': float (required), 'emb_19': float (required), 'emb_20': float (required), 'emb_21': float (required), 'emb_22': float (required), 'emb_23': float (required), 'emb_24': float (required), 'emb_25': float (required), 'emb_26': float (required), 'emb_27': float (required), 'emb_28': float (required), 'emb_29': float (required), 'emb_30': float (required), 'emb_31': float (required)]'. Error: Model is missing inputs ['emb_0', 'emb_1', 'emb_2', 'emb_3', 'emb_4', 'emb_5', 'emb_6', 'emb_7', 'emb_8', 'emb_9', 'emb_10', 'emb_11', 'emb_12', 'emb_13', 'emb_14', 'emb_15', 'emb_16', 'emb_17', 'emb_18', 'emb_19', 'emb_20', 'emb_21', 'emb_22', 'emb_23', 'emb_24', 'emb_25', 'emb_26', 'emb_27', 'emb_28', 'emb_29', 'emb_30', 'emb_31']. Note that there were extra inputs: ['0', '23', '1', '18', '19', '29', '24', '21', '26', '30', '5', '15', '10', '2', '25', '14', '31', '6', '11', '27', '8', '4', '22', '13', '28', '20', '9', '7', '3', '17', '12', '16']
+
+[2025-06-05T21:24:31.035+0000] {train_deep_model_dag.py:29} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/predict_best_model.py --model_type=user --pipeline_type=dl --n_users=100
+[2025-06-05T21:24:31.035+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/predict_best_model.py', '--model_type=user', '--pipeline_type=dl', '--n_users=100']' returned non-zero exit status 1.
+[2025-06-05T21:24:31.036+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 129, in run_predict_best_model_user_dl
+    run_and_log([
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 30, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/predict_best_model.py', '--model_type=user', '--pipeline_type=dl', '--n_users=100']' returned non-zero exit status 1.
+[2025-06-05T21:24:31.046+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=deep_models_pipeline, task_id=predict_best_model_user, execution_date=20250605T211555, start_date=20250605T212418, end_date=20250605T212431
+[2025-06-05T21:24:31.056+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 2028 for task predict_best_model_user (Command '['python', '/opt/airflow/src/models/predict_best_model.py', '--model_type=user', '--pipeline_type=dl', '--n_users=100']' returned non-zero exit status 1.; 5086)
+[2025-06-05T21:24:31.067+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-05T21:24:31.079+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

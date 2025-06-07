@@ -1,260 +1,0 @@
-[2025-05-31T13:11:50.211+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T13:02:26.838748+00:00 [queued]>
-[2025-05-31T13:11:50.217+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T13:02:26.838748+00:00 [queued]>
-[2025-05-31T13:11:50.217+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 2
-[2025-05-31T13:11:50.226+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-05-31 13:02:26.838748+00:00
-[2025-05-31T13:11:50.236+0000] {standard_task_runner.py:60} INFO - Started process 467 to run task
-[2025-05-31T13:11:50.237+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'validate_models', 'manual__2025-05-31T13:02:26.838748+00:00', '--job-id', '161', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpdn8u4rq4']
-[2025-05-31T13:11:50.238+0000] {standard_task_runner.py:88} INFO - Job 161: Subtask validate_models
-[2025-05-31T13:11:50.269+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.validate_models manual__2025-05-31T13:02:26.838748+00:00 [running]> on host 87627f924a67
-[2025-05-31T13:11:50.330+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-05-31T13:02:26.838748+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-05-31T13:02:26.838748+00:00'
-[2025-05-31T13:11:57.322+0000] {logging_mixin.py:188} WARNING -   0%|          | 0/100 [00:00<?, ?it/s]
-[2025-05-31T13:11:57.326+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:57.518+0000] {logging_mixin.py:188} WARNING -   1%|1         | 1/100 [00:00<00:19,  5.14it/s]
-[2025-05-31T13:11:57.519+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:57.691+0000] {logging_mixin.py:188} WARNING -   2%|2         | 2/100 [00:00<00:17,  5.50it/s]
-[2025-05-31T13:11:57.692+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:57.824+0000] {logging_mixin.py:188} WARNING -   3%|3         | 3/100 [00:00<00:15,  6.26it/s]
-[2025-05-31T13:11:57.826+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:57.977+0000] {logging_mixin.py:188} WARNING -   4%|4         | 4/100 [00:00<00:15,  6.36it/s]
-[2025-05-31T13:11:57.979+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:58.110+0000] {logging_mixin.py:188} WARNING -   5%|5         | 5/100 [00:00<00:14,  6.74it/s]
-[2025-05-31T13:11:58.112+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:58.273+0000] {logging_mixin.py:188} WARNING -   6%|6         | 6/100 [00:00<00:14,  6.53it/s]
-[2025-05-31T13:11:58.274+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:58.406+0000] {logging_mixin.py:188} WARNING -   7%|7         | 7/100 [00:01<00:13,  6.82it/s]
-[2025-05-31T13:11:58.408+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:58.562+0000] {logging_mixin.py:188} WARNING -   8%|8         | 8/100 [00:01<00:13,  6.67it/s]
-[2025-05-31T13:11:58.564+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:58.703+0000] {logging_mixin.py:188} WARNING -   9%|9         | 9/100 [00:01<00:13,  6.80it/s]
-[2025-05-31T13:11:58.705+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:58.849+0000] {logging_mixin.py:188} WARNING -  10%|#         | 10/100 [00:01<00:13,  6.83it/s]
-[2025-05-31T13:11:58.850+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.015+0000] {logging_mixin.py:188} WARNING -  11%|#1        | 11/100 [00:01<00:13,  6.55it/s]
-[2025-05-31T13:11:59.016+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.162+0000] {logging_mixin.py:188} WARNING -  12%|#2        | 12/100 [00:01<00:13,  6.62it/s]
-[2025-05-31T13:11:59.164+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.338+0000] {logging_mixin.py:188} WARNING -  13%|#3        | 13/100 [00:02<00:13,  6.31it/s]
-[2025-05-31T13:11:59.340+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.482+0000] {logging_mixin.py:188} WARNING -  14%|#4        | 14/100 [00:02<00:13,  6.48it/s]
-[2025-05-31T13:11:59.484+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.680+0000] {logging_mixin.py:188} WARNING -  15%|#5        | 15/100 [00:02<00:14,  5.98it/s]
-[2025-05-31T13:11:59.681+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.822+0000] {logging_mixin.py:188} WARNING -  16%|#6        | 16/100 [00:02<00:13,  6.26it/s]
-[2025-05-31T13:11:59.824+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:11:59.956+0000] {logging_mixin.py:188} WARNING -  17%|#7        | 17/100 [00:02<00:12,  6.58it/s]
-[2025-05-31T13:11:59.958+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:00.098+0000] {logging_mixin.py:188} WARNING -  18%|#8        | 18/100 [00:02<00:12,  6.71it/s]
-[2025-05-31T13:12:00.100+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:00.249+0000] {logging_mixin.py:188} WARNING -  19%|#9        | 19/100 [00:02<00:12,  6.69it/s]
-[2025-05-31T13:12:00.251+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:00.393+0000] {logging_mixin.py:188} WARNING -  20%|##        | 20/100 [00:03<00:11,  6.76it/s]
-[2025-05-31T13:12:00.395+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:00.535+0000] {logging_mixin.py:188} WARNING -  21%|##1       | 21/100 [00:03<00:11,  6.85it/s]
-[2025-05-31T13:12:00.536+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:00.680+0000] {logging_mixin.py:188} WARNING -  22%|##2       | 22/100 [00:03<00:11,  6.86it/s]
-[2025-05-31T13:12:00.682+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:00.831+0000] {logging_mixin.py:188} WARNING -  23%|##3       | 23/100 [00:03<00:11,  6.78it/s]
-[2025-05-31T13:12:00.833+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:01.027+0000] {logging_mixin.py:188} WARNING -  24%|##4       | 24/100 [00:03<00:12,  6.18it/s]
-[2025-05-31T13:12:01.029+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:01.266+0000] {logging_mixin.py:188} WARNING -  25%|##5       | 25/100 [00:03<00:13,  5.40it/s]
-[2025-05-31T13:12:01.268+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:01.433+0000] {logging_mixin.py:188} WARNING -  26%|##6       | 26/100 [00:04<00:13,  5.57it/s]
-[2025-05-31T13:12:01.435+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:01.638+0000] {logging_mixin.py:188} WARNING -  27%|##7       | 27/100 [00:04<00:13,  5.34it/s]
-[2025-05-31T13:12:01.640+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:01.852+0000] {logging_mixin.py:188} WARNING -  28%|##8       | 28/100 [00:04<00:14,  5.12it/s]
-[2025-05-31T13:12:01.854+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:02.018+0000] {logging_mixin.py:188} WARNING -  29%|##9       | 29/100 [00:04<00:13,  5.36it/s]
-[2025-05-31T13:12:02.021+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:02.222+0000] {logging_mixin.py:188} WARNING -  30%|###       | 30/100 [00:04<00:13,  5.22it/s]
-[2025-05-31T13:12:02.224+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:02.369+0000] {logging_mixin.py:188} WARNING -  31%|###1      | 31/100 [00:05<00:12,  5.61it/s]
-[2025-05-31T13:12:02.370+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:02.567+0000] {logging_mixin.py:188} WARNING -  32%|###2      | 32/100 [00:05<00:12,  5.43it/s]
-[2025-05-31T13:12:02.569+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:02.728+0000] {logging_mixin.py:188} WARNING -  33%|###3      | 33/100 [00:05<00:11,  5.64it/s]
-[2025-05-31T13:12:02.730+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:02.875+0000] {logging_mixin.py:188} WARNING -  34%|###4      | 34/100 [00:05<00:11,  5.94it/s]
-[2025-05-31T13:12:02.877+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:03.029+0000] {logging_mixin.py:188} WARNING -  35%|###5      | 35/100 [00:05<00:10,  6.11it/s]
-[2025-05-31T13:12:03.031+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:03.175+0000] {logging_mixin.py:188} WARNING -  36%|###6      | 36/100 [00:05<00:10,  6.31it/s]
-[2025-05-31T13:12:03.177+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:03.319+0000] {logging_mixin.py:188} WARNING -  37%|###7      | 37/100 [00:05<00:09,  6.49it/s]
-[2025-05-31T13:12:03.321+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:03.535+0000] {logging_mixin.py:188} WARNING -  38%|###8      | 38/100 [00:06<00:10,  5.79it/s]
-[2025-05-31T13:12:03.537+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:03.681+0000] {logging_mixin.py:188} WARNING -  39%|###9      | 39/100 [00:06<00:10,  6.06it/s]
-[2025-05-31T13:12:03.684+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:03.909+0000] {logging_mixin.py:188} WARNING -  40%|####      | 40/100 [00:06<00:11,  5.44it/s]
-[2025-05-31T13:12:03.911+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.056+0000] {logging_mixin.py:188} WARNING -  41%|####1     | 41/100 [00:06<00:10,  5.79it/s]
-[2025-05-31T13:12:04.058+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.196+0000] {logging_mixin.py:188} WARNING -  42%|####2     | 42/100 [00:06<00:09,  6.14it/s]
-[2025-05-31T13:12:04.199+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.384+0000] {logging_mixin.py:188} WARNING -  43%|####3     | 43/100 [00:07<00:09,  5.87it/s]
-[2025-05-31T13:12:04.386+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.563+0000] {logging_mixin.py:188} WARNING -  44%|####4     | 44/100 [00:07<00:09,  5.78it/s]
-[2025-05-31T13:12:04.565+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.701+0000] {logging_mixin.py:188} WARNING -  45%|####5     | 45/100 [00:07<00:08,  6.16it/s]
-[2025-05-31T13:12:04.703+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.853+0000] {logging_mixin.py:188} WARNING -  46%|####6     | 46/100 [00:07<00:08,  6.28it/s]
-[2025-05-31T13:12:04.855+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:04.982+0000] {logging_mixin.py:188} WARNING -  47%|####6     | 47/100 [00:07<00:07,  6.65it/s]
-[2025-05-31T13:12:04.984+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:05.134+0000] {logging_mixin.py:188} WARNING -  48%|####8     | 48/100 [00:07<00:07,  6.63it/s]
-[2025-05-31T13:12:05.136+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:05.323+0000] {logging_mixin.py:188} WARNING -  49%|####9     | 49/100 [00:07<00:08,  6.17it/s]
-[2025-05-31T13:12:05.325+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:05.469+0000] {logging_mixin.py:188} WARNING -  50%|#####     | 50/100 [00:08<00:07,  6.36it/s]
-[2025-05-31T13:12:05.471+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:05.603+0000] {logging_mixin.py:188} WARNING -  51%|#####1    | 51/100 [00:08<00:07,  6.65it/s]
-[2025-05-31T13:12:05.605+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:05.751+0000] {logging_mixin.py:188} WARNING -  52%|#####2    | 52/100 [00:08<00:07,  6.68it/s]
-[2025-05-31T13:12:05.753+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:05.913+0000] {logging_mixin.py:188} WARNING -  53%|#####3    | 53/100 [00:08<00:07,  6.52it/s]
-[2025-05-31T13:12:05.915+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:06.053+0000] {logging_mixin.py:188} WARNING -  54%|#####4    | 54/100 [00:08<00:06,  6.70it/s]
-[2025-05-31T13:12:06.055+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:06.218+0000] {logging_mixin.py:188} WARNING -  55%|#####5    | 55/100 [00:08<00:06,  6.49it/s]
-[2025-05-31T13:12:06.219+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:06.506+0000] {logging_mixin.py:188} WARNING -  56%|#####6    | 56/100 [00:09<00:08,  5.15it/s]
-[2025-05-31T13:12:06.508+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:06.659+0000] {logging_mixin.py:188} WARNING -  57%|#####6    | 57/100 [00:09<00:07,  5.50it/s]
-[2025-05-31T13:12:06.661+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:06.811+0000] {logging_mixin.py:188} WARNING -  58%|#####8    | 58/100 [00:09<00:07,  5.79it/s]
-[2025-05-31T13:12:06.812+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:06.957+0000] {logging_mixin.py:188} WARNING -  59%|#####8    | 59/100 [00:09<00:06,  6.07it/s]
-[2025-05-31T13:12:06.959+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.096+0000] {logging_mixin.py:188} WARNING -  60%|######    | 60/100 [00:09<00:06,  6.37it/s]
-[2025-05-31T13:12:07.097+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.264+0000] {logging_mixin.py:188} WARNING -  61%|######1   | 61/100 [00:09<00:06,  6.23it/s]
-[2025-05-31T13:12:07.265+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.409+0000] {logging_mixin.py:188} WARNING -  62%|######2   | 62/100 [00:10<00:05,  6.41it/s]
-[2025-05-31T13:12:07.411+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.550+0000] {logging_mixin.py:188} WARNING -  63%|######3   | 63/100 [00:10<00:05,  6.60it/s]
-[2025-05-31T13:12:07.552+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.694+0000] {logging_mixin.py:188} WARNING -  64%|######4   | 64/100 [00:10<00:05,  6.71it/s]
-[2025-05-31T13:12:07.696+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.831+0000] {logging_mixin.py:188} WARNING -  65%|######5   | 65/100 [00:10<00:05,  6.87it/s]
-[2025-05-31T13:12:07.833+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:07.973+0000] {logging_mixin.py:188} WARNING -  66%|######6   | 66/100 [00:10<00:04,  6.92it/s]
-[2025-05-31T13:12:07.975+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:08.118+0000] {logging_mixin.py:188} WARNING -  67%|######7   | 67/100 [00:10<00:04,  6.92it/s]
-[2025-05-31T13:12:08.120+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:08.255+0000] {logging_mixin.py:188} WARNING -  68%|######8   | 68/100 [00:10<00:04,  7.02it/s]
-[2025-05-31T13:12:08.257+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:08.440+0000] {logging_mixin.py:188} WARNING -  69%|######9   | 69/100 [00:11<00:04,  6.45it/s]
-[2025-05-31T13:12:08.441+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:08.584+0000] {logging_mixin.py:188} WARNING -  70%|#######   | 70/100 [00:11<00:04,  6.59it/s]
-[2025-05-31T13:12:08.585+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:08.718+0000] {logging_mixin.py:188} WARNING -  71%|#######1  | 71/100 [00:11<00:04,  6.82it/s]
-[2025-05-31T13:12:08.720+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:08.868+0000] {logging_mixin.py:188} WARNING -  72%|#######2  | 72/100 [00:11<00:04,  6.79it/s]
-[2025-05-31T13:12:08.869+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.018+0000] {logging_mixin.py:188} WARNING -  73%|#######3  | 73/100 [00:11<00:04,  6.75it/s]
-[2025-05-31T13:12:09.020+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.154+0000] {logging_mixin.py:188} WARNING -  74%|#######4  | 74/100 [00:11<00:03,  6.91it/s]
-[2025-05-31T13:12:09.156+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.290+0000] {logging_mixin.py:188} WARNING -  75%|#######5  | 75/100 [00:11<00:03,  7.04it/s]
-[2025-05-31T13:12:09.292+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.426+0000] {logging_mixin.py:188} WARNING -  76%|#######6  | 76/100 [00:12<00:03,  7.12it/s]
-[2025-05-31T13:12:09.428+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.558+0000] {logging_mixin.py:188} WARNING -  77%|#######7  | 77/100 [00:12<00:03,  7.26it/s]
-[2025-05-31T13:12:09.560+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.690+0000] {logging_mixin.py:188} WARNING -  78%|#######8  | 78/100 [00:12<00:02,  7.36it/s]
-[2025-05-31T13:12:09.692+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.821+0000] {logging_mixin.py:188} WARNING -  79%|#######9  | 79/100 [00:12<00:02,  7.43it/s]
-[2025-05-31T13:12:09.823+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:09.950+0000] {logging_mixin.py:188} WARNING -  80%|########  | 80/100 [00:12<00:02,  7.52it/s]
-[2025-05-31T13:12:09.952+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:10.105+0000] {logging_mixin.py:188} WARNING -  81%|########1 | 81/100 [00:12<00:02,  7.18it/s]
-[2025-05-31T13:12:10.106+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:10.246+0000] {logging_mixin.py:188} WARNING -  82%|########2 | 82/100 [00:12<00:02,  7.15it/s]
-[2025-05-31T13:12:10.248+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:10.385+0000] {logging_mixin.py:188} WARNING -  83%|########2 | 83/100 [00:13<00:02,  7.15it/s]
-[2025-05-31T13:12:10.387+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:10.542+0000] {logging_mixin.py:188} WARNING -  84%|########4 | 84/100 [00:13<00:02,  6.91it/s]
-[2025-05-31T13:12:10.543+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:10.713+0000] {logging_mixin.py:188} WARNING -  85%|########5 | 85/100 [00:13<00:02,  6.55it/s]
-[2025-05-31T13:12:10.715+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:10.875+0000] {logging_mixin.py:188} WARNING -  86%|########6 | 86/100 [00:13<00:02,  6.43it/s]
-[2025-05-31T13:12:10.877+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.015+0000] {logging_mixin.py:188} WARNING -  87%|########7 | 87/100 [00:13<00:01,  6.62it/s]
-[2025-05-31T13:12:11.017+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.148+0000] {logging_mixin.py:188} WARNING -  88%|########8 | 88/100 [00:13<00:01,  6.87it/s]
-[2025-05-31T13:12:11.150+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.299+0000] {logging_mixin.py:188} WARNING -  89%|########9 | 89/100 [00:13<00:01,  6.79it/s]
-[2025-05-31T13:12:11.301+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.439+0000] {logging_mixin.py:188} WARNING -  90%|######### | 90/100 [00:14<00:01,  6.90it/s]
-[2025-05-31T13:12:11.441+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.641+0000] {logging_mixin.py:188} WARNING -  91%|#########1| 91/100 [00:14<00:01,  6.17it/s]
-[2025-05-31T13:12:11.644+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.795+0000] {logging_mixin.py:188} WARNING -  92%|#########2| 92/100 [00:14<00:01,  6.27it/s]
-[2025-05-31T13:12:11.796+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:11.982+0000] {logging_mixin.py:188} WARNING -  93%|#########3| 93/100 [00:14<00:01,  5.95it/s]
-[2025-05-31T13:12:11.984+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.111+0000] {logging_mixin.py:188} WARNING -  94%|#########3| 94/100 [00:14<00:00,  6.41it/s]
-[2025-05-31T13:12:12.113+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.229+0000] {logging_mixin.py:188} WARNING -  95%|#########5| 95/100 [00:14<00:00,  6.91it/s]
-[2025-05-31T13:12:12.230+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.382+0000] {logging_mixin.py:188} WARNING -  96%|#########6| 96/100 [00:15<00:00,  6.80it/s]
-[2025-05-31T13:12:12.384+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.504+0000] {logging_mixin.py:188} WARNING -  97%|#########7| 97/100 [00:15<00:00,  7.16it/s]
-[2025-05-31T13:12:12.506+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.629+0000] {logging_mixin.py:188} WARNING -  98%|#########8| 98/100 [00:15<00:00,  7.40it/s]
-[2025-05-31T13:12:12.631+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.754+0000] {logging_mixin.py:188} WARNING -  99%|#########9| 99/100 [00:15<00:00,  7.56it/s]
-[2025-05-31T13:12:12.756+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.10/site-packages/sklearn/base.py:465 UserWarning: X does not have valid feature names, but NearestNeighbors was fitted with feature names
-[2025-05-31T13:12:12.871+0000] {logging_mixin.py:188} WARNING - 100%|##########| 100/100 [00:15<00:00,  7.83it/s]
-[2025-05-31T13:12:12.873+0000] {logging_mixin.py:188} WARNING - 100%|##########| 100/100 [00:15<00:00,  6.43it/s]
-[2025-05-31T13:12:12.874+0000] {logging_mixin.py:188} INFO - ✅ precision@10_hybrid: 0.27
-[2025-05-31T13:12:12.874+0000] {logging_mixin.py:188} INFO - ✅ precision@10_user: 0.01
-[2025-05-31T13:12:12.904+0000] {logging_mixin.py:188} WARNING - 2025/05/31 13:12:12 WARNING mlflow.utils.git_utils: Failed to import Git (the Git executable is probably not on your PATH), so Git SHA is not available. Error: Failed to initialize: Bad git executable.
-The git executable must be specified in one of the following ways:
-    - be included in your $PATH
-    - be set via $GIT_PYTHON_GIT_EXECUTABLE
-    - explicitly set via git.refresh(<full-path-to-git-executable>)
-
-All git commands will error until this is rectified.
-
-This initial message can be silenced or aggravated in the future by setting the
-$GIT_PYTHON_REFRESH environment variable. Use one of the following values:
-    - quiet|q|silence|s|silent|none|n|0: for no message or exception
-    - warn|w|warning|log|l|1: for a warning message (logging level CRITICAL, displayed by default)
-    - error|e|exception|raise|r|2: for a raised exception
-
-Example:
-    export GIT_PYTHON_REFRESH=quiet
-[2025-05-31T13:12:13.549+0000] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
-    return_value = self.execute_callable()
-  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
-    return self.python_callable(*self.op_args, **self.op_kwargs)
-  File "/opt/airflow/dags/mlops_movie_dag.py", line 44, in run_validate_models
-    validate_models()
-  File "/opt/airflow/src/models/validate_model.py", line 54, in validate_models
-    mlflow.log_metric("precision@10_hybrid", hybrid_mean)
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/tracking/fluent.py", line 776, in log_metric
-    return MlflowClient().log_metric(
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/tracking/client.py", line 773, in log_metric
-    return self._tracking_client.log_metric(
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/tracking/_tracking_service/client.py", line 298, in log_metric
-    self.store.log_metric(run_id, metric)
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/store/tracking/rest_store.py", line 198, in log_metric
-    self._call_endpoint(LogMetric, req_body)
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/store/tracking/rest_store.py", line 59, in _call_endpoint
-    return call_endpoint(self.get_host_creds(), endpoint, method, json_body, response_proto)
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/utils/rest_utils.py", line 219, in call_endpoint
-    response = verify_rest_response(response, endpoint)
-  File "/home/airflow/.local/lib/python3.10/site-packages/mlflow/utils/rest_utils.py", line 151, in verify_rest_response
-    raise RestException(json.loads(response.text))
-mlflow.exceptions.RestException: INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}
-[2025-05-31T13:12:13.563+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=movie_recommendation_pipeline, task_id=validate_models, execution_date=20250531T130226, start_date=20250531T131150, end_date=20250531T131213
-[2025-05-31T13:12:13.576+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 161 for task validate_models (INVALID_PARAMETER_VALUE: Response: {'error_code': 'INVALID_PARAMETER_VALUE'}; 467)
-[2025-05-31T13:12:13.630+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2025-05-31T13:12:13.646+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

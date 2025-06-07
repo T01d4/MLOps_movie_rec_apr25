@@ -1,0 +1,69 @@
+[2025-06-06T20:49:55.118+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-06T20:49:49.950126+00:00 [queued]>
+[2025-06-06T20:49:55.127+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-06T20:49:49.950126+00:00 [queued]>
+[2025-06-06T20:49:55.128+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-06T20:49:55.139+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_deep_hybrid_model> on 2025-06-06 20:49:49.950126+00:00
+[2025-06-06T20:49:55.147+0000] {standard_task_runner.py:60} INFO - Started process 1083 to run task
+[2025-06-06T20:49:55.150+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_deep_hybrid_model', 'manual__2025-06-06T20:49:49.950126+00:00', '--job-id', '2277', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpj9vrob42']
+[2025-06-06T20:49:55.152+0000] {standard_task_runner.py:88} INFO - Job 2277: Subtask train_deep_hybrid_model
+[2025-06-06T20:49:55.192+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-06T20:49:49.950126+00:00 [running]> on host e69802a76489
+[2025-06-06T20:49:55.257+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_deep_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T20:49:49.950126+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T20:49:49.950126+00:00'
+[2025-06-06T20:49:55.258+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_deep_model.py --n_neighbors=10 --latent_dim=40 --epochs=30 --tfidf_features=373
+[2025-06-06T20:50:54.786+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+🏃 View run train_hybrid_deep_model at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/10/runs/88c503ae98984a8c8df2f1c1b3c50d54
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/10
+
+[2025-06-06T20:50:54.787+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/utils/data_validation.py:186: UserWarning: [33mAdd type hints to the `predict` method to enable data validation and automatic signature inference during model logging. Check https://mlflow.org/docs/latest/model/python_model.html#type-hint-usage-in-pythonmodel for more details.[0m
+  color_warning(
+2025-06-06 20:49:59,173 - __main__ - INFO - 📥 Lade Rohdaten und baue Hybrid-Feature-Matrix ...
+2025-06-06 20:50:05,434 - __main__ - INFO - 📐 Hybrid-Matrix erstellt mit Shape: (10381, 1502), Feature-Namen: 1502
+2025-06-06 20:50:15,482 - __main__ - INFO - 💾 Hybrid-Matrix gespeichert unter /opt/***/data/processed/hybrid_matrix.csv
+2025-06-06 20:50:15,589 - __main__ - INFO - 🚀 Starte Training Autoencoder ...
+2025-06-06 20:50:16,405 - __main__ - INFO - Epoch 1/30: Loss = 0.0116
+2025-06-06 20:50:16,737 - __main__ - INFO - Epoch 2/30: Loss = 0.0068
+2025-06-06 20:50:17,024 - __main__ - INFO - Epoch 3/30: Loss = 0.0058
+2025-06-06 20:50:17,289 - __main__ - INFO - Epoch 4/30: Loss = 0.0054
+2025-06-06 20:50:17,568 - __main__ - INFO - Epoch 5/30: Loss = 0.0052
+2025-06-06 20:50:17,838 - __main__ - INFO - Epoch 6/30: Loss = 0.0050
+2025-06-06 20:50:18,243 - __main__ - INFO - Epoch 7/30: Loss = 0.0048
+2025-06-06 20:50:18,526 - __main__ - INFO - Epoch 8/30: Loss = 0.0047
+2025-06-06 20:50:18,807 - __main__ - INFO - Epoch 9/30: Loss = 0.0046
+2025-06-06 20:50:19,125 - __main__ - INFO - Epoch 10/30: Loss = 0.0046
+2025-06-06 20:50:19,494 - __main__ - INFO - Epoch 11/30: Loss = 0.0045
+2025-06-06 20:50:19,815 - __main__ - INFO - Epoch 12/30: Loss = 0.0045
+2025-06-06 20:50:20,094 - __main__ - INFO - Epoch 13/30: Loss = 0.0044
+2025-06-06 20:50:20,374 - __main__ - INFO - Epoch 14/30: Loss = 0.0044
+2025-06-06 20:50:20,706 - __main__ - INFO - Epoch 15/30: Loss = 0.0043
+2025-06-06 20:50:20,975 - __main__ - INFO - Epoch 16/30: Loss = 0.0043
+2025-06-06 20:50:21,261 - __main__ - INFO - Epoch 17/30: Loss = 0.0043
+2025-06-06 20:50:21,544 - __main__ - INFO - Epoch 18/30: Loss = 0.0042
+2025-06-06 20:50:21,879 - __main__ - INFO - Epoch 19/30: Loss = 0.0042
+2025-06-06 20:50:22,181 - __main__ - INFO - Epoch 20/30: Loss = 0.0042
+2025-06-06 20:50:22,469 - __main__ - INFO - Epoch 21/30: Loss = 0.0042
+2025-06-06 20:50:22,747 - __main__ - INFO - Epoch 22/30: Loss = 0.0042
+2025-06-06 20:50:23,072 - __main__ - INFO - Epoch 23/30: Loss = 0.0041
+2025-06-06 20:50:23,442 - __main__ - INFO - Epoch 24/30: Loss = 0.0041
+2025-06-06 20:50:23,718 - __main__ - INFO - Epoch 25/30: Loss = 0.0041
+2025-06-06 20:50:23,984 - __main__ - INFO - Epoch 26/30: Loss = 0.0041
+2025-06-06 20:50:24,264 - __main__ - INFO - Epoch 27/30: Loss = 0.0041
+2025-06-06 20:50:24,544 - __main__ - INFO - Epoch 28/30: Loss = 0.0041
+2025-06-06 20:50:24,858 - __main__ - INFO - Epoch 29/30: Loss = 0.0041
+2025-06-06 20:50:25,139 - __main__ - INFO - Epoch 30/30: Loss = 0.0040
+2025-06-06 20:50:25,440 - __main__ - INFO - ✅ Hybrid-Embeddings gespeichert unter /opt/***/data/processed/hybrid_deep_embedding.csv
+2025-06-06 20:50:25,440 - __main__ - INFO - ✅ Hybrid-Embeddings gespeichert unter /opt/***/data/processed/hybrid_deep_embedding.csv
+2025-06-06 20:50:25,452 - __main__ - INFO - ✅ Deep KNN Modell gespeichert unter /opt/***/models/hybrid_deep_knn.pkl
+2025/06/06 20:50:30 INFO mlflow.pyfunc: Validating input example against model signature
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 69.67it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 68.70it/s]
+Registered model 'hybrid_deep_model' already exists. Creating a new version of this model...
+2025/06/06 20:50:40 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: hybrid_deep_model, version 7
+Created version '7' of model 'hybrid_deep_model'.
+2025-06-06 20:50:51,689 - __main__ - INFO - 📝 Tags für Modellversion 7 gesetzt: n_neighbors=10, latent_dim=40
+2025-06-06 20:50:53,695 - __main__ - INFO - 🏁 Deep Hybrid-Model Training abgeschlossen und geloggt.
+
+[2025-06-06T20:50:54.788+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-06T20:50:54.798+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=train_deep_hybrid_model, execution_date=20250606T204949, start_date=20250606T204955, end_date=20250606T205054
+[2025-06-06T20:50:54.820+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-06T20:50:54.842+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

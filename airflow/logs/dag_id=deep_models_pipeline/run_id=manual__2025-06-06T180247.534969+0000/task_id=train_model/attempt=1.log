@@ -1,0 +1,16 @@
+[2025-06-06T18:02:52.033+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_model manual__2025-06-06T18:02:47.534969+00:00 [queued]>
+[2025-06-06T18:02:52.040+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_model manual__2025-06-06T18:02:47.534969+00:00 [queued]>
+[2025-06-06T18:02:52.041+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-06T18:02:52.050+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_model> on 2025-06-06 18:02:47.534969+00:00
+[2025-06-06T18:02:52.057+0000] {standard_task_runner.py:60} INFO - Started process 299 to run task
+[2025-06-06T18:02:52.059+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_model', 'manual__2025-06-06T18:02:47.534969+00:00', '--job-id', '2208', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp2jom4s1f']
+[2025-06-06T18:02:52.060+0000] {standard_task_runner.py:88} INFO - Job 2208: Subtask train_model
+[2025-06-06T18:02:52.093+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_model manual__2025-06-06T18:02:47.534969+00:00 [running]> on host 37a55cfe7e97
+[2025-06-06T18:02:52.152+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T18:02:47.534969+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T18:02:47.534969+00:00'
+[2025-06-06T18:02:52.153+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/train_model.py
+[2025-06-06T18:02:53.573+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+[2025-06-06T18:02:53.574+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-06T18:02:53.583+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=train_model, execution_date=20250606T180247, start_date=20250606T180252, end_date=20250606T180253
+[2025-06-06T18:02:53.613+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-06T18:02:53.635+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

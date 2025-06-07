@@ -1,11 +1,11 @@
 # airflow/dags/train_deep_model_dag.py
-
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
-from datetime import datetime
+from datetime import timedelta
 import os
 import logging
+import subprocess
 
 def run_and_log(command: list, cwd: str = "/opt/airflow"):
     import subprocess
@@ -32,58 +32,51 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
         logging.error(f"❌ Subprozess-Ausnahme: {e}")
         raise
 
-def run_train_deep_user_model(**context):
-    conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
-    n_neighbors = conf.get("n_neighbors", 10)
-    latent_dim = conf.get("latent_dim", 32)
-    run_and_log([
-        "python", "/opt/airflow/src/models/train_user_deep_model.py",
-        f"--n_neighbors={n_neighbors}",
-        f"--latent_dim={latent_dim}"
-    ])
+def run_import_raw_data():
+    run_and_log(["python", "/opt/airflow/src/data/import_raw_data.py"])
+
+def run_make_dataset():
+    run_and_log(["python", "/opt/airflow/src/data/make_dataset.py"])
+
+def run_build_features():
+    run_and_log(["python", "/opt/airflow/src/features/build_features.py"])
+
+def run_train_model():
+    run_and_log(["python", "/opt/airflow/src/models/train_model.py"])
 
 def run_train_deep_hybrid_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
     n_neighbors = conf.get("n_neighbors", 10)
-    latent_dim = conf.get("latent_dim", 32)
+    latent_dim = conf.get("latent_dim", 64)
+    epochs = conf.get("epochs", 30)
+    tfidf_features = conf.get("tfidf_features", 300)
+
     run_and_log([
         "python", "/opt/airflow/src/models/train_hybrid_deep_model.py",
         f"--n_neighbors={n_neighbors}",
-        f"--latent_dim={latent_dim}"
+        f"--latent_dim={latent_dim}",
+        f"--epochs={epochs}",
+        f"--tfidf_features={tfidf_features}"
     ])
 
-def run_validate_deep_models(**context):
+def run_validate_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
     test_user_count = conf.get("test_user_count", 100)
     run_and_log([
         "python", "/opt/airflow/src/models/validate_model.py",
-        "--pipeline_type=dl",
         f"--test_user_count={test_user_count}"
     ])
 
-def run_predict_best_model_hybrid_dl(**context):
-    conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
-    n_users = conf.get("n_users", 100)
-    run_and_log([
-        "python", "/opt/airflow/src/models/predict_best_model.py",
-        "--model_type=hybrid",
-        "--pipeline_type=dl",
-        f"--n_users={n_users}"
-    ])
-
-def run_predict_best_model_user_dl(**context):
-    conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
-    n_users = conf.get("n_users", 100)
-    run_and_log([
-        "python", "/opt/airflow/src/models/predict_best_model.py",
-        "--model_type=user",
-        "--pipeline_type=dl",
-        f"--n_users={n_users}"
-    ])
+def run_predict_best_model():
+    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
 
 default_args = {
     'owner': 'airflow',
     'start_date': days_ago(1),
+    "retries": 2,
+    "retry_delay": timedelta(minutes=1),
+    "retry_exponential_backoff": True,
+    "email_on_failure": False,
 }
 
 with DAG(
@@ -93,33 +86,36 @@ with DAG(
     schedule_interval=None,
     catchup=False,
 ) as dag:
-    
-    train_deep_user_model = PythonOperator(
-        task_id='train_deep_user_model',
-        python_callable=run_train_deep_user_model,
-        provide_context=True
+    import_raw_data = PythonOperator(
+        task_id="import_raw_data",
+        python_callable=run_import_raw_data
     )
-
+    make_dataset = PythonOperator(
+        task_id="make_dataset",
+        python_callable=run_make_dataset,
+    )
+    build_features = PythonOperator(
+        task_id="build_features",
+        python_callable=run_build_features,
+    )
+    train_model = PythonOperator(
+        task_id="train_model",
+        python_callable=run_train_model
+    )
     train_deep_hybrid_model = PythonOperator(
         task_id='train_deep_hybrid_model',
         python_callable=run_train_deep_hybrid_model,
         provide_context=True
     )
-
     validate = PythonOperator(
         task_id="validate_models",
-        python_callable=run_validate_deep_models,
-        provide_context=True
+        python_callable=run_validate_model
     )
-    predict_hybrid = PythonOperator(
-        task_id="predict_best_model_hybrid",
-        python_callable=run_predict_best_model_hybrid_dl,
-        provide_context=True
-    )
-    predict_user = PythonOperator(
-        task_id="predict_best_model_user",
-        python_callable=run_predict_best_model_user_dl,
-        provide_context=True
+    predict = PythonOperator(
+        task_id="predict_best_model",
+        python_callable=run_predict_best_model
     )
 
-    [train_deep_user_model, train_deep_hybrid_model] >> validate >> [predict_hybrid, predict_user]
+    # DAG-Flow (analog zum klassischen Pipeline)
+    import_raw_data >> make_dataset >> build_features
+    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict

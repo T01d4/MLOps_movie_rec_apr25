@@ -1,0 +1,26 @@
+[2025-06-04T20:27:11.547+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model_user manual__2025-06-04T20:20:00.449448+00:00 [queued]>
+[2025-06-04T20:27:11.561+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model_user manual__2025-06-04T20:20:00.449448+00:00 [queued]>
+[2025-06-04T20:27:11.562+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-06-04T20:27:11.581+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model_user> on 2025-06-04 20:20:00.449448+00:00
+[2025-06-04T20:27:11.589+0000] {standard_task_runner.py:60} INFO - Started process 6875 to run task
+[2025-06-04T20:27:11.593+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model_user', 'manual__2025-06-04T20:20:00.449448+00:00', '--job-id', '1884', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpt98qw0wo']
+[2025-06-04T20:27:11.595+0000] {standard_task_runner.py:88} INFO - Job 1884: Subtask predict_best_model_user
+[2025-06-04T20:27:11.654+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model_user manual__2025-06-04T20:20:00.449448+00:00 [running]> on host 4d1325249967
+[2025-06-04T20:27:11.763+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model_user' AIRFLOW_CTX_EXECUTION_DATE='2025-06-04T20:20:00.449448+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-04T20:20:00.449448+00:00'
+[2025-06-04T20:27:11.765+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py --model_type=user --pipeline_type=dl --n_users=100
+[2025-06-04T20:27:32.580+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+🏃 View run predict_best_model_user_dl at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3/runs/a96456f02fdd49a988204e04cdec2c2d
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3
+
+[2025-06-04T20:27:32.581+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-04 20:27:16,114 - INFO - 🚀 Starte Prediction – Typ: user, Pipeline: dl
+2025-06-04 20:27:18,913 - INFO - 📥 Eingabematrix geladen: /opt/***/data/processed/user_deep_embedding.csv – Shape: (138493, 32)
+/home/***/.local/lib/python3.10/site-packages/sklearn/base.py:458: UserWarning: X has feature names, but NearestNeighbors was fitted without feature names
+  warnings.warn(
+2025-06-04 20:27:20,093 - INFO - 💾 Vorhersagen gespeichert unter: /opt/***/data/processed/predictions_user_dl.csv
+2025-06-04 20:27:32,094 - INFO - ✅ Predictions erfolgreich in MLflow geloggt
+
+[2025-06-04T20:27:32.581+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-04T20:27:32.595+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=predict_best_model_user, execution_date=20250604T202000, start_date=20250604T202711, end_date=20250604T202732
+[2025-06-04T20:27:32.649+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-04T20:27:32.672+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

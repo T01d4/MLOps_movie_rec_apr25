@@ -1,0 +1,26 @@
+[2025-06-04T19:48:32.567+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model_hybrid manual__2025-06-04T19:41:20.934556+00:00 [queued]>
+[2025-06-04T19:48:32.577+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model_hybrid manual__2025-06-04T19:41:20.934556+00:00 [queued]>
+[2025-06-04T19:48:32.577+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-06-04T19:48:32.592+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model_hybrid> on 2025-06-04 19:41:20.934556+00:00
+[2025-06-04T19:48:32.599+0000] {standard_task_runner.py:60} INFO - Started process 4472 to run task
+[2025-06-04T19:48:32.601+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model_hybrid', 'manual__2025-06-04T19:41:20.934556+00:00', '--job-id', '1866', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp3jkq8t14']
+[2025-06-04T19:48:32.603+0000] {standard_task_runner.py:88} INFO - Job 1866: Subtask predict_best_model_hybrid
+[2025-06-04T19:48:32.644+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model_hybrid manual__2025-06-04T19:41:20.934556+00:00 [running]> on host 4d1325249967
+[2025-06-04T19:48:32.721+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model_hybrid' AIRFLOW_CTX_EXECUTION_DATE='2025-06-04T19:41:20.934556+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-04T19:41:20.934556+00:00'
+[2025-06-04T19:48:32.722+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py --model_type=hybrid --pipeline_type=dl --n_users=100
+[2025-06-04T19:48:46.201+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+🏃 View run predict_best_model_hybrid_dl at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3/runs/48f26d9b1e094197a2ed930db89c5c3a
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/3
+
+[2025-06-04T19:48:46.202+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-04 19:48:35,294 - INFO - 🚀 Starte Prediction – Typ: hybrid, Pipeline: dl
+2025-06-04 19:48:35,898 - INFO - 📥 Eingabematrix geladen: /opt/***/data/processed/hybrid_deep_embedding.csv – Shape: (10381, 32)
+/home/***/.local/lib/python3.10/site-packages/sklearn/base.py:458: UserWarning: X has feature names, but NearestNeighbors was fitted without feature names
+  warnings.warn(
+2025-06-04 19:48:36,160 - INFO - 💾 Vorhersagen gespeichert unter: /opt/***/data/processed/predictions_hybrid_dl.csv
+2025-06-04 19:48:45,862 - INFO - ✅ Predictions erfolgreich in MLflow geloggt
+
+[2025-06-04T19:48:46.202+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-04T19:48:46.212+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=predict_best_model_hybrid, execution_date=20250604T194120, start_date=20250604T194832, end_date=20250604T194846
+[2025-06-04T19:48:46.262+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-04T19:48:46.278+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
