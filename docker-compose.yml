@@ -14,6 +14,8 @@ services:
       - ./data:/app/data
       - ./models:/app/models      # Modelle (optional, z. B. für local serving)
       - ./src:/app/src            # Trainingscode
+      - ./.dvc:/app/.dvc           # <--- KORREKT!
+      - ./.git:/app/.git           # <--- KORREKT!
     env_file: .env
 
     networks:
