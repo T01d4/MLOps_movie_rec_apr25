@@ -9,97 +9,101 @@ import os
 import logging
 import argparse
 from mlflow.tracking import MlflowClient
+from datetime import datetime
+import shutil
+import subprocess
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 load_dotenv()
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-mlflow.set_experiment("model_validation")
+mlflow.set_experiment("model_validate")
 
 MODEL_DIR = "/opt/airflow/models"
+MODEL_PATH = os.path.join(MODEL_DIR, "hybrid_deep_knn.pkl")
+EMBEDDING_PATH = "/opt/airflow/data/processed/hybrid_deep_embedding.csv"
 
-# Registry-Namen
-MODEL_REGISTRY_NAMES = {
-    "hybrid": "hybrid_model",
-    "user": "user_model",
-    "hybrid_dl": "hybrid_deep_model",
-    "user_dl": "user_deep_model"
-}
-MODEL_FILE_PATHS = {
-    "hybrid": os.path.join(MODEL_DIR, "hybrid_model.pkl"),
-    "user": os.path.join(MODEL_DIR, "user_model.pkl"),
-    "hybrid_dl": os.path.join(MODEL_DIR, "hybrid_deep_knn.pkl"),
-    "user_dl": os.path.join(MODEL_DIR, "user_deep_knn.pkl")
-}
+def update_best_model_in_mlflow(precision, client, model_name, model_version):
+    # 1. Aktuellen best_model-Wert aus der Registry holen (MLflow)
+    try:
+        alias_version = client.get_model_version_by_alias(model_name, "best_model")
+        best_version = alias_version.version
+        best_run_id = alias_version.run_id
+        old_run = client.get_run(best_run_id)
+        best_prec = float(old_run.data.metrics.get("precision_10", 0))
+        logging.info(f"Aktueller Bestwert precision_10: {best_prec} (Version: {best_version})")
+    except Exception as e:
+        logging.warning(f"Kein best_model-Alias gefunden: {e} -> Initialisiere Bestwert mit 0.0")
+        best_prec = 0.0
+        best_version = None
 
-def load_matrix_with_features(matrix_path, features_path=None, index_col=0):
-    if features_path:
-        with open(features_path, "r") as f:
-            features = [line.strip() for line in f.readlines()]
-        features_no_index = features[1:] if features[0].lower() in ["movieid", "userid"] else features
-        df = pd.read_csv(matrix_path, index_col=index_col)
-        assert list(df.columns) == features_no_index, (
-            f"Spalten stimmen nicht! Matrix: {len(df.columns)} Features: {len(features_no_index)}"
-        )
-        return df, features_no_index
+    # 2. Vergleich und ggf. neuen Bestwert setzen
+    if precision > best_prec:
+        logging.info(f"🏆 Neuer Bestwert! {precision:.4f} > {best_prec:.4f} (Version: {model_version})")
+        client.set_registered_model_alias(model_name, "best_model", model_version)
+        logging.info(f"Alias 'best_model' wurde auf Version {model_version} gesetzt!")
+
+        # ==== NUR das Featurefile/Embedding speichern und mit DVC versionieren ====
+        try:
+            best_embedding_path = "/opt/airflow/data/processed/hybrid_deep_embedding_best.csv"
+            shutil.copy(EMBEDDING_PATH, best_embedding_path)
+            logging.info("✅ Best-Embedding als _best gespeichert!")
+
+            # DVC add
+            subprocess.run(["dvc", "add", best_embedding_path], check=True)
+            # Git add/commit für DVC-File und .gitignore!
+            subprocess.run(["git", "add", f"{best_embedding_path}.dvc", ".gitignore"], check=True)
+            subprocess.run([
+                "git", "commit", "-m", f"Track new best embedding (precision={precision:.4f})"
+            ], check=True)
+            # DVC push
+            subprocess.run(["dvc", "push"], check=True)
+            logging.info("✅ DVC add, git commit & push für Best-Embedding abgeschlossen!")
+        except Exception as e:
+            logging.error(f"❌ Fehler beim Kopieren oder DVC push der _best-Embedding-Datei: {e}")
     else:
-        # Deep-Learning-Matrix ohne Features
-        df = pd.read_csv(matrix_path, index_col=index_col)
-        return df, df.columns.tolist()
+        logging.info(f"Kein Bestwert – Präzision nicht verbessert ({precision:.4f} <= {best_prec:.4f})")
 
-def validate_models(pipeline_type="classic", test_user_count=100):
-    logging.info(f"🚀 Starte Validierung ({pipeline_type.upper()})")
+    # 3. **Immer** Tag für precision_10 auf aktuelle Modellversion updaten!
+    client.set_model_version_tag(model_name, model_version, "precision_10", str(precision))
+
+def get_latest_model_version(client, model_name):
+    """Hole die Modellversion mit dem höchsten creation timestamp (=neuester Run)."""
+    versions = client.search_model_versions(f"name='{model_name}'")
+    if not versions:
+        logging.error("❌ Keine Modellversionen gefunden!")
+        return None, None
+    # Sortiere nach creation_timestamp absteigend, nimm den ersten
+    versions_sorted = sorted(versions, key=lambda v: v.creation_timestamp, reverse=True)
+    latest_version = versions_sorted[0]
+    return latest_version.version, latest_version.run_id
+
+def validate_deep_hybrid(test_user_count=100):
+    logging.info("🚀 Starte Validierung (Deep Hybrid Only)")
+    validation_date = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    experiment_name = "movie_recommendation_validation"
+    val_task = "full_eval"
 
     try:
         ratings = pd.read_csv("/opt/airflow/data/raw/ratings.csv")
-        if pipeline_type == "classic":
-            hybrid_matrix, hybrid_features = load_matrix_with_features(
-                "/opt/airflow/data/processed/hybrid_matrix.csv",
-                "/opt/airflow/data/processed/hybrid_matrix_features.txt"
-            )
-            user_matrix, user_features = load_matrix_with_features(
-                "/opt/airflow/data/processed/user_matrix.csv",
-                "/opt/airflow/data/processed/user_matrix_features.txt"
-            )
-            hybrid_model = pickle.load(open(MODEL_FILE_PATHS["hybrid"], "rb"))
-            user_model = pickle.load(open(MODEL_FILE_PATHS["user"], "rb"))
-        else:
-            hybrid_matrix, hybrid_features = load_matrix_with_features(
-                "/opt/airflow/data/processed/hybrid_deep_embedding.csv"
-            )
-            user_matrix, user_features = load_matrix_with_features(
-                "/opt/airflow/data/processed/user_deep_embedding.csv"
-            )
-            hybrid_model = pickle.load(open(MODEL_FILE_PATHS["hybrid_dl"], "rb"))
-            user_model = pickle.load(open(MODEL_FILE_PATHS["user_dl"], "rb"))
-        logging.info("📥 Daten & Modelle geladen – Beginne Evaluation")
+        embedding_df = pd.read_csv(EMBEDDING_PATH, index_col=0)
+        knn_model = pickle.load(open(MODEL_PATH, "rb"))
+        logging.info("📥 Deep Hybrid Model & Embeddings geladen – Beginne Evaluation")
     except Exception as e:
         logging.error(f"❌ Fehler beim Laden der Daten/Modelle: {e}", exc_info=True)
         return
 
-    test_users = list(user_matrix.index)[:test_user_count]
-    hybrid_scores, user_scores, valid_users = [], [], []
+    test_users = embedding_df.index[:test_user_count]
+    hybrid_scores, valid_users = [], []
 
     for uid in test_users:
         try:
-            uvec_user = user_matrix.loc[uid].values.reshape(1, -1)
-            # Für klassisch: Movie-Features, für DL: Embeddings mit Index uid
-            if pipeline_type == "classic":
-                uvec_hybrid = hybrid_matrix.loc[uid].values.reshape(1, -1)
-            else:
-                uvec_hybrid = hybrid_matrix.loc[uid].values.reshape(1, -1)
-            # Check, ob Feature-Anzahl stimmt
-            if uvec_user.shape[1] != user_model.n_features_in_:
-                raise ValueError(f"user_model erwartet {user_model.n_features_in_} Features, hat aber {uvec_user.shape[1]}")
-            if uvec_hybrid.shape[1] != hybrid_model.n_features_in_:
-                raise ValueError(f"hybrid_model erwartet {hybrid_model.n_features_in_} Features, hat aber {uvec_hybrid.shape[1]}")
-            _, idxs_hybrid = hybrid_model.kneighbors(uvec_hybrid)
-            rec_hybrid = hybrid_matrix.index[idxs_hybrid[0]]
-            hit_hybrid = ratings[(ratings["userId"] == uid) & (ratings["movieId"].isin(rec_hybrid))]
-            hybrid_scores.append(1 if not hit_hybrid.empty else 0)
-            _, idxs_user = user_model.kneighbors(uvec_user)
-            rec_user = user_matrix.index[idxs_user[0]]
-            hit_user = ratings[(ratings["userId"] == uid) & (ratings["movieId"].isin(rec_user))]
-            user_scores.append(1 if not hit_user.empty else 0)
+            uvec = embedding_df.loc[uid].values.reshape(1, -1)
+            if uvec.shape[1] != knn_model.n_features_in_:
+                raise ValueError(f"Modell erwartet {knn_model.n_features_in_} Features, hat aber {uvec.shape[1]}")
+            _, idxs = knn_model.kneighbors(uvec)
+            rec_movie_ids = embedding_df.index[idxs[0]]
+            hit = ratings[(ratings["userId"] == int(uid)) & (ratings["movieId"].isin(rec_movie_ids))]
+            hybrid_scores.append(1 if not hit.empty else 0)
             valid_users.append(uid)
         except Exception as e:
             logging.warning(f"⚠️ Fehler bei User {uid}: {e}")
@@ -109,36 +113,56 @@ def validate_models(pipeline_type="classic", test_user_count=100):
         logging.error("❌ Keine gültigen Nutzer zur Auswertung!")
         return
 
-    hybrid_mean = float(np.mean(hybrid_scores))
-    user_mean = float(np.mean(user_scores))
-    logging.info(f"📊 precision_10_hybrid: {hybrid_mean:.2f}")
-    logging.info(f"📊 precision_10_user:   {user_mean:.2f}")
+    precision_10 = float(np.mean(hybrid_scores))
+    logging.info(f"📊 precision_10_hybrid_deep: {precision_10:.2f}")
 
+    # --- MLflow Logging & Registry-Bestwert-Update ---
     try:
-        with mlflow.start_run(run_name=f"validate_predictions_{pipeline_type}") as run:
-            mlflow.set_tag("pipeline_type", pipeline_type)
+        with mlflow.start_run(run_name=f"{experiment_name}_deep_hybrid") as run:
+            mlflow.set_tag("experiment_name", experiment_name)
+            mlflow.set_tag("validation_date", validation_date)
             mlflow.set_tag("source", "airflow")
             mlflow.set_tag("task", "validate_models")
+            mlflow.set_tag("val_task", val_task)
+            mlflow.set_tag("model_type", "hybrid_deep_knn")
             mlflow.log_param("n_test_users", len(valid_users))
-            mlflow.log_metric(f"precision_10_hybrid_{pipeline_type}", hybrid_mean)
-            mlflow.log_metric(f"precision_10_user_{pipeline_type}", user_mean)
+            mlflow.log_metric("precision_10", precision_10)
+
             score_df = pd.DataFrame({
                 "user_id": valid_users,
                 "hybrid_score": hybrid_scores,
-                "user_score": user_scores
             })
-            score_path = f"/opt/airflow/data/processed/validation_scores_{pipeline_type}.csv"
+            score_path = f"/opt/airflow/data/processed/validation_scores_hybrid_deep.csv"
             score_df.to_csv(score_path, index=False)
             mlflow.log_artifact(score_path, artifact_path="validation")
+
+            # Hole die aktuellste Modellversion
+            client = MlflowClient()
+            model_name = "hybrid_deep_model"
+            current_version, _ = get_latest_model_version(client, model_name)
+            if current_version:
+                # Hole Run-ID dieser Modellversion
+                model_version_obj = client.get_model_version(model_name, current_version)
+                train_run_id = model_version_obj.run_id
+
+                # Setze die precision_10 als Metric im Trainings-Run
+                client.log_metric(run_id=train_run_id, key="precision_10", value=precision_10)
+
+                # Setze ggf. Alias wie gehabt
+                update_best_model_in_mlflow(precision_10, client, model_name, current_version)
+            else:
+                logging.warning("Konnte aktuelle Modellversion für Bestwertvergleich nicht finden.")
+
     except Exception as e:
-        logging.error(f"❌ Fehler beim Logging in MLflow: {e}", exc_info=True)
+        logging.error(f"❌ Fehler beim Logging/Alias-Update in MLflow: {e}", exc_info=True)
         return
 
     logging.info("🎉 Validation abgeschlossen.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pipeline_type", type=str, default="classic", choices=["classic", "dl"])
     parser.add_argument("--test_user_count", type=int, default=100)
     args = parser.parse_args()
-    validate_models(pipeline_type=args.pipeline_type, test_user_count=args.test_user_count)
+    validate_deep_hybrid(
+        test_user_count=args.test_user_count
+    )

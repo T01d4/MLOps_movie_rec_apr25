@@ -40,7 +40,7 @@ PYTHONPATH=/opt/airflow/src
 
 AIRFLOW_UID=50000
 
-AIRFLOW__API__AUTH_BACKEND=airflow.api.auth.backend.basic_auth
+AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
 
 AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
 

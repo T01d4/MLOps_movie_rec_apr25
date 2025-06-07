@@ -17,6 +17,10 @@ from requests.auth import HTTPBasicAuth
 from mlflow.tracking import MlflowClient
 import requests
 import logging
+import subprocess
+import traceback
+
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 
 load_dotenv(".env")
@@ -38,12 +42,24 @@ API_URL = os.getenv("API_URL")
 AIRFLOW_USER = "admin"
 AIRFLOW_PASS = "admin"
 
-
+def ensure_best_embedding_exists():
+    import subprocess
+    import os
+    best_embedding_path = "data/processed/hybrid_deep_embedding_best.csv"
+    if not os.path.exists(best_embedding_path):
+        try:
+            # Optional: Vorher 'git pull' machen, falls Repo im Container veraltet ist!
+            subprocess.run(["dvc", "pull", best_embedding_path], check=True)
+            assert os.path.exists(best_embedding_path), "DVC pull hat das File nicht erzeugt!"
+        except Exception as e:
+            st.error(f"DVC pull fehlgeschlagen für Best-Embedding: {e}")
+            raise
+    return best_embedding_path
 
 def fetch_dag_task_statuses():
     try:
         airflow_url = os.getenv("API_URL", "http://localhost:8080")
-        dag_id = "movie_recommendation_pipeline"
+        dag_id = "deep_models_pipeline"
         auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
 
         run_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?order_by=-execution_date&limit=1"
@@ -130,6 +146,37 @@ def get_tmdb_poster_url(movie_id, links_df, api_key):
     except Exception as e:
         return None
     
+def show_best_model_info():
+    client = MlflowClient()
+    try:
+        mv = client.get_model_version_by_alias("hybrid_deep_model", "best_model")
+        version = mv.version
+        run_id = mv.run_id
+        tags = mv.tags  # dict mit Tags (Strings)
+
+        st.info(f"🔖 Aktive Modell-Version (`@best_model`): **v{version}** (Run ID: {run_id})")
+        
+        # Wichtige Tags direkt zeigen:
+        keys_of_interest = [
+            "precision_10", "n_neighbors", "latent_dim", "tfidf_features", "algorithm"
+        ]
+        shown = False
+        for k in keys_of_interest:
+            if k in tags:
+                st.markdown(f"**{k}**: `{tags[k]}`")
+                shown = True
+
+        # Optional: Alle weiteren Tags (falls welche da sind)
+        other_tags = {k: v for k, v in tags.items() if k not in keys_of_interest}
+        if other_tags:
+            with st.expander("Weitere Modell-Tags"):
+                for k, v in other_tags.items():
+                    st.write(f"{k}: {v}")
+        elif not shown:
+            st.info("ℹ️ Keine Tags an dieser Modellversion hinterlegt.")
+
+    except Exception as e:
+        st.warning(f"Kein best_model-Alias gefunden oder Fehler: {e}") 
 
 st.set_page_config(page_title="🎬 Movie Recommender", layout="wide")
 
@@ -178,93 +225,47 @@ if data_available:
     api_key = os.getenv("TMDB_API_KEY")
 
     # --- Empfehlungsfunktionen ---
-    def get_user_knn_recommendations(selected_movies):
-        try:
-            matrix_path = "data/processed/user_matrix.csv"
-            model_path = "models/user_model.pkl"
-            movies_df = pd.read_csv("data/raw/movies.csv")
-            ratings_df = pd.read_csv("data/raw/ratings.csv")
-            user_df = pd.read_csv(matrix_path, index_col=0)
-            selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
-            min_overlap = 2
-            user_movie_counts = ratings_df[ratings_df["movieId"].isin(selected_movie_ids)].groupby("userId")["movieId"].nunique()
-            matching_users = user_movie_counts[user_movie_counts >= min_overlap].index.tolist()
-            if not matching_users:
-                return []
-            user_vec = user_df.loc[user_df.index.intersection(matching_users)].values.mean(axis=0).reshape(1, -1)
-            with open(model_path, "rb") as f:
-                knn_user = pickle.load(f)
-            _, user_neighbor_indices = knn_user.kneighbors(user_vec, n_neighbors=15)
-            similar_user_ids = [user_df.index[idx] for idx in user_neighbor_indices[0]]
-            neighbors_ratings = ratings_df[
-                (ratings_df["userId"].isin(similar_user_ids)) &
-                (~ratings_df["movieId"].isin(selected_movie_ids))
-            ]
-            movie_counts = neighbors_ratings.groupby("movieId")["rating"].agg(["mean", "count"])
-            movie_counts = movie_counts.sort_values(by=["count", "mean"], ascending=[False, False])
-            top_movie_candidates = movie_counts.head(20).index.tolist()
-            recommended = movies_df[movies_df["movieId"].isin(top_movie_candidates)].copy()
-            recommended = recommended.drop_duplicates("movieId")
-            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
-        except Exception as e:
-            return []
 
-    def get_hybrid_knn_recommendations(selected_movies):
+
+
+    def get_deep_hybrid_knn_best_recommendations(selected_movies):
         try:
-            matrix_path = "data/processed/hybrid_matrix.csv"
-            model_path = "models/hybrid_model.pkl"
+            matrix_path = ensure_best_embedding_exists()
             movies_df = pd.read_csv("data/raw/movies.csv")
-            hybrid_df = pd.read_csv(matrix_path, index_col=0)
-            with open(model_path, "rb") as f:
-                knn = pickle.load(f)
+            embedding_df = pd.read_csv(matrix_path, index_col=0)
             selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
-            selected_indices = [hybrid_df.index.get_loc(mid) for mid in selected_movie_ids if mid in hybrid_df.index]
+            selected_indices = [embedding_df.index.get_loc(mid) for mid in selected_movie_ids if mid in embedding_df.index]
             if not selected_indices:
                 return []
-            user_vec = hybrid_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
-            _, rec_indices = knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
-            rec_movie_ids = [hybrid_df.index[idx] for idx in rec_indices[0] if hybrid_df.index[idx] not in selected_movie_ids]
+            user_vec = embedding_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
+            
+            # === NEU: Modell aus MLflow Registry laden ===
+            deep_knn = mlflow.pyfunc.load_model("models:/hybrid_deep_model@best_model")
+            print("embedding_df.columns:", list(embedding_df.columns))
+            print("MLflow Signature Columns:", [input.name for input in deep_knn.metadata.get_input_schema().inputs])
+
+            #user_df = pd.DataFrame(user_vec, columns=embedding_df.columns)
+            user_df = pd.DataFrame(user_vec, columns=[f"emb_{i}" for i in range(user_vec.shape[1])]).astype(np.float32)
+            user_df = pd.DataFrame(user_vec, columns=embedding_df.columns).astype(np.float32)
+            expected_cols = [f"emb_{i}" for i in range(user_vec.shape[1])]
+            print("Expected columns:", expected_cols)
+            print("User DataFrame columns:", list(user_df.columns))
+            print("user_df.columns:", list(user_df.columns))
+            print("Shape user_vec:", user_vec.shape)
+            print("Erste Zeile user_df:", user_df.iloc[0].values)
+            rec_indices = deep_knn.predict(user_df)
+            rec_movie_ids = [embedding_df.index[idx] for idx in rec_indices[0] if embedding_df.index[idx] not in selected_movie_ids]
             recommended = movies_df[movies_df["movieId"].isin(rec_movie_ids)].copy()
             recommended = recommended.drop_duplicates("movieId")
             return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
         except Exception as e:
+            # st.error(f"Deep-Hybrid-KNN-Fehler: {e}")
+            st.error(traceback.format_exc())  # stacktrace für Details!
+            print("Deep-Hybrid-KNN-Fehler:", traceback.format_exc())  # falls logs gesammelt werden
             return []
 
-    def get_deep_user_knn_recommendations(selected_movies):
-        try:
-            matrix_path = "data/processed/user_deep_embedding.csv"
-            model_path = "models/user_deep_knn.pkl"
-            movies_df = pd.read_csv("data/raw/movies.csv")
-            ratings_df = pd.read_csv("data/raw/ratings.csv")
-            embedding_df = pd.read_csv(matrix_path, index_col=0)
-            selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
-            min_overlap = 2
-            user_movie_counts = ratings_df[ratings_df["movieId"].isin(selected_movie_ids)].groupby("userId")["movieId"].nunique()
-            matching_users = user_movie_counts[user_movie_counts >= min_overlap].index.tolist()
-            if not matching_users:
-                return []
-            # Mittelwert-Embedding der passenden User
-            # (Du könntest die Embeddings auch direkt für User bauen, aber für Demo so)
-            user_vec = embedding_df.loc[embedding_df.index.intersection(matching_users)].values.mean(axis=0).reshape(1, -1)
-            with open(model_path, "rb") as f:
-                deep_knn = pickle.load(f)
-            _, user_neighbor_indices = deep_knn.kneighbors(user_vec, n_neighbors=15)
-            similar_user_ids = [embedding_df.index[idx] for idx in user_neighbor_indices[0]]
-            # Finde Movies, die diese User hoch bewertet haben
-            neighbors_ratings = ratings_df[
-                (ratings_df["userId"].isin(similar_user_ids)) &
-                (~ratings_df["movieId"].isin(selected_movie_ids))
-            ]
-            movie_counts = neighbors_ratings.groupby("movieId")["rating"].agg(["mean", "count"])
-            movie_counts = movie_counts.sort_values(by=["count", "mean"], ascending=[False, False])
-            top_movie_candidates = movie_counts.head(20).index.tolist()
-            recommended = movies_df[movies_df["movieId"].isin(top_movie_candidates)].copy()
-            recommended = recommended.drop_duplicates("movieId")
-            return [{"movieId": int(row["movieId"]), "title": row["title"]} for _, row in recommended.head(10).iterrows()]
-        except Exception as e:
-            return []
 
-    def get_deep_hybrid_knn_recommendations(selected_movies):
+    def get_deep_hybrid_knn_local_recommendations(selected_movies):
         try:
             matrix_path = "data/processed/hybrid_deep_embedding.csv"
             model_path = "models/hybrid_deep_knn.pkl"
@@ -370,37 +371,35 @@ if data_available:
         return []
 
     # --- TABLE: Empfehlungen aller 6 Modelle ---
-    if len(selected_movies) >= 3 and st.button("Empfehle 10 Filme mit allen 6 Modellen"):
-        recommendations = {
-            "User-KNN": get_user_knn_recommendations(selected_movies),
-            "Hybrid-KNN": get_hybrid_knn_recommendations(selected_movies),
-            "Deep User-KNN": get_deep_user_knn_recommendations(selected_movies),
-            "Deep Hybrid-KNN": get_deep_hybrid_knn_recommendations(selected_movies),
-            "Basis Modell": get_baseline_recommendations(selected_movies),
-        }
-        tmdb_similar = get_tmdb_similar_recommendations_cached(selected_movies[0], movies_df, links_df, api_key)
-        recommendations["TMDb-Similar"] = tmdb_similar
-
-        model_names = list(recommendations.keys())
-        n_models = len(model_names)
-        cols = st.columns(n_models)
-        for i, name in enumerate(model_names):
-            with cols[i]:
-                st.markdown(f"#### {name}")
-                recs = recommendations[name]
-                if not recs:
-                    st.write("— (keine Empfehlungen) —")
-                for rec in recs:
-                    if name == "TMDb-Similar":
-                        poster_url = rec.get("poster_url", None)
-                    else:
-                        poster_url = get_tmdb_poster_url(rec["movieId"], links_df, api_key)
-                    short_title = rec['title'][:22] + "…" if len(rec['title']) > 24 else rec['title']
-                    if poster_url:
-                        st.image(poster_url, width=95)
-                    else:
-                        st.write("—")
-                    st.caption(short_title)
+    # --- EMPFEHLUNGS-TABELLE: Nur noch Deep Hybrid, Baseline & TMDb ---
+    if len(selected_movies) >= 3 and st.button("Empfehle 10 Filme"):
+            show_best_model_info()
+            recommendations = {
+                "Deep Hybrid-KNN_best": get_deep_hybrid_knn_best_recommendations(selected_movies),
+                "Deep Hybrid-KNN_local": get_deep_hybrid_knn_local_recommendations(selected_movies),
+                "Basis Modell": get_baseline_recommendations(selected_movies),
+                "TMDb-Similar": get_tmdb_similar_recommendations_cached(selected_movies[0], movies_df, links_df, api_key)
+            }
+            model_names = list(recommendations.keys())
+            n_models = len(model_names)
+            cols = st.columns(n_models)
+            for i, name in enumerate(model_names):
+                with cols[i]:
+                    st.markdown(f"#### {name}")
+                    recs = recommendations[name]
+                    if not recs:
+                        st.write("— (keine Empfehlungen) —")
+                    for rec in recs:
+                        if name == "TMDb-Similar":
+                            poster_url = rec.get("poster_url", None)
+                        else:
+                            poster_url = get_tmdb_poster_url(rec["movieId"], links_df, api_key)
+                        short_title = rec['title'][:22] + "…" if len(rec['title']) > 24 else rec['title']
+                        if poster_url:
+                            st.image(poster_url, width=95)
+                        else:
+                            st.write("—")
+                        st.caption(short_title)
 
                     
 # === ADMIN-Bereich ===
@@ -418,182 +417,129 @@ if role == "admin":
 
 
     # (D) Parameter-Tuning
-    n_neighbors = st.slider("KNN Nachbarn (n_neighbors)", 1, 50, 10)
-    tfidf_features = st.slider("TF-IDF max_features", 50, 2000, 300)
 
-    latent_dim = st.slider("Latente Dimension (latent_dim, nur DL)", 8, 128, 32, step=8)
+    n_neighbors = st.slider("KNN Nachbarn (n_neighbors)", 5, 50, 15)
+    tfidf_features = st.slider("TF-IDF max_features", 50, 2000, 300)
+    latent_dim = st.slider("Latente Dimension (latent_dim)", 8, 128, 32, step=8)
+    epochs = st.slider("Epochen (epochs)", 5, 100, 30, step=5)
 
     # Optionen speichern (z. B. als dict in st.session_state, um sie in der Trigger-API zu übergeben)
     st.session_state["pipeline_conf"] = {
-        #"force_rebuild": force_rebuild,
         "test_user_count": test_user_count,
         "n_neighbors": n_neighbors,
         "tfidf_features": tfidf_features,
-        "latent_dim": latent_dim,  # NEU
+        "latent_dim": latent_dim,
+        "epochs": epochs
     }
     st.subheader("⚙️ Admin Panel – Airflow & MLflow")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2  = st.columns(2)
 
     if "dag_triggered" not in st.session_state:
         st.session_state["dag_triggered"] = False
 
     with col1:
         # Klassische Pipeline (kein latent_dim!)
-        if st.button("▶️ Starte DAG: movie_recommendation_pipeline"):
-            try:
-                dag_id = "movie_recommendation_pipeline"
-                airflow_url = API_URL
-                auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
+        if st.button("▶️ Starte Deep Hybrid Training (DAG: deep_models_pipeline)"):
+                try:
+                    dag_id = "deep_models_pipeline"
+                    airflow_url = API_URL
+                    auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
 
-                # Nur passende Keys für diesen DAG
-                classic_conf = {
-                    "test_user_count": test_user_count,
-                    "n_neighbors": n_neighbors,
-                    "tfidf_features": tfidf_features,
-                }
+                    deep_conf = {
+                        "test_user_count": test_user_count,
+                        "n_neighbors": n_neighbors,
+                        "latent_dim": latent_dim,
+                        "tfidf_features": tfidf_features,
+                        "epochs": epochs
+                    }
 
-                # Step 1: Suche alle laufenden Runs
-                running_runs_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?state=running"
-                runs_resp = requests.get(running_runs_url, auth=auth)
-                runs_resp.raise_for_status()
-                running_runs = runs_resp.json().get("dag_runs", [])
+                    # Step 1: Laufende Runs abbrechen
+                    running_runs_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?state=running"
+                    runs_resp = requests.get(running_runs_url, auth=auth)
+                    runs_resp.raise_for_status()
+                    running_runs = runs_resp.json().get("dag_runs", [])
 
-                # Step 2: Setze alle laufenden Runs auf "failed"
-                for run in running_runs:
-                    run_id = run["dag_run_id"]
-                    patch_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns/{run_id}"
-                    patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
-                    if patch_resp.status_code == 200:
-                        st.info(f"❗ Abgebrochen: Run {run_id}")
-                    else:
-                        st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
+                    for run in running_runs:
+                        run_id = run["dag_run_id"]
+                        patch_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns/{run_id}"
+                        patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
+                        if patch_resp.status_code == 200:
+                            st.info(f"❗ Abgebrochen: Run {run_id}")
+                        else:
+                            st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
 
-                # Step 3: Starte neuen DAG-Run
-                response = requests.post(
-                    f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns",
-                    json={"conf": classic_conf},
-                    auth=auth
-                )
-                if response.status_code == 200:
-                    st.success("✅ DAG Movie Recommendation Pipeline wurde erfolgreich getriggert")
-                    st.session_state["dag_triggered"] = True
-                    st.session_state["progress"] = 0
-                    st.session_state["last_dag"] = "movie_recommendation_pipeline"
-                else:
-                    st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
-            except Exception as e:
-                st.error(f"❌ Fehler bei API-Aufruf: {e}")
-
-    with col2:
-        # Deep Learning Pipeline (kein tfidf_features!)
-        if st.button("▶️ Starte DAG: Deep_Learning_pipeline"):
-            try:
-                dag_id = "deep_models_pipeline"
-                airflow_url = API_URL
-                auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
-
-                # Nur passende Keys für diesen DAG
-                dl_conf = {
-                    "test_user_count": test_user_count,
-                    "n_neighbors": n_neighbors,
-                    "latent_dim": latent_dim,
-                }
-
-                # Step 1: Suche alle laufenden Runs
-                running_runs_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns?state=running"
-                runs_resp = requests.get(running_runs_url, auth=auth)
-                runs_resp.raise_for_status()
-                running_runs = runs_resp.json().get("dag_runs", [])
-
-                # Step 2: Setze alle laufenden Runs auf "failed"
-                for run in running_runs:
-                    run_id = run["dag_run_id"]
-                    patch_url = f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns/{run_id}"
-                    patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
-                    if patch_resp.status_code == 200:
-                        st.info(f"❗ Abgebrochen: Run {run_id}")
-                    else:
-                        st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
-
-                # Step 3: Starte neuen DAG-Run
-                response = requests.post(
-                    f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns",
-                    json={"conf": dl_conf},
-                    auth=auth
-                )
-                if response.status_code == 200:
-                    st.success("✅ DAG Deep Learning wurde erfolgreich getriggert")
-                    st.session_state["dag_triggered"] = True
-                    st.session_state["progress"] = 0
-                    st.session_state["last_dag"] = "deep_models_pipeline"
-                else:
-                    st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
-            except Exception as e:
-                st.error(f"❌ Fehler bei API-Aufruf: {e}")
-    with col3:
-    #Charts Mlflow
-        #
-        if st.button("📊 Zeige MLflow Metriken"):
-            try:
-                import plotly.graph_objects as go
-                import plotly.express as px
-
-                exp_name = "model_validation"
-                df = mlflow.search_runs(experiment_names=[exp_name])
-
-                # --- Preprocessing ---
-                df["start_time"] = pd.to_datetime(df["start_time"], errors="coerce")
-                df = df[df["start_time"].notna()].copy()
-
-                # Metriken zu Prozent (falls gewünscht)
-                for col in ["metrics.precision_10_hybrid", "metrics.precision_10_user"]:
-                    if col in df.columns:
-                        df[col] = pd.to_numeric(df[col], errors="coerce")
-                        df[col] = df[col] * 100  # Prozent!
-
-                df = df.dropna(subset=["metrics.precision_10_hybrid", "metrics.precision_10_user"], how="all")
-                df = df.sort_values("start_time", ascending=True)
-
-                # Modell-Version extrahieren (aus Run-Name oder Model Registry Tag)
-                if "tags.mlflow.runName" in df.columns:
-                    df["model_version"] = (
-                        df["tags.mlflow.runName"].str.extract(r'(\d+)$').astype(float)
+                    # Step 2: Starte neuen Run
+                    response = requests.post(
+                        f"{airflow_url}/api/v1/dags/{dag_id}/dagRuns",
+                        json={"conf": deep_conf},
+                        auth=auth
                     )
-                elif "tags.mlflow.modelVersion" in df.columns:
-                    df["model_version"] = pd.to_numeric(df["tags.mlflow.modelVersion"], errors="coerce")
+                    if response.status_code == 200:
+                        st.success("✅ DAG Deep Hybrid Model wurde erfolgreich getriggert")
+                        st.session_state["dag_triggered"] = True
+                        st.session_state["progress"] = 0
+                        st.session_state["last_dag"] = "deep_models_pipeline"
+                    else:
+                        st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
+                except Exception as e:
+                    st.error(f"❌ Fehler bei API-Aufruf: {e}")
+  
+    with col2:
+        if st.button("📊 Zeige Registry-Modelle & Tags (DagsHub)"):
+            try:
+                from mlflow.tracking import MlflowClient
+                import pandas as pd
+
+                client = MlflowClient()
+                model_name = "hybrid_deep_model"
+                versions = client.search_model_versions(f"name='{model_name}'")
+
+                # Sammle alle Infos in eine Liste
+                rows = []
+                for v in versions:
+                    tags = v.tags
+                    row = {
+                        "Version": v.version,
+                        "Created_at": v.creation_timestamp,
+                        "Alias": ", ".join(v.aliases) if hasattr(v, "aliases") else "",
+                        "precision_10": tags.get("precision_10", None),
+                        "n_neighbors": tags.get("n_neighbors", None),
+                        "latent_dim": tags.get("latent_dim", None),
+                        "tfidf_features": tags.get("tfidf_features", None),
+                        "algorithm": tags.get("algorithm", None),
+                    }
+                    rows.append(row)
+                df = pd.DataFrame(rows)
+                # Unix-Timestamp in datetime umwandeln
+                if not df.empty:
+                    df["Created_at"] = pd.to_datetime(df["Created_at"], unit='ms')
+                    df = df.sort_values("Version", ascending=False)
+                    st.dataframe(df)
+
+                    # Optional: Chart über die letzten N Versionen
+                    if "precision_10" in df.columns:
+                        import plotly.graph_objects as go
+                        fig = go.Figure()
+                        fig.add_trace(go.Scatter(
+                            x=df["Created_at"],
+                            y=pd.to_numeric(df["precision_10"], errors="coerce"),
+                            mode="lines+markers",
+                            name="Precision@10 Registry",
+                            line=dict(color="#E45756", width=2),
+                            marker=dict(size=8)
+                        ))
+                        fig.update_layout(
+                            title="Precision@10 je Registry-Version",
+                            xaxis_title="Created at",
+                            yaxis_title="Precision@10",
+                            height=350
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
                 else:
-                    df["model_version"] = np.arange(1, len(df) + 1)
-
-                relevant_cols = ["metrics.precision_10_hybrid", "metrics.precision_10_user"]
-
-                # --- Tabelle ---
-                st.dataframe(df[["start_time", "model_version"] + relevant_cols].sort_values("start_time", ascending=False))
-
-                # --- Chart 1: Zeitverlauf als Liniendiagramm ---
-                fig = go.Figure()
-                if "metrics.precision_10_hybrid" in df.columns:
-                    fig.add_trace(go.Scatter(
-                        x=df["start_time"],
-                        y=df["metrics.precision_10_hybrid"],
-                        mode="lines+markers",
-                        name="Precision@10 Hybrid",
-                        line=dict(color="#3778C2", width=2),
-                        marker=dict(size=7, symbol="diamond")
-                    ))
-
-                fig.update_layout(
-                    title="⏳ Precision@10: Zeitverlauf",
-                    xaxis_title="Run Start Time",
-                    yaxis_title="Precision@10 (%)",
-                    legend=dict(orientation="h", x=0, y=1.12),
-                    height=350,
-                    margin=dict(l=20, r=20, t=60, b=20),
-                )
-                st.plotly_chart(fig, use_container_width=True)
-
+                    st.info("Keine Modelle in der Registry gefunden.")
             except Exception as e:
-                st.error(f"❌ Fehler beim Laden der MLflow-Metriken: {e}")
+                st.error(f"Fehler beim Laden der Registry-Metriken: {e}")
 
 
 
@@ -615,19 +561,11 @@ if role == "admin":
         }
 
         # Entscheide, welches task_order zu verwenden ist
-        if st.session_state.get("last_dag") == "deep_models_pipeline":
-            task_order = [
-                "train_deep_user_model",
-                "train_deep_hybrid_model",
-                "validate_models",          # Falls du einen eigenen DL-Validator hast!
-                "predict_best_model"
-            ]
-        else:
-            task_order = [
-                "import_raw_data", "make_dataset", "build_features",
-                "train_user_model", "train_hybrid_model",
-                "validate_models", "predict_best_model"
-            ]
+        task_order = [
+            "import_raw_data", "make_dataset", "build_features",
+            "train_deep_hybrid_model", "validate_models", "predict_best_model"
+        ]
+
 
         import time
 

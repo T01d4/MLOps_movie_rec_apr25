@@ -1,0 +1,26 @@
+[2025-06-06T21:15:48.215+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-06T21:15:47.243535+00:00 [queued]>
+[2025-06-06T21:15:48.221+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-06T21:15:47.243535+00:00 [queued]>
+[2025-06-06T21:15:48.222+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-06T21:15:48.234+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): import_raw_data> on 2025-06-06 21:15:47.243535+00:00
+[2025-06-06T21:15:48.243+0000] {standard_task_runner.py:60} INFO - Started process 220 to run task
+[2025-06-06T21:15:48.246+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'import_raw_data', 'manual__2025-06-06T21:15:47.243535+00:00', '--job-id', '2282', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpsoul4n6g']
+[2025-06-06T21:15:48.248+0000] {standard_task_runner.py:88} INFO - Job 2282: Subtask import_raw_data
+[2025-06-06T21:15:48.294+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-06T21:15:47.243535+00:00 [running]> on host fa7df0d4030e
+[2025-06-06T21:15:48.362+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='import_raw_data' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T21:15:47.243535+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T21:15:47.243535+00:00'
+[2025-06-06T21:15:48.363+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/data/import_raw_data.py
+[2025-06-06T21:15:48.567+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+✅ Datei bereits vorhanden, überspringe: genome-scores.csv
+✅ Datei bereits vorhanden, überspringe: genome-tags.csv
+✅ Datei bereits vorhanden, überspringe: links.csv
+✅ Datei bereits vorhanden, überspringe: movies.csv
+✅ Datei bereits vorhanden, überspringe: ratings.csv
+✅ Datei bereits vorhanden, überspringe: README.txt
+✅ Datei bereits vorhanden, überspringe: tags.csv
+
+[2025-06-06T21:15:48.568+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-06 21:15:48,555 - __main__ - INFO - ✅ Rohdatenprüfung abgeschlossen.
+
+[2025-06-06T21:15:48.568+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-06T21:15:48.577+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=import_raw_data, execution_date=20250606T211547, start_date=20250606T211548, end_date=20250606T211548
+[2025-06-06T21:15:48.620+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-06T21:15:48.640+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

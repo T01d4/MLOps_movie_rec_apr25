@@ -1,0 +1,101 @@
+[2025-06-06T18:19:46.368+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-06T18:16:20.041051+00:00 [queued]>
+[2025-06-06T18:19:46.379+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-06T18:16:20.041051+00:00 [queued]>
+[2025-06-06T18:19:46.380+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-06T18:19:46.393+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-06 18:16:20.041051+00:00
+[2025-06-06T18:19:46.400+0000] {standard_task_runner.py:60} INFO - Started process 690 to run task
+[2025-06-06T18:19:46.402+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-06T18:16:20.041051+00:00', '--job-id', '2220', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpryt2ak8p']
+[2025-06-06T18:19:46.404+0000] {standard_task_runner.py:88} INFO - Job 2220: Subtask predict_best_model
+[2025-06-06T18:19:46.448+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-06T18:16:20.041051+00:00 [running]> on host ad6b6abc6237
+[2025-06-06T18:19:46.526+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-06T18:16:20.041051+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-06T18:16:20.041051+00:00'
+[2025-06-06T18:19:46.527+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-06T18:19:53.781+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+[2025-06-06T18:19:53.782+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-06 18:19:48,463 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry
+2025-06-06 18:19:48,463 - INFO - 📦 Lade Modell: models:/hybrid_deep_model@best_model
+
+Downloading artifacts:   0%|          | 0/8 [00:00<?, ?it/s]
+Downloading artifacts:  12%|█▎        | 1/8 [00:00<00:00, 12372.58it/s]
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:00,  8.87it/s]   
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:00,  8.87it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:00<00:00,  8.89it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:00<00:00,  8.89it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:00<00:00,  8.89it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:00<00:00,  8.89it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:00<00:00, 15.28it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:00<00:00, 15.28it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:02<00:00, 15.28it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:02<00:00,  2.46it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:02<00:00,  2.46it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:02<00:00,  3.35it/s]
+2025-06-06 18:19:53,408 - INFO - 📥 Embedding geladen: /opt/***/data/processed/hybrid_deep_embedding.csv – Shape: (10381, 32)
+2025-06-06 18:19:53,425 - ERROR - ❌ Fehler bei der Modellvorhersage: Failed to enforce schema of data '       emb_0     emb_1     emb_2  ...    emb_29    emb_30    emb_31
+1  -0.193493 -0.613721  0.029041  ...  0.768735  0.238071  0.658098
+2  -0.143466  0.065477  0.181274  ...  0.190302  0.240826  0.174153
+3  -0.014407 -0.187389 -0.049527  ...  0.330857  0.172008  0.225592
+4   0.120910  0.086251  0.107530  ...  0.219762 -0.076082  0.086171
+5  -0.039356 -0.019843 -0.218702  ...  0.418123  0.177390  0.130983
+6   0.210622 -0.601682  0.086471  ... -0.074389 -0.162377  0.541847
+7  -0.085916  0.010423 -0.095731  ...  0.414173 -0.041842  0.130682
+8  -0.006986  0.080216  0.061672  ...  0.243796  0.208782  0.191010
+9   0.141946  0.220431  0.126173  ... -0.182805  0.148894  0.291854
+10  0.273388  0.058346  0.434170  ...  0.058776  0.399502  0.838985
+
+[10 rows x 32 columns]' with schema '['emb_0': float (required), 'emb_1': float (required), 'emb_2': float (required), 'emb_3': float (required), 'emb_4': float (required), 'emb_5': float (required), 'emb_6': float (required), 'emb_7': float (required), 'emb_8': float (required), 'emb_9': float (required), 'emb_10': float (required), 'emb_11': float (required), 'emb_12': float (required), 'emb_13': float (required), 'emb_14': float (required), 'emb_15': float (required), 'emb_16': float (required), 'emb_17': float (required), 'emb_18': float (required), 'emb_19': float (required), 'emb_20': float (required), 'emb_21': float (required), 'emb_22': float (required), 'emb_23': float (required), 'emb_24': float (required), 'emb_25': float (required), 'emb_26': float (required), 'emb_27': float (required), 'emb_28': float (required), 'emb_29': float (required), 'emb_30': float (required), 'emb_31': float (required)]'. Error: Incompatible input types for column emb_0. Can not safely convert float64 to float32.
+Traceback (most recent call last):
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 730, in _validate_prediction_input
+    data = _enforce_schema(data, input_schema, flavor)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/models/utils.py", line 1284, in _enforce_schema
+    _enforce_named_col_schema(pf_input, input_schema)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/models/utils.py", line 986, in _enforce_named_col_schema
+    new_pf_input[name] = _enforce_mlflow_datatype(name, pf_input[name], input_type)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/models/utils.py", line 878, in _enforce_mlflow_datatype
+    raise MlflowException(
+mlflow.exceptions.MlflowException: Incompatible input types for column emb_0. Can not safely convert float64 to float32.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/***/src/models/predict_best_model.py", line 69, in <module>
+    predict_best_model(n_users=args.n_users)
+  File "/opt/***/src/models/predict_best_model.py", line 40, in predict_best_model
+    predictions = model.predict(input_df)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 812, in predict
+    return self._predict(data, params)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 851, in _predict
+    data, params = _validate_prediction_input(
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/pyfunc/__init__.py", line 733, in _validate_prediction_input
+    raise MlflowException.invalid_parameter_value(
+mlflow.exceptions.MlflowException: Failed to enforce schema of data '       emb_0     emb_1     emb_2  ...    emb_29    emb_30    emb_31
+1  -0.193493 -0.613721  0.029041  ...  0.768735  0.238071  0.658098
+2  -0.143466  0.065477  0.181274  ...  0.190302  0.240826  0.174153
+3  -0.014407 -0.187389 -0.049527  ...  0.330857  0.172008  0.225592
+4   0.120910  0.086251  0.107530  ...  0.219762 -0.076082  0.086171
+5  -0.039356 -0.019843 -0.218702  ...  0.418123  0.177390  0.130983
+6   0.210622 -0.601682  0.086471  ... -0.074389 -0.162377  0.541847
+7  -0.085916  0.010423 -0.095731  ...  0.414173 -0.041842  0.130682
+8  -0.006986  0.080216  0.061672  ...  0.243796  0.208782  0.191010
+9   0.141946  0.220431  0.126173  ... -0.182805  0.148894  0.291854
+10  0.273388  0.058346  0.434170  ...  0.058776  0.399502  0.838985
+
+[10 rows x 32 columns]' with schema '['emb_0': float (required), 'emb_1': float (required), 'emb_2': float (required), 'emb_3': float (required), 'emb_4': float (required), 'emb_5': float (required), 'emb_6': float (required), 'emb_7': float (required), 'emb_8': float (required), 'emb_9': float (required), 'emb_10': float (required), 'emb_11': float (required), 'emb_12': float (required), 'emb_13': float (required), 'emb_14': float (required), 'emb_15': float (required), 'emb_16': float (required), 'emb_17': float (required), 'emb_18': float (required), 'emb_19': float (required), 'emb_20': float (required), 'emb_21': float (required), 'emb_22': float (required), 'emb_23': float (required), 'emb_24': float (required), 'emb_25': float (required), 'emb_26': float (required), 'emb_27': float (required), 'emb_28': float (required), 'emb_29': float (required), 'emb_30': float (required), 'emb_31': float (required)]'. Error: Incompatible input types for column emb_0. Can not safely convert float64 to float32.
+
+[2025-06-06T18:19:53.782+0000] {train_deep_model_dag.py:29} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/predict_best_model.py
+[2025-06-06T18:19:53.783+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-06T18:19:53.783+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 71, in run_predict_best_model
+    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 30, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-06T18:19:53.792+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=deep_models_pipeline, task_id=predict_best_model, execution_date=20250606T181620, start_date=20250606T181946, end_date=20250606T181953
+[2025-06-06T18:19:53.801+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 2220 for task predict_best_model (Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.; 690)
+[2025-06-06T18:19:53.844+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-06T18:19:53.855+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

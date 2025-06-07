@@ -1,22 +1,0 @@
-[2025-06-01T12:54:29.002+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.check_model_registry manual__2025-06-01T12:49:15.136293+00:00 [queued]>
-[2025-06-01T12:54:29.011+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: movie_recommendation_pipeline.check_model_registry manual__2025-06-01T12:49:15.136293+00:00 [queued]>
-[2025-06-01T12:54:29.012+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
-[2025-06-01T12:54:29.028+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): check_model_registry> on 2025-06-01 12:49:15.136293+00:00
-[2025-06-01T12:54:29.035+0000] {standard_task_runner.py:60} INFO - Started process 884 to run task
-[2025-06-01T12:54:29.039+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'movie_recommendation_pipeline', 'check_model_registry', 'manual__2025-06-01T12:49:15.136293+00:00', '--job-id', '1014', '--raw', '--subdir', 'DAGS_FOLDER/mlops_movie_dag.py', '--cfg-path', '/tmp/tmpl1akx2va']
-[2025-06-01T12:54:29.041+0000] {standard_task_runner.py:88} INFO - Job 1014: Subtask check_model_registry
-[2025-06-01T12:54:29.082+0000] {task_command.py:423} INFO - Running <TaskInstance: movie_recommendation_pipeline.check_model_registry manual__2025-06-01T12:49:15.136293+00:00 [running]> on host 4341016188c8
-[2025-06-01T12:54:29.143+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='movie_recommendation_pipeline' AIRFLOW_CTX_TASK_ID='check_model_registry' AIRFLOW_CTX_EXECUTION_DATE='2025-06-01T12:49:15.136293+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-01T12:49:15.136293+00:00'
-[2025-06-01T12:54:29.978+0000] {checkreg.py:15} INFO - 🔍 Checking model registry for: 'movie_model' and alias '@best_model'
-[2025-06-01T12:54:30.293+0000] {checkreg.py:19} INFO - ✅ Alias '@best_model' zeigt auf Version: 85
-[2025-06-01T12:54:30.471+0000] {checkreg.py:25} INFO - Details Version 85: status=READY, description=Auto-selected hybrid KNN model by Airflow DAG. Precision: 0.22 (hybrid), 0.05 (user).
-[2025-06-01T12:54:30.471+0000] {checkreg.py:27} INFO - Artifact URI: mlflow-artifacts:/b2cca28f98b24ce191a79aad3f1695f1/08995a6854df4d62ad87a673bafbc0fd/artifacts/hybrid_knn_pyfunc
-[2025-06-01T12:54:33.217+0000] {logging_mixin.py:188} WARNING - Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
-[2025-06-01T12:55:38.094+0000] {logging_mixin.py:188} WARNING - Downloading artifacts:   0%|          | 0/1 [01:04<?, ?it/s]
-[2025-06-01T12:55:38.095+0000] {checkreg.py:34} ERROR - ❌ Fehler: Modell kann nicht als pyfunc geladen werden (The following failures occurred while downloading one or more artifacts from https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow-artifacts/artifacts/b2cca28f98b24ce191a79aad3f1695f1/08995a6854df4d62ad87a673bafbc0fd/artifacts/hybrid_knn_pyfunc:
-##### File  #####
-API request to https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow-artifacts/artifacts/b2cca28f98b24ce191a79aad3f1695f1/08995a6854df4d62ad87a673bafbc0fd/artifacts/hybrid_knn_pyfunc/ failed with exception HTTPSConnectionPool(host='dagshub.com', port=443): Max retries exceeded with url: /sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow-artifacts/artifacts/b2cca28f98b24ce191a79aad3f1695f1/08995a6854df4d62ad87a673bafbc0fd/artifacts/hybrid_knn_pyfunc/ (Caused by ResponseError('too many 500 error responses')))
-[2025-06-01T12:55:38.096+0000] {python.py:201} INFO - Done. Returned value was: None
-[2025-06-01T12:55:38.105+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=movie_recommendation_pipeline, task_id=check_model_registry, execution_date=20250601T124915, start_date=20250601T125429, end_date=20250601T125538
-[2025-06-01T12:55:38.151+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
-[2025-06-01T12:55:38.167+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

@@ -1,0 +1,60 @@
+[2025-06-07T04:33:06.560+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-07T04:31:17.020000+00:00 [queued]>
+[2025-06-07T04:33:06.568+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-07T04:31:17.020000+00:00 [queued]>
+[2025-06-07T04:33:06.569+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T04:33:06.580+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-07 04:31:17.020000+00:00
+[2025-06-07T04:33:06.588+0000] {standard_task_runner.py:60} INFO - Started process 1772 to run task
+[2025-06-07T04:33:06.590+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-07T04:31:17.020000+00:00', '--job-id', '2437', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpl_cnb9o8']
+[2025-06-07T04:33:06.591+0000] {standard_task_runner.py:88} INFO - Job 2437: Subtask predict_best_model
+[2025-06-07T04:33:06.633+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-07T04:31:17.020000+00:00 [running]> on host 15daee2d5ed2
+[2025-06-07T04:33:06.700+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T04:31:17.020000+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T04:31:17.020000+00:00'
+[2025-06-07T04:33:06.701+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-07T04:33:17.081+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+Everything is up to date.
+
+[2025-06-07T04:33:17.082+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-07 04:33:08,630 - WARNING - Fehlende Dateien: ['/opt/***/models/hybrid_deep_knn_best.pkl'] – Starte dvc pull ...
+2025-06-07 04:33:11,981 - INFO - DVC pull abgeschlossen.
+2025-06-07 04:33:11,981 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry
+2025-06-07 04:33:11,981 - INFO - 📦 Lade Modell: models:/hybrid_deep_model@best_model
+
+Downloading artifacts:   0%|          | 0/8 [00:00<?, ?it/s]
+Downloading artifacts:  12%|█▎        | 1/8 [00:00<00:00, 8289.14it/s]
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:00,  8.99it/s]  
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:00,  8.99it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:00<00:00,  7.79it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:00<00:00,  7.79it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:00<00:00,  7.79it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:00<00:00,  7.79it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:00<00:00,  7.05it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:00<00:00,  7.05it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:01<00:00,  6.28it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:01<00:00,  6.28it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:01<00:00,  4.00it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:01<00:00,  4.00it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:01<00:00,  5.12it/s]
+Traceback (most recent call last):
+  File "/opt/***/src/models/predict_best_model.py", line 89, in <module>
+    predict_best_model(n_users=args.n_users)
+  File "/opt/***/src/models/predict_best_model.py", line 48, in predict_best_model
+    input_matrix = pd.read_csv(EMBEDDING_PATH, index_col=0)
+NameError: name 'EMBEDDING_PATH' is not defined. Did you mean: 'BEST_EMBEDDING_PATH'?
+
+[2025-06-07T04:33:17.082+0000] {train_deep_model_dag.py:29} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/predict_best_model.py
+[2025-06-07T04:33:17.083+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-07T04:33:17.084+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 71, in run_predict_best_model
+    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 30, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-07T04:33:17.096+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=deep_models_pipeline, task_id=predict_best_model, execution_date=20250607T043117, start_date=20250607T043306, end_date=20250607T043317
+[2025-06-07T04:33:17.109+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 2437 for task predict_best_model (Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.; 1772)
+[2025-06-07T04:33:17.139+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-07T04:33:17.153+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
