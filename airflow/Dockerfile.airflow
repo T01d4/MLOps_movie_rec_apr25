@@ -18,8 +18,13 @@ COPY airflow/requirements.airflow.txt /requirements.txt
 
 # Wechsel zurück zum airflow-User für pip und airflow Kommandos
 USER airflow
+# Jetzt requirements installieren (nachdem sie kopiert wurden!)
 RUN pip install --no-cache-dir -r /requirements.txt
-
+# GIT config für airflow-User (NACH USER airflow!)
+RUN git config --global --add safe.directory /opt/airflow
+# GIT USER/EMAIL für airflow-User setzen (deine Airflow-Tasks laufen als dieser User)
+RUN git config --global user.name "airflow" \
+    && git config --global user.email "airflow@container"
 # src-Ordner einbinden
 COPY ./src /src
 

@@ -60,7 +60,7 @@ MODEL_PATH=/app/models/model.pkl
 
 JWT_SECRET=supersecretkey
 
-API_URL=http://airflow-webserver:8080
+API_URL=http://api_service:8000
 
 TMDB_API_KEY=your API Key for Movie Pictures
 

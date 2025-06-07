@@ -1,0 +1,26 @@
+[2025-06-07T20:15:23.557+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.validate_models manual__2025-06-07T20:15:22.457580+00:00 [queued]>
+[2025-06-07T20:15:23.564+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.validate_models manual__2025-06-07T20:15:22.457580+00:00 [queued]>
+[2025-06-07T20:15:23.565+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T20:15:23.576+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-06-07 20:15:22.457580+00:00
+[2025-06-07T20:15:23.582+0000] {standard_task_runner.py:60} INFO - Started process 276 to run task
+[2025-06-07T20:15:23.590+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'validate_models', 'manual__2025-06-07T20:15:22.457580+00:00', '--job-id', '2592', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpizfkr8u3']
+[2025-06-07T20:15:23.592+0000] {standard_task_runner.py:88} INFO - Job 2592: Subtask validate_models
+[2025-06-07T20:15:23.631+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.validate_models manual__2025-06-07T20:15:22.457580+00:00 [running]> on host 78208c00c095
+[2025-06-07T20:15:23.705+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T20:15:22.457580+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T20:15:22.457580+00:00'
+[2025-06-07T20:15:23.706+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/validate_model.py --test_user_count=100
+[2025-06-07T20:16:20.097+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+🏃 View run movie_recommendation_validation_deep_hybrid at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/11/runs/9843c4651ac243dabb6cdd5e5f44bb9e
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/11
+
+[2025-06-07T20:16:20.099+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-07 20:15:26,432 - INFO - 🚀 Starte Validierung (Deep Hybrid Only)
+2025-06-07 20:15:33,191 - INFO - 📥 Deep Hybrid Model & Embeddings geladen – Beginne Evaluation
+2025-06-07 20:16:00,932 - INFO - 📊 precision_10_hybrid_deep: 0.34
+2025-06-07 20:16:14,398 - INFO - Aktueller Bestwert precision_10: 0.38 (Version: 17)
+2025-06-07 20:16:14,398 - INFO - Kein Bestwert – Präzision nicht verbessert (0.3400 <= 0.3800)
+2025-06-07 20:16:19,400 - INFO - 🎉 Validation abgeschlossen.
+
+[2025-06-07T20:16:20.100+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-07T20:16:20.113+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=validate_models, execution_date=20250607T201522, start_date=20250607T201523, end_date=20250607T201620
+[2025-06-07T20:16:20.160+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-07T20:16:20.180+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

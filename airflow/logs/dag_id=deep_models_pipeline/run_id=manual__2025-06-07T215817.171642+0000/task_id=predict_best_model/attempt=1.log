@@ -1,0 +1,17 @@
+[2025-06-07T21:58:17.708+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-07T21:58:17.171642+00:00 [queued]>
+[2025-06-07T21:58:17.718+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-07T21:58:17.171642+00:00 [queued]>
+[2025-06-07T21:58:17.719+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T21:58:17.733+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-07 21:58:17.171642+00:00
+[2025-06-07T21:58:17.740+0000] {standard_task_runner.py:60} INFO - Started process 1902 to run task
+[2025-06-07T21:58:17.743+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-07T21:58:17.171642+00:00', '--job-id', '2724', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmppqk66lvj']
+[2025-06-07T21:58:17.745+0000] {standard_task_runner.py:88} INFO - Job 2724: Subtask predict_best_model
+[2025-06-07T21:58:17.785+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-07T21:58:17.171642+00:00 [running]> on host a47caab93d5d
+[2025-06-07T21:58:17.852+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T21:58:17.171642+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T21:58:17.171642+00:00'
+[2025-06-07T21:58:17.853+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-07T21:58:27.815+0000] {local_task_job_runner.py:302} WARNING - State of this instance has been externally set to failed. Terminating instance.
+[2025-06-07T21:58:27.817+0000] {process_utils.py:131} INFO - Sending 15 to group 1902. PIDs of all processes in the group: [1907, 1902]
+[2025-06-07T21:58:27.817+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 1902
+[2025-06-07T21:58:27.819+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-07T21:58:27.828+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-07T21:58:27.833+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=1907, status='terminated', started='21:58:17') (1907) terminated with exit code None
+[2025-06-07T21:58:27.847+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=1902, status='terminated', exitcode=0, started='21:58:17') (1902) terminated with exit code 0

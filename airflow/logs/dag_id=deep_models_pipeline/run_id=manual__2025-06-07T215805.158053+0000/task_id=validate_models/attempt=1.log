@@ -1,0 +1,17 @@
+[2025-06-07T21:58:06.285+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.validate_models manual__2025-06-07T21:58:05.158053+00:00 [queued]>
+[2025-06-07T21:58:06.291+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.validate_models manual__2025-06-07T21:58:05.158053+00:00 [queued]>
+[2025-06-07T21:58:06.291+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T21:58:06.302+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validate_models> on 2025-06-07 21:58:05.158053+00:00
+[2025-06-07T21:58:06.309+0000] {standard_task_runner.py:60} INFO - Started process 1358 to run task
+[2025-06-07T21:58:06.316+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'validate_models', 'manual__2025-06-07T21:58:05.158053+00:00', '--job-id', '2709', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpp7i5nrrz']
+[2025-06-07T21:58:06.318+0000] {standard_task_runner.py:88} INFO - Job 2709: Subtask validate_models
+[2025-06-07T21:58:06.358+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.validate_models manual__2025-06-07T21:58:05.158053+00:00 [running]> on host a47caab93d5d
+[2025-06-07T21:58:06.417+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='validate_models' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T21:58:05.158053+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T21:58:05.158053+00:00'
+[2025-06-07T21:58:06.418+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/validate_model.py --test_user_count=100
+[2025-06-07T21:58:21.530+0000] {local_task_job_runner.py:302} WARNING - State of this instance has been externally set to failed. Terminating instance.
+[2025-06-07T21:58:21.536+0000] {process_utils.py:131} INFO - Sending 15 to group 1358. PIDs of all processes in the group: [1365, 1358]
+[2025-06-07T21:58:21.543+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 1358
+[2025-06-07T21:58:21.551+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-07T21:58:21.613+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-07T21:58:21.686+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=1358, status='terminated', exitcode=0, started='21:58:06') (1358) terminated with exit code 0
+[2025-06-07T21:58:21.687+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=1365, status='terminated', started='21:58:06') (1365) terminated with exit code None

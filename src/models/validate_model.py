@@ -12,6 +12,7 @@ from mlflow.tracking import MlflowClient
 from datetime import datetime
 import shutil
 import subprocess
+import getpass
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 load_dotenv()
@@ -45,19 +46,37 @@ def update_best_model_in_mlflow(precision, client, model_name, model_version):
         # ==== NUR das Featurefile/Embedding speichern und mit DVC versionieren ====
         try:
             best_embedding_path = "/opt/airflow/data/processed/hybrid_deep_embedding_best.csv"
-            shutil.copy(EMBEDDING_PATH, best_embedding_path)
-            logging.info("✅ Best-Embedding als _best gespeichert!")
 
-            # DVC add
-            subprocess.run(["dvc", "add", best_embedding_path], check=True)
-            # Git add/commit für DVC-File und .gitignore!
-            subprocess.run(["git", "add", f"{best_embedding_path}.dvc", ".gitignore"], check=True)
-            subprocess.run([
-                "git", "commit", "-m", f"Track new best embedding (precision={precision:.4f})"
-            ], check=True)
-            # DVC push
-            subprocess.run(["dvc", "push"], check=True)
-            logging.info("✅ DVC add, git commit & push für Best-Embedding abgeschlossen!")
+            logging.info(f"--- Test: Kopiere Best-Embedding (User: {getpass.getuser()}) ---")
+            logging.info(f"EMBEDDING_PATH: {EMBEDDING_PATH}")
+            logging.info(f"Best-Embedding Ziel: {best_embedding_path}")
+            logging.info(f"Write permission on Zielverzeichnis: {os.access(os.path.dirname(best_embedding_path), os.W_OK)}")
+            try:
+                if not os.path.exists(EMBEDDING_PATH):
+                    logging.error(f"❌ EMBEDDING_PATH existiert nicht: {EMBEDDING_PATH}")
+                    return
+                if os.path.exists(best_embedding_path):
+                    os.remove(best_embedding_path)
+                shutil.copy(EMBEDDING_PATH, best_embedding_path)
+                logging.info("✅ Best-Embedding als _best gespeichert!")
+            except Exception as ex:
+                logging.error(f"❌ Fehler beim Überschreiben/Kopieren der Best-Embedding-Datei: {ex}")
+                return
+
+            # DVC add, git add, commit und push (ohne precision)
+            try:
+                subprocess.run(["dvc", "add", best_embedding_path], check=True)
+                logging.info("✅ dvc add erfolgreich.")
+                subprocess.run(["git", "add", f"{best_embedding_path}.dvc"], check=True)
+                logging.info("✅ git add erfolgreich.")
+                subprocess.run([
+                    "git", "commit", "-m", "Track new best embedding (TEST-COMMIT)"
+                ], check=True)
+                logging.info("✅ git commit erfolgreich.")
+                subprocess.run(["dvc", "push"], check=True)
+                logging.info("✅ DVC add, git commit & push für Best-Embedding abgeschlossen!")
+            except Exception as e:
+                logging.error(f"❌ Fehler beim DVC push der _best-Embedding-Datei: {e}")
         except Exception as e:
             logging.error(f"❌ Fehler beim Kopieren oder DVC push der _best-Embedding-Datei: {e}")
     else:

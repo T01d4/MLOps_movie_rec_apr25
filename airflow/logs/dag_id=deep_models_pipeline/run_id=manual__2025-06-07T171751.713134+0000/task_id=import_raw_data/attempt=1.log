@@ -1,0 +1,45 @@
+[2025-06-07T17:17:52.895+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-07T17:17:51.713134+00:00 [queued]>
+[2025-06-07T17:17:52.902+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-07T17:17:51.713134+00:00 [queued]>
+[2025-06-07T17:17:52.902+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T17:17:52.912+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): import_raw_data> on 2025-06-07 17:17:51.713134+00:00
+[2025-06-07T17:17:52.919+0000] {standard_task_runner.py:60} INFO - Started process 198 to run task
+[2025-06-07T17:17:52.922+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'import_raw_data', 'manual__2025-06-07T17:17:51.713134+00:00', '--job-id', '2512', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp25s3qoig']
+[2025-06-07T17:17:52.924+0000] {standard_task_runner.py:88} INFO - Job 2512: Subtask import_raw_data
+[2025-06-07T17:17:52.967+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-07T17:17:51.713134+00:00 [running]> on host 5eaa5bf972f1
+[2025-06-07T17:17:53.041+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='import_raw_data' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T17:17:51.713134+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T17:17:51.713134+00:00'
+[2025-06-07T17:17:53.042+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/data/import_raw_data.py
+[2025-06-07T17:17:58.345+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+To track the changes with git, run:
+
+	git add data/processed/hybrid_deep_embedding_best.csv.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+
+[2025-06-07T17:17:58.346+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-07 17:17:53,406 - root - INFO - --- Test: Kopiere Best-Embedding (User: ***) ---
+2025-06-07 17:17:53,407 - root - INFO - EMBEDDING_PATH: /opt/***/data/processed/hybrid_deep_embedding.csv
+2025-06-07 17:17:53,407 - root - INFO - Best-Embedding Ziel: /opt/***/data/processed/hybrid_deep_embedding_best.csv
+2025-06-07 17:17:53,407 - root - INFO - Write permission on Zielverzeichnis: True
+2025-06-07 17:17:53,476 - root - INFO - ✅ Best-Embedding als _best gespeichert!
+2025-06-07 17:17:58,318 - root - INFO - ✅ dvc add erfolgreich.
+fatal: detected dubious ownership in repository at '/opt/***'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /opt/***
+2025-06-07 17:17:58,326 - root - ERROR - ❌ Fehler beim DVC push der _best-Embedding-Datei: Command '['git', 'add', '/opt/***/data/processed/hybrid_deep_embedding_best.csv.dvc', '.gitignore']' returned non-zero exit status 128.
+2025-06-07 17:17:58,327 - root - INFO - ✅ Datei bereits vorhanden, überspringe: genome-scores.csv
+2025-06-07 17:17:58,328 - root - INFO - ✅ Datei bereits vorhanden, überspringe: genome-tags.csv
+2025-06-07 17:17:58,329 - root - INFO - ✅ Datei bereits vorhanden, überspringe: links.csv
+2025-06-07 17:17:58,330 - root - INFO - ✅ Datei bereits vorhanden, überspringe: movies.csv
+2025-06-07 17:17:58,330 - root - INFO - ✅ Datei bereits vorhanden, überspringe: ratings.csv
+2025-06-07 17:17:58,330 - root - INFO - ✅ Datei bereits vorhanden, überspringe: README.txt
+2025-06-07 17:17:58,331 - root - INFO - ✅ Datei bereits vorhanden, überspringe: tags.csv
+2025-06-07 17:17:58,332 - root - INFO - ✅ Rohdatenprüfung abgeschlossen.
+
+[2025-06-07T17:17:58.347+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-07T17:17:58.355+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=import_raw_data, execution_date=20250607T171751, start_date=20250607T171752, end_date=20250607T171758
+[2025-06-07T17:17:58.374+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-07T17:17:58.398+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

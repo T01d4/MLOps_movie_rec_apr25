@@ -1,0 +1,112 @@
+[2025-06-07T22:03:43.331+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-07T22:03:38.491075+00:00 [queued]>
+[2025-06-07T22:03:43.339+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-07T22:03:38.491075+00:00 [queued]>
+[2025-06-07T22:03:43.339+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T22:03:43.352+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_deep_hybrid_model> on 2025-06-07 22:03:38.491075+00:00
+[2025-06-07T22:03:43.360+0000] {standard_task_runner.py:60} INFO - Started process 903 to run task
+[2025-06-07T22:03:43.362+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_deep_hybrid_model', 'manual__2025-06-07T22:03:38.491075+00:00', '--job-id', '2750', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpihabxk9m']
+[2025-06-07T22:03:43.363+0000] {standard_task_runner.py:88} INFO - Job 2750: Subtask train_deep_hybrid_model
+[2025-06-07T22:03:43.405+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-07T22:03:38.491075+00:00 [running]> on host e4801a74e885
+[2025-06-07T22:03:43.482+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_deep_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T22:03:38.491075+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T22:03:38.491075+00:00'
+[2025-06-07T22:03:43.483+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_deep_model.py --n_neighbors=40 --latent_dim=32 --epochs=75 --tfidf_features=1728
+[2025-06-07T22:05:31.947+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+🏃 View run train_hybrid_deep_model at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/10/runs/5f99d94b8edf48ab9cf648b387784f2e
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/10
+
+[2025-06-07T22:05:31.947+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-07 22:03:54,446 - __main__ - INFO - 📥 Lade Rohdaten und baue Hybrid-Feature-Matrix ...
+2025-06-07 22:03:59,572 - __main__ - INFO - 📐 Hybrid-Matrix erstellt mit Shape: (10381, 2857), Feature-Namen: 2857
+2025-06-07 22:04:13,124 - __main__ - INFO - 💾 Hybrid-Matrix gespeichert unter /opt/***/data/processed/hybrid_matrix.csv
+2025-06-07 22:04:13,295 - __main__ - INFO - 🚀 Starte Training Autoencoder ...
+2025-06-07 22:04:14,266 - __main__ - INFO - Epoch 1/75: Loss = 0.0069
+2025-06-07 22:04:14,721 - __main__ - INFO - Epoch 2/75: Loss = 0.0042
+2025-06-07 22:04:15,182 - __main__ - INFO - Epoch 3/75: Loss = 0.0036
+2025-06-07 22:04:15,631 - __main__ - INFO - Epoch 4/75: Loss = 0.0033
+2025-06-07 22:04:16,067 - __main__ - INFO - Epoch 5/75: Loss = 0.0031
+2025-06-07 22:04:16,494 - __main__ - INFO - Epoch 6/75: Loss = 0.0030
+2025-06-07 22:04:16,931 - __main__ - INFO - Epoch 7/75: Loss = 0.0029
+2025-06-07 22:04:17,340 - __main__ - INFO - Epoch 8/75: Loss = 0.0029
+2025-06-07 22:04:17,762 - __main__ - INFO - Epoch 9/75: Loss = 0.0028
+2025-06-07 22:04:18,178 - __main__ - INFO - Epoch 10/75: Loss = 0.0028
+2025-06-07 22:04:18,583 - __main__ - INFO - Epoch 11/75: Loss = 0.0028
+2025-06-07 22:04:19,007 - __main__ - INFO - Epoch 12/75: Loss = 0.0027
+2025-06-07 22:04:19,429 - __main__ - INFO - Epoch 13/75: Loss = 0.0027
+2025-06-07 22:04:19,854 - __main__ - INFO - Epoch 14/75: Loss = 0.0027
+2025-06-07 22:04:20,292 - __main__ - INFO - Epoch 15/75: Loss = 0.0027
+2025-06-07 22:04:20,696 - __main__ - INFO - Epoch 16/75: Loss = 0.0026
+2025-06-07 22:04:21,150 - __main__ - INFO - Epoch 17/75: Loss = 0.0026
+2025-06-07 22:04:21,563 - __main__ - INFO - Epoch 18/75: Loss = 0.0026
+2025-06-07 22:04:22,009 - __main__ - INFO - Epoch 19/75: Loss = 0.0026
+2025-06-07 22:04:22,447 - __main__ - INFO - Epoch 20/75: Loss = 0.0026
+2025-06-07 22:04:22,891 - __main__ - INFO - Epoch 21/75: Loss = 0.0026
+2025-06-07 22:04:23,322 - __main__ - INFO - Epoch 22/75: Loss = 0.0026
+2025-06-07 22:04:23,799 - __main__ - INFO - Epoch 23/75: Loss = 0.0025
+2025-06-07 22:04:24,239 - __main__ - INFO - Epoch 24/75: Loss = 0.0025
+2025-06-07 22:04:24,703 - __main__ - INFO - Epoch 25/75: Loss = 0.0025
+2025-06-07 22:04:25,159 - __main__ - INFO - Epoch 26/75: Loss = 0.0025
+2025-06-07 22:04:25,586 - __main__ - INFO - Epoch 27/75: Loss = 0.0025
+2025-06-07 22:04:26,019 - __main__ - INFO - Epoch 28/75: Loss = 0.0025
+2025-06-07 22:04:26,427 - __main__ - INFO - Epoch 29/75: Loss = 0.0025
+2025-06-07 22:04:26,830 - __main__ - INFO - Epoch 30/75: Loss = 0.0025
+2025-06-07 22:04:27,240 - __main__ - INFO - Epoch 31/75: Loss = 0.0025
+2025-06-07 22:04:27,659 - __main__ - INFO - Epoch 32/75: Loss = 0.0025
+2025-06-07 22:04:28,105 - __main__ - INFO - Epoch 33/75: Loss = 0.0025
+2025-06-07 22:04:28,552 - __main__ - INFO - Epoch 34/75: Loss = 0.0025
+2025-06-07 22:04:28,984 - __main__ - INFO - Epoch 35/75: Loss = 0.0025
+2025-06-07 22:04:29,410 - __main__ - INFO - Epoch 36/75: Loss = 0.0025
+2025-06-07 22:04:29,826 - __main__ - INFO - Epoch 37/75: Loss = 0.0025
+2025-06-07 22:04:30,241 - __main__ - INFO - Epoch 38/75: Loss = 0.0024
+2025-06-07 22:04:30,661 - __main__ - INFO - Epoch 39/75: Loss = 0.0024
+2025-06-07 22:04:31,084 - __main__ - INFO - Epoch 40/75: Loss = 0.0024
+2025-06-07 22:04:31,508 - __main__ - INFO - Epoch 41/75: Loss = 0.0024
+2025-06-07 22:04:31,935 - __main__ - INFO - Epoch 42/75: Loss = 0.0024
+2025-06-07 22:04:32,363 - __main__ - INFO - Epoch 43/75: Loss = 0.0024
+2025-06-07 22:04:32,794 - __main__ - INFO - Epoch 44/75: Loss = 0.0024
+2025-06-07 22:04:33,214 - __main__ - INFO - Epoch 45/75: Loss = 0.0024
+2025-06-07 22:04:33,618 - __main__ - INFO - Epoch 46/75: Loss = 0.0024
+2025-06-07 22:04:34,031 - __main__ - INFO - Epoch 47/75: Loss = 0.0024
+2025-06-07 22:04:34,443 - __main__ - INFO - Epoch 48/75: Loss = 0.0024
+2025-06-07 22:04:34,854 - __main__ - INFO - Epoch 49/75: Loss = 0.0024
+2025-06-07 22:04:35,279 - __main__ - INFO - Epoch 50/75: Loss = 0.0024
+2025-06-07 22:04:35,692 - __main__ - INFO - Epoch 51/75: Loss = 0.0024
+2025-06-07 22:04:36,117 - __main__ - INFO - Epoch 52/75: Loss = 0.0024
+2025-06-07 22:04:36,536 - __main__ - INFO - Epoch 53/75: Loss = 0.0024
+2025-06-07 22:04:36,983 - __main__ - INFO - Epoch 54/75: Loss = 0.0024
+2025-06-07 22:04:37,438 - __main__ - INFO - Epoch 55/75: Loss = 0.0024
+2025-06-07 22:04:37,882 - __main__ - INFO - Epoch 56/75: Loss = 0.0024
+2025-06-07 22:04:38,304 - __main__ - INFO - Epoch 57/75: Loss = 0.0024
+2025-06-07 22:04:38,719 - __main__ - INFO - Epoch 58/75: Loss = 0.0024
+2025-06-07 22:04:39,127 - __main__ - INFO - Epoch 59/75: Loss = 0.0024
+2025-06-07 22:04:39,536 - __main__ - INFO - Epoch 60/75: Loss = 0.0024
+2025-06-07 22:04:39,957 - __main__ - INFO - Epoch 61/75: Loss = 0.0024
+2025-06-07 22:04:40,396 - __main__ - INFO - Epoch 62/75: Loss = 0.0023
+2025-06-07 22:04:40,837 - __main__ - INFO - Epoch 63/75: Loss = 0.0023
+2025-06-07 22:04:41,300 - __main__ - INFO - Epoch 64/75: Loss = 0.0023
+2025-06-07 22:04:41,719 - __main__ - INFO - Epoch 65/75: Loss = 0.0023
+2025-06-07 22:04:42,146 - __main__ - INFO - Epoch 66/75: Loss = 0.0023
+2025-06-07 22:04:42,548 - __main__ - INFO - Epoch 67/75: Loss = 0.0023
+2025-06-07 22:04:42,963 - __main__ - INFO - Epoch 68/75: Loss = 0.0023
+2025-06-07 22:04:43,382 - __main__ - INFO - Epoch 69/75: Loss = 0.0023
+2025-06-07 22:04:43,794 - __main__ - INFO - Epoch 70/75: Loss = 0.0023
+2025-06-07 22:04:44,214 - __main__ - INFO - Epoch 71/75: Loss = 0.0023
+2025-06-07 22:04:44,640 - __main__ - INFO - Epoch 72/75: Loss = 0.0023
+2025-06-07 22:04:45,064 - __main__ - INFO - Epoch 73/75: Loss = 0.0023
+2025-06-07 22:04:45,515 - __main__ - INFO - Epoch 74/75: Loss = 0.0023
+2025-06-07 22:04:45,943 - __main__ - INFO - Epoch 75/75: Loss = 0.0023
+2025-06-07 22:04:46,179 - __main__ - INFO - ✅ Hybrid-Embeddings gespeichert unter /opt/***/data/processed/hybrid_deep_embedding.csv
+2025-06-07 22:04:46,180 - __main__ - INFO - ✅ Hybrid-Embeddings gespeichert unter /opt/***/data/processed/hybrid_deep_embedding.csv
+2025-06-07 22:04:46,189 - __main__ - INFO - ✅ Deep KNN Modell gespeichert unter /opt/***/models/hybrid_deep_knn.pkl
+2025/06/07 22:04:52 INFO mlflow.pyfunc: Validating input example against model signature
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 80.72it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 79.94it/s]
+Registered model 'hybrid_deep_model' already exists. Creating a new version of this model...
+2025/06/07 22:05:09 INFO mlflow.store.model_registry.abstract_store: Waiting up to 300 seconds for model version to finish creation. Model name: hybrid_deep_model, version 25
+Created version '25' of model 'hybrid_deep_model'.
+2025-06-07 22:05:26,843 - __main__ - INFO - 📝 Tags für Modellversion 25 gesetzt: n_neighbors=40, latent_dim=32, tfidf_features=1728, epochs=75
+2025-06-07 22:05:30,849 - __main__ - INFO - 🏁 Deep Hybrid-Model Training abgeschlossen und geloggt.
+
+[2025-06-07T22:05:31.948+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-07T22:05:31.958+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=train_deep_hybrid_model, execution_date=20250607T220338, start_date=20250607T220343, end_date=20250607T220531
+[2025-06-07T22:05:31.980+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-07T22:05:32.002+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
