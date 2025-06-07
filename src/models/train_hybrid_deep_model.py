@@ -47,7 +47,7 @@ class KNNPyFuncWrapper(mlflow.pyfunc.PythonModel):
         with open(knn_path, "rb") as f:
             self.knn = pickle.load(f)
 
-    def predict(self, context, model_input):
+    def predict(self, context, model_input: pd.DataFrame) -> np.ndarray:
         return self.knn.kneighbors(model_input.values)[1]
 
 def train_hybrid_deep_model(n_neighbors=10, latent_dim=64, epochs=30, tfidf_features=300, save_matrix_csv=True):
@@ -187,7 +187,8 @@ def train_hybrid_deep_model(n_neighbors=10, latent_dim=64, epochs=30, tfidf_feat
             client.set_model_version_tag(model_name, model_version, "tfidf_features", str(tfidf_features))
             client.set_model_version_tag(model_name, model_version, "algorithm", "cosine")
             client.set_model_version_tag(model_name, model_version, "precision_10", 0.0)
-            logger.info(f"📝 Tags für Modellversion {model_version} gesetzt: n_neighbors={n_neighbors}, latent_dim={latent_dim}")
+            client.set_model_version_tag(model_name, model_version, "epochs", str(epochs))  # <--- HINZUFÜGEN!
+            logger.info(f"📝 Tags für Modellversion {model_version} gesetzt: n_neighbors={n_neighbors}, latent_dim={latent_dim}, tfidf_features={tfidf_features}, epochs={epochs}")
         else:
             logger.warning("⚠️ Konnte Modellversion für Tagging nicht bestimmen.")
 

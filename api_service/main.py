@@ -1,8 +1,13 @@
 # === api_service/main.py ===
 
-from fastapi import FastAPI, UploadFile, File, Query, Body
+from fastapi import FastAPI, UploadFile, HTTPException, Depends, File, Query, Body
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 import mlflow
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
+from datetime import datetime, timedelta
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import requests
@@ -14,6 +19,72 @@ app = FastAPI()
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 MLFLOW_EXPERIMENT = "hybrid_deep_model"  # oder wie im Training
+
+
+SECRET_KEY = os.getenv("SECRET_KEY", "supersecret123")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
+
+fake_users_db = {
+    "admin": {
+        "username": "admin",
+        "full_name": "Admin User",
+        "hashed_password": "$2b$12$w8yE0Ts.aipTsVxqH7psZeQ4ZUME4RN8L8C45c2Zykv3jJCD.kXii",  # admin
+        "role": "admin",
+        "disabled": False,
+    },
+    "user": {
+        "username": "user",
+        "full_name": "User",
+        "hashed_password": "$2b$12$qCHBG2Fq3aFqlUUct2RMm.NKXzS8N.K6ZUGDxFdUXNumkbDFu/SXi",  # user
+        "role": "user",
+        "disabled": False,
+    },
+    "guest": {
+        "username": "guest",
+        "full_name": "Guest User",
+        "hashed_password": "$2b$12$cnHwDZ.bF3oSe4lyv9uJS.dZXZz8vEn2V5xqXv50HbKUDd13fgJ2K",  # guest
+        "role": "guest",
+        "disabled": False,
+    }
+}
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    role: str
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_user(db, username: str):
+    return db.get(username)
+
+def authenticate_user(db, username: str, password: str):
+    user = get_user(db, username)
+    if not user or not verify_password(password, user["hashed_password"]):
+        return None
+    return user
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+@app.post("/login", response_model=Token)
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Incorrect username or password")
+    access_token = create_access_token(
+        data={"sub": user["username"], "role": user["role"]}
+    )
+    return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
+
 
 @app.post("/train")
 def train_model(n_neighbors: int = 10, latent_dim: int = 64, epochs: int = 30, tfidf_features: int = 300):

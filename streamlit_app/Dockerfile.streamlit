@@ -9,6 +9,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py ./app.py
 COPY auth.py ./auth.py
+COPY recommender.py ./recommender.py
+COPY training.py ./training.py
 
 
 # Optional: Erstelle leeres Verzeichnis, falls nicht vorhanden

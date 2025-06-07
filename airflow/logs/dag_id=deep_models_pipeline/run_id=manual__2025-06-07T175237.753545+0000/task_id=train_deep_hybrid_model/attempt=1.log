@@ -1,0 +1,45 @@
+[2025-06-07T17:52:38.779+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-07T17:52:37.753545+00:00 [queued]>
+[2025-06-07T17:52:38.788+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-07T17:52:37.753545+00:00 [queued]>
+[2025-06-07T17:52:38.788+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-07T17:52:38.803+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_deep_hybrid_model> on 2025-06-07 17:52:37.753545+00:00
+[2025-06-07T17:52:38.811+0000] {standard_task_runner.py:60} INFO - Started process 198 to run task
+[2025-06-07T17:52:38.815+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_deep_hybrid_model', 'manual__2025-06-07T17:52:37.753545+00:00', '--job-id', '2538', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpu8vn00fr']
+[2025-06-07T17:52:38.817+0000] {standard_task_runner.py:88} INFO - Job 2538: Subtask train_deep_hybrid_model
+[2025-06-07T17:52:38.863+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-07T17:52:37.753545+00:00 [running]> on host cd4ea1a0aa51
+[2025-06-07T17:52:38.960+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_deep_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-07T17:52:37.753545+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-07T17:52:37.753545+00:00'
+[2025-06-07T17:52:38.962+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_deep_model.py --n_neighbors=15 --latent_dim=32 --epochs=30 --tfidf_features=300
+[2025-06-07T17:53:33.882+0000] {local_task_job_runner.py:121} ERROR - Received SIGTERM. Terminating subprocesses
+[2025-06-07T17:53:33.887+0000] {process_utils.py:131} INFO - Sending 15 to group 198. PIDs of all processes in the group: [205, 641, 198]
+[2025-06-07T17:53:33.888+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 198
+[2025-06-07T17:53:33.890+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-07T17:53:33.963+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-07T17:53:33.965+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=205, status='terminated', started='17:52:38') (205) terminated with exit code None
+[2025-06-07T17:53:33.966+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=641, status='terminated', started='17:53:32') (641) terminated with exit code None
+[2025-06-07T17:53:33.977+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 54, in run_train_deep_hybrid_model
+    run_and_log([
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 14, in run_and_log
+    result = subprocess.run(
+  File "/usr/local/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/usr/local/lib/python3.10/subprocess.py", line 1154, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/usr/local/lib/python3.10/subprocess.py", line 2021, in _communicate
+    ready = selector.select(timeout)
+  File "/usr/local/lib/python3.10/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 2452, in signal_handler
+    raise AirflowException("Task received SIGTERM signal")
+airflow.exceptions.AirflowException: Task received SIGTERM signal
+[2025-06-07T17:53:33.989+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=deep_models_pipeline, task_id=train_deep_hybrid_model, execution_date=20250607T175237, start_date=20250607T175238, end_date=20250607T175333
+[2025-06-07T17:53:34.009+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 2538 for task train_deep_hybrid_model (Task received SIGTERM signal; 198)
+[2025-06-07T17:53:34.019+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=198, status='terminated', exitcode=1, started='17:52:38') (198) terminated with exit code 1
+[2025-06-07T17:53:34.020+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 143
+[2025-06-07T17:53:34.040+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

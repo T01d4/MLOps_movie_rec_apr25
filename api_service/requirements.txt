@@ -6,3 +6,5 @@ mlflow==2.22.0
 dagshub
 dvc
 python-multipart
+python-jose[cryptography]   # <-- JWT (benutzt für Token-Encode/Decode)
+passlib[bcrypt]             # <-- Für Passwort-Hashing (bcrypt)
