@@ -1,7 +1,5 @@
-Project Name
+MovieRecomm - MLOPS Project
 ==============================
-
-This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
 
 ⚠️ BREAKING CHANGE: Repo complete Rewrite (force-push, Rewrite, File-Struktur, .dvc & Data/Models)! 
 No `git pull` to lokal Repos  – use gitclone 
@@ -88,12 +86,19 @@ Never share .env and .dvc/config.local with secrets in public repos.
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── best_model_path<- path inside the container to the best performing model
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
-    ├── logs               <- Logs from training and predicting
+    ├── airflow
+    │   ├── dags                        <- path inside the container to the best performing model
+    │   ├── logs                        <- The final, canonical data sets for modeling.
+    │   ├── plugins                     <- The final, canonical data sets for modeling.
+    │   ├── airflow.cfg                 <- The final, canonical data sets for modeling.
+    │   ├── airflow.db                  <- The final, canonical data sets for modeling.
+    │   ├── Dockerfile.airflow          <- The final, canonical data sets for modeling.
+    │   ├── requirements.airflow.txt    <- The final, canonical data sets for modeling.
+    │   └── webserver_config.py
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │

@@ -1,6 +1,3 @@
-# ✅ version entfernt – Compose V2 benötigt das nicht mehr
-# docker-compose.yml – für DagsHub-only MLflow-Tracking
-
 services:
 
   streamlit:

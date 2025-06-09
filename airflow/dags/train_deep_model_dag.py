@@ -3,12 +3,10 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
-import os
 import logging
 import subprocess
 
 def run_and_log(command: list, cwd: str = "/opt/airflow"):
-    import subprocess
     try:
         logging.info(f"🟦 Running command: {' '.join(map(str, command))}")
         result = subprocess.run(
@@ -116,6 +114,5 @@ with DAG(
         python_callable=run_predict_best_model
     )
 
-    # DAG-Flow (analog zum klassischen Pipeline)
     import_raw_data >> make_dataset >> build_features
     build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict
