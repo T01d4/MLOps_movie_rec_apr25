@@ -1,115 +1,7 @@
-Project Name
+MovieReco - MLOPS Project
 ==============================
 
 This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
-
-⚠️ BREAKING CHANGE: Repo complete Rewrite (force-push, Rewrite, File-Struktur, .dvc & Data/Models)! 
-No `git pull` to lokal Repos  – use gitclone 
-`git clone <REPO_URL>` in a fresh new folder 
-otherwise Merge-conflicts, History-Problems or wrong DVC-States!
-
-Project Setup
-==============================
-
-As of 02.06.2025
-
-You need a single .env file in the project root (see example below).
-
-DagsHub Token is required for DVC and MLflow tracking.
-
-Required .env (root directory) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-==============================
-
-
-# Required .env (root directory) !!!!!
-
-#--- Airflow ---
-AIRFLOW__CORE__EXECUTOR=LocalExecutor
-
-AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here
-
-AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
-
-AIRFLOW__CORE__LOAD_EXAMPLES=False
-
-AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-
-AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
-
-PYTHONPATH=/opt/airflow/src
-
-AIRFLOW_UID=50000
-
-AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
-
-AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
-
-# --- MLflow & DagsHub ---
-MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-MLFLOW_TRACKING_USERNAME=your_dagshub_username
-
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token
-
-DAGSHUB_USER=your_dagshub_username
-
-DAGSHUB_TOKEN=your_dagshub_token
-
-# --- Streamlit & API ---
-MODEL_PATH=/app/models/model.pkl
-
-JWT_SECRET=supersecretkey
-
-API_URL=http://api_service:8000
-
-TMDB_API_KEY=your API Key for Movie Pictures
-
-##https://www.themoviedb.org/settings/api
-
-
-============================== 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-⚠️ Replace your_dagshub_username and your_dagshub_token with your own credentials!
-Never commit real tokens to git!
-
-DVC Configuration (.dvc/config.local or .dvc/config)
-
-==============================
-
-['remote "dagshub"']
-
-    auth = basic
-
-    user = your_dagshub_username
-
-    password = your_dagshub_token
-
-==============================
-
-⚠️ Do not commit your .dvc/config.local with credentials! (Add it to .gitignore)
-
-
-**| Start the App  - after you have build the .env  -> docker compose up --build |**
-
-
-Streamlit: http://localhost:8501/
-
-
-https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-
-**| USER: admin / PW: admin  |**
-
-
-
-Airflow Web UI: http://localhost:8080/
-
-
-**| USER: admin / PW: admin  |**
-
-
-Airflow API (for service-to-service): http://airflow-webserver:8080/api/v1
 
 
 Notes
@@ -165,42 +57,129 @@ Never share .env and .dvc/config.local with secrets in public repos.
 
 --------
 
-## Steps to follow 
 
-Convention : All python scripts must be run from the root specifying the relative file path.
+## Steps to Execute the Project
 
-### 1- Create a virtual environment using Virtualenv.
+### 1. Clone the Repository
 
-    `python -m venv my_env`
+If you haven't already cloned the repository, run:
 
-###   Activate it 
+```bash
+git clone <REPO_URL>
+```
 
-    `./my_env/Scripts/activate`
+---
 
-###   Install the packages from requirements.txt  (You can ignore the warning with "setup.py")
+### 2. Create the `.env` File
 
-    `pip install -r .\requirements.txt`
+Create a `.env` file in the root directory:
 
-### 2- Execute import_raw_data.py to import the 4 datasets (say yes when it asks you to create a new folder)
+```bash
+touch .env
+```
 
-    `python .\src\data\import_raw_data.py` 
+Edit the `.env` file and add the required environment variables:
 
-### 3- Execute make_dataset.py initializing `./data/raw` as input file path and `./data/processed` as output file path.
+```plaintext
+# --- Airflow ---
+AIRFLOW__CORE__EXECUTOR=LocalExecutor
+AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here
+AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+AIRFLOW__CORE__LOAD_EXAMPLES=False
+AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
+PYTHONPATH=/opt/airflow/src
+AIRFLOW_UID=50000
+AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
 
-    `python .\src\data\make_dataset.py`
+# --- MLflow & DagsHub ---
+MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+MLFLOW_TRACKING_USERNAME=your_dagshub_username
+MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+DAGSHUB_USER=your_dagshub_username
+DAGSHUB_TOKEN=your_dagshub_token
 
-### 4- Execute build_features.py to preprocess the data (this can take a while)
+# --- Streamlit & API ---
+MODEL_PATH=/app/models/model.pkl
+JWT_SECRET=supersecretkey
+API_URL=http://airflow-webserver:8080
+TMDB_API_KEY=your_api_key_for_movie_pictures
+```
 
-    `python .\src\features\build_features.py`
+Replace placeholders like `your_fernet_key_here`, `your_dagshub_username`, etc., with your actual values.
 
-### 5- Execute train_model.py to train the model
+---
 
-    `python .\src\models\train_model.py`
+### 3. Build and Start the Application
 
-### 5- Finally, execute predict_model.py file to make the predictions (by default you will be printed predictions for the first 5 users of the dataset). 
+Run the following command to build and start all services:
 
-    `python .\src\models\predict_model.py`
+```bash
+docker compose up --build
+```
 
-### Note that we have 10 recommandations per user
+---
+
+### 4. Access the Services
+
+Once the containers are running, access the services:
+
+- **Streamlit App:**  
+  URL: [http://localhost:8501](http://localhost:8501)  
+  Login: `admin / admin`
+
+- **Airflow Web UI:**  
+  URL: [http://localhost:8080](http://localhost:8080)  
+  Login: `admin / admin`
+
+---
+
+### 5. Verify Airflow DAGs
+
+1. Open the Airflow Web UI.
+2. Check if the DAGs (e.g., `movie_recommendation_pipeline`) are listed.
+3. Trigger the DAG manually if needed.
+
+---
+
+### Optional: Run Python Scripts Locally
+
+If you want to test the Python scripts manually (without Airflow), follow these steps:
+
+#### Create Virtual Environment
+
+```bash
+python -m venv my_env
+```
+
+Activate the virtual environment:
+
+```bash
+source my_env/bin/activate  # For Linux/MacOS
+./my_env/Scripts/activate   # For Windows
+```
+
+#### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+#### Run Scripts
+
+Execute the Python scripts step-by-step:
+
+```bash
+python src/data/import_raw_data.py
+python src/data/make_dataset.py
+python src/features/build_features.py
+python src/models/train_model.py
+python src/models/predict_model.py
+```
+
+---
+
+Let me know if you need help with any specific command or step!
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
