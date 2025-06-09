@@ -1,4 +1,4 @@
-#src/data/make_dataset.py
+# src/data/make_dataset.py
 import logging
 from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
@@ -6,7 +6,15 @@ import os
 import pandas as pd
 from tqdm import tqdm
 
-def main(input_filepath, output_filepath):
+# === ENV laden ===
+load_dotenv(find_dotenv())
+
+# Hole ENV-Variablen oder nutze Fallbacks
+DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+
+def main(input_filepath=RAW_DIR, output_filepath=PROCESSED_DIR):
     logger = logging.getLogger(__name__)
     logger.info('📦 Starte Verarbeitung der Rohdaten.')
 
@@ -49,5 +57,4 @@ def main(input_filepath, output_filepath):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    load_dotenv(find_dotenv())
-    main("data/raw", "data/processed")
+    main()

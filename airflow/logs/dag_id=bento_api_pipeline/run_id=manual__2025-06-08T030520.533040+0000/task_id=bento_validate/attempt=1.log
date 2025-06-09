@@ -1,0 +1,64 @@
+[2025-06-08T03:06:43.494+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T03:05:20.533040+00:00 [queued]>
+[2025-06-08T03:06:43.515+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T03:05:20.533040+00:00 [queued]>
+[2025-06-08T03:06:43.516+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T03:06:43.584+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_validate> on 2025-06-08 03:05:20.533040+00:00
+[2025-06-08T03:06:43.630+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_validate', 'manual__2025-06-08T03:05:20.533040+00:00', '--job-id', '3019', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmpl2dyig1d']
+[2025-06-08T03:06:43.634+0000] {standard_task_runner.py:88} INFO - Job 3019: Subtask bento_validate
+[2025-06-08T03:06:43.613+0000] {standard_task_runner.py:60} INFO - Started process 1918 to run task
+[2025-06-08T03:07:09.341+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T03:05:20.533040+00:00 [running]> on host a096f0d31aa8
+[2025-06-08T03:07:09.757+0000] {local_task_job_runner.py:121} ERROR - Received SIGTERM. Terminating subprocesses
+[2025-06-08T03:07:09.764+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1094, in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 686, in do_commit
+    dbapi_connection.commit()
+psycopg2.OperationalError: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 2334, in _run_raw_task
+    self._execute_task_with_callbacks(context, test_mode, session=session)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 2469, in _execute_task_with_callbacks
+    RenderedTaskInstanceFields.write(rtif)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/utils/session.py", line 78, in wrapper
+    with create_session() as session:
+  File "/usr/local/lib/python3.10/contextlib.py", line 142, in __exit__
+    next(self.gen)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/utils/session.py", line 39, in create_session
+    session.commit()
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 1454, in commit
+    self._transaction.commit(_to_root=self.future)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/orm/session.py", line 839, in commit
+    trans.commit()
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2469, in commit
+    self._do_commit()
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2659, in _do_commit
+    self._connection_commit_impl()
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2630, in _connection_commit_impl
+    self.connection._commit_impl()
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1096, in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/base.py", line 1094, in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+  File "/home/airflow/.local/lib/python3.10/site-packages/sqlalchemy/engine/default.py", line 686, in do_commit
+    dbapi_connection.commit()
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2025-06-08T03:07:09.789+0000] {process_utils.py:131} INFO - Sending 15 to group 1918. PIDs of all processes in the group: [1918]
+[2025-06-08T03:07:09.792+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 1918
+[2025-06-08T03:07:09.793+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3019 for task bento_validate ((psycopg2.OperationalError) connection to server at "postgres" (172.19.0.2), port 5432 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8); 1918)

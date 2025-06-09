@@ -1,0 +1,80 @@
+[2025-06-09T03:12:00.679+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-09T03:12:00.461130+00:00 [queued]>
+[2025-06-09T03:12:00.685+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-09T03:12:00.461130+00:00 [queued]>
+[2025-06-09T03:12:00.686+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-09T03:12:00.696+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_train> on 2025-06-09 03:12:00.461130+00:00
+[2025-06-09T03:12:00.704+0000] {standard_task_runner.py:60} INFO - Started process 221 to run task
+[2025-06-09T03:12:00.706+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_train', 'manual__2025-06-09T03:12:00.461130+00:00', '--job-id', '3717', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmph2br1z02']
+[2025-06-09T03:12:00.708+0000] {standard_task_runner.py:88} INFO - Job 3717: Subtask bento_train
+[2025-06-09T03:12:00.749+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_train manual__2025-06-09T03:12:00.461130+00:00 [running]> on host 48f93b1fcb1a
+[2025-06-09T03:12:00.814+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_train' AIRFLOW_CTX_EXECUTION_DATE='2025-06-09T03:12:00.461130+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-09T03:12:00.461130+00:00'
+[2025-06-09T03:12:00.816+0000] {bento_api_pipeline.py:39} INFO - Starte POST an http://bentoml:3000/train_deep_hybrid_model mit config: {'conf': {'test_user_count': 100, 'n_neighbors': 15, 'tfidf_features': 300, 'latent_dim': 32, 'epochs': 30}}
+[2025-06-09T03:12:04.789+0000] {bento_api_pipeline.py:65} ERROR - ❗ Netzwerkfehler beim Kontaktieren von BentoML: HTTPConnectionPool(host='bentoml', port=3000): Max retries exceeded with url: /train_deep_hybrid_model (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7fe8f896bfd0>: Failed to resolve 'bentoml' ([Errno -2] Name or service not known)"))
+[2025-06-09T03:12:04.790+0000] {bento_api_pipeline.py:66} ERROR - ENV bei ConnectionError: environ({'DUMB_INIT_SETSID': '1', 'API_URL': 'http://api_service:8000', 'DAGSHUB_TOKEN': 'f563be3b39976eac6fd4570a2c8cec0b93791c41', 'HOSTNAME': '48f93b1fcb1a', 'PYTHON_VERSION': '3.10.13', 'LANGUAGE': 'C.UTF-8', 'AIRFLOW_USER_HOME_DIR': '/home/***', 'ADDITIONAL_RUNTIME_APT_DEPS': '', 'PWD': '/opt/***', 'AIRFLOW_VERSION': '2.8.1', 'AIRFLOW_API_URL': 'http://***-webserver:8080/api/v1', 'AIRFLOW__CORE__LOAD_EXAMPLES': 'False', 'AIRFLOW__API__AUTH_BACKENDS': '***.api.auth.backend.basic_auth,***.api.auth.backend.session', 'INSTALL_MSSQL_CLIENT': 'true', 'PYTHON_SETUPTOOLS_VERSION': '65.5.1', 'INSTALL_MYSQL_CLIENT_TYPE': 'mariadb', 'GUNICORN_CMD_ARGS': '--worker-tmp-dir /dev/shm', 'LD_PRELOAD': '/usr/lib/x86_64-linux-gnu/libstdc++.so.6', 'HOME': '/home/***', 'LANG': 'C.UTF-8', 'MLFLOW_TRACKING_URI': 'https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow', 'AIRFLOW_HOME': '/opt/***', 'GPG_KEY': 'A035C8C19219BA821ECEA86B64E628F8D684696D', 'AIRFLOW__DATABASE__SQL_ALCHEMY_CONN': 'postgresql+psycopg2://***:***@postgres/***', 'AIRFLOW__CORE__EXECUTOR': 'LocalExecutor', 'COMMIT_SHA': 'c0ffa9c5d96625c68ded9562632674ed366b5eb3', 'AIRFLOW__WEBSERVER__SECRET_KEY': 'my_super_secret_key_42', 'AIRFLOW_PIP_VERSION': '23.3.2', 'AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION': 'False', 'PYTHONPATH': '/opt/***', 'DAGSHUB_USER': 'sacer11', 'ADDITIONAL_RUNTIME_APT_COMMAND': '', 'INSTALL_POSTGRES_CLIENT': 'true', 'MLFLOW_TRACKING_USERNAME': 'sacer11', 'SHLVL': '0', 'LC_MESSAGES': 'C.UTF-8', 'RUNTIME_APT_DEPS': '', 'PYTHON_PIP_VERSION': '23.0.1', 'RUNTIME_APT_COMMAND': 'echo', 'DATA_DIR': '/opt/***/data', 'LD_LIBRARY_PATH': '/usr/local/lib', 'LC_CTYPE': 'C.UTF-8', 'PYTHON_GET_PIP_SHA256': 'dfe9fd5c28dc98b5ac17979a953ea550cec37ae1b47a5116007395bfacff2ab9', 'AIRFLOW_INSTALLATION_METHOD': '', 'LC_ALL': 'C.UTF-8', 'PYTHON_GET_PIP_URL': 'https://github.com/pypa/get-pip/raw/dbf0c85f76fb6e1ab42aa672ffca6f0a675d9ee4/public/get-pip.py', 'INSTALL_MYSQL_CLIENT': 'true', 'PATH': '/root/bin:/home/***/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'PYTHON_BASE_IMAGE': 'python:3.10-slim-bookworm', 'JWT_SECRET': 'supersecretkey', 'MODEL_DIR': '/opt/***/models', 'AIRFLOW_UID': '50000', 'TMDB_API_KEY': '48a501167bbb3fe39749d61d3fd3b0f6', 'BUILD_ID': '', 'AIRFLOW__CORE__FERNET_KEY': 'oLfPThKYdHr7hjymM4p97WLVlGzJByb9ULqat9MqObs=', 'DEBIAN_FRONTEND': 'noninteractive', 'MLFLOW_TRACKING_PASSWORD': 'f563be3b39976eac6fd4570a2c8cec0b93791c41', '_AIRFLOW_PARSING_CONTEXT_DAG_ID': 'bento_api_pipeline', '_AIRFLOW_PARSING_CONTEXT_TASK_ID': 'bento_train', 'AIRFLOW_CTX_DAG_OWNER': '***', 'AIRFLOW_CTX_DAG_ID': 'bento_api_pipeline', 'AIRFLOW_CTX_TASK_ID': 'bento_train', 'AIRFLOW_CTX_EXECUTION_DATE': '2025-06-09T03:12:00.461130+00:00', 'AIRFLOW_CTX_TRY_NUMBER': '1', 'AIRFLOW_CTX_DAG_RUN_ID': 'manual__2025-06-09T03:12:00.461130+00:00'})
+[2025-06-09T03:12:04.790+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connection.py", line 203, in _new_conn
+    sock = connection.create_connection(
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/util/connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "/usr/local/lib/python3.10/socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 791, in urlopen
+    response = self._make_request(
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 497, in _make_request
+    conn.request(
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connection.py", line 395, in request
+    self.endheaders()
+  File "/usr/local/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/usr/local/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connection.py", line 243, in connect
+    self.sock = self._new_conn()
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connection.py", line 210, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPConnection object at 0x7fe8f896bfd0>: Failed to resolve 'bentoml' ([Errno -2] Name or service not known)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/requests/adapters.py", line 486, in send
+    resp = conn.urlopen(
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/connectionpool.py", line 845, in urlopen
+    retries = retries.increment(
+  File "/home/airflow/.local/lib/python3.10/site-packages/urllib3/util/retry.py", line 515, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='bentoml', port=3000): Max retries exceeded with url: /train_deep_hybrid_model (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7fe8f896bfd0>: Failed to resolve 'bentoml' ([Errno -2] Name or service not known)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/bento_api_pipeline.py", line 40, in trigger_bento_training
+    resp = requests.post(url, json=conf, timeout=300)
+  File "/home/airflow/.local/lib/python3.10/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/requests/adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='bentoml', port=3000): Max retries exceeded with url: /train_deep_hybrid_model (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7fe8f896bfd0>: Failed to resolve 'bentoml' ([Errno -2] Name or service not known)"))
+[2025-06-09T03:12:04.802+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=bento_api_pipeline, task_id=bento_train, execution_date=20250609T031200, start_date=20250609T031200, end_date=20250609T031204
+[2025-06-09T03:12:04.811+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3717 for task bento_train (HTTPConnectionPool(host='bentoml', port=3000): Max retries exceeded with url: /train_deep_hybrid_model (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7fe8f896bfd0>: Failed to resolve 'bentoml' ([Errno -2] Name or service not known)")); 221)
+[2025-06-09T03:12:04.854+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-09T03:12:04.871+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

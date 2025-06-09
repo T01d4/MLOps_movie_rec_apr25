@@ -1,0 +1,28 @@
+[2025-06-08T16:33:58.665+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T16:32:00.926110+00:00 [queued]>
+[2025-06-08T16:33:58.673+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T16:32:00.926110+00:00 [queued]>
+[2025-06-08T16:33:58.673+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-08T16:33:58.686+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_train> on 2025-06-08 16:32:00.926110+00:00
+[2025-06-08T16:33:58.693+0000] {standard_task_runner.py:60} INFO - Started process 275 to run task
+[2025-06-08T16:33:58.696+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_train', 'manual__2025-06-08T16:32:00.926110+00:00', '--job-id', '3306', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmpk5_ntzph']
+[2025-06-08T16:33:58.699+0000] {standard_task_runner.py:88} INFO - Job 3306: Subtask bento_train
+[2025-06-08T16:33:58.751+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T16:32:00.926110+00:00 [running]> on host 255f08218e74
+[2025-06-08T16:33:58.834+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_train' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T16:32:00.926110+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T16:32:00.926110+00:00'
+[2025-06-08T16:33:58.850+0000] {bento_api_pipeline.py:27} INFO - BentoML-Training API Response: 500 "An error has occurred in BentoML user code when handling this request, find the error details in server logs"
+[2025-06-08T16:33:58.851+0000] {bento_api_pipeline.py:20} INFO - BentoML [TRAIN] RAW RESPONSE:
+An error has occurred in BentoML user code when handling this request, find the error details in server logs
+[2025-06-08T16:33:58.852+0000] {bento_api_pipeline.py:34} ERROR - Fehler im Training-Call: BentoML Training Error: An error has occurred in BentoML user code when handling this request, find the error details in server logs
+[2025-06-08T16:33:58.852+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/bento_api_pipeline.py", line 31, in trigger_bento_training
+    raise Exception(f"BentoML Training Error: {resp_json}")
+Exception: BentoML Training Error: An error has occurred in BentoML user code when handling this request, find the error details in server logs
+[2025-06-08T16:33:58.866+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=bento_api_pipeline, task_id=bento_train, execution_date=20250608T163200, start_date=20250608T163358, end_date=20250608T163358
+[2025-06-08T16:33:58.878+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3306 for task bento_train (BentoML Training Error: An error has occurred in BentoML user code when handling this request, find the error details in server logs; 275)
+[2025-06-08T16:33:58.910+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-08T16:33:58.933+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

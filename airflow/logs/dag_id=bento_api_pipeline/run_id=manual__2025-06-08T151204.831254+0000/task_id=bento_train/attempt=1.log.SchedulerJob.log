@@ -1,0 +1,1 @@
+[2025-06-08T15:12:31.842+0000] {scheduler_job_runner.py:781} ERROR - Executor reports task instance <TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T15:12:04.831254+00:00 [queued]> finished (failed) although the task says it's queued. (Info: None) Was the task killed externally?

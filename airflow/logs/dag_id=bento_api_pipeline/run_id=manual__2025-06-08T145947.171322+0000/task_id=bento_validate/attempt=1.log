@@ -1,0 +1,14 @@
+[2025-06-08T14:59:49.991+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T14:59:47.171322+00:00 [queued]>
+[2025-06-08T14:59:50.002+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T14:59:47.171322+00:00 [queued]>
+[2025-06-08T14:59:50.003+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T14:59:50.021+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_validate> on 2025-06-08 14:59:47.171322+00:00
+[2025-06-08T14:59:50.028+0000] {standard_task_runner.py:60} INFO - Started process 629 to run task
+[2025-06-08T14:59:50.030+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_validate', 'manual__2025-06-08T14:59:47.171322+00:00', '--job-id', '3111', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmpkjjdzsro']
+[2025-06-08T14:59:50.033+0000] {standard_task_runner.py:88} INFO - Job 3111: Subtask bento_validate
+[2025-06-08T14:59:50.084+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T14:59:47.171322+00:00 [running]> on host 1edd6e13d53a
+[2025-06-08T14:59:50.184+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_validate' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T14:59:47.171322+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T14:59:47.171322+00:00'
+[2025-06-08T15:00:30.523+0000] {bento_api_pipeline.py:21} INFO - BentoML-Validierung API Response: 200 {"status":"finished","stdout":""}
+[2025-06-08T15:00:30.524+0000] {python.py:201} INFO - Done. Returned value was: {'status': 'finished', 'stdout': ''}
+[2025-06-08T15:00:30.559+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=bento_api_pipeline, task_id=bento_validate, execution_date=20250608T145947, start_date=20250608T145949, end_date=20250608T150030
+[2025-06-08T15:00:30.617+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T15:00:30.649+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

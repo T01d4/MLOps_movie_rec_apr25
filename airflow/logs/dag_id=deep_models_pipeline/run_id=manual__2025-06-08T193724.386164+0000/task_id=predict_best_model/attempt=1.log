@@ -1,0 +1,43 @@
+[2025-06-08T19:39:53.567+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-08T19:37:24.386164+00:00 [queued]>
+[2025-06-08T19:39:53.574+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-08T19:37:24.386164+00:00 [queued]>
+[2025-06-08T19:39:53.574+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T19:39:53.584+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-08 19:37:24.386164+00:00
+[2025-06-08T19:39:53.591+0000] {standard_task_runner.py:60} INFO - Started process 1893 to run task
+[2025-06-08T19:39:53.593+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-08T19:37:24.386164+00:00', '--job-id', '3396', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp8mzzi9ca']
+[2025-06-08T19:39:53.594+0000] {standard_task_runner.py:88} INFO - Job 3396: Subtask predict_best_model
+[2025-06-08T19:39:53.630+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-08T19:37:24.386164+00:00 [running]> on host dbf42b316bce
+[2025-06-08T19:39:53.690+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T19:37:24.386164+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T19:37:24.386164+00:00'
+[2025-06-08T19:39:53.691+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-08T19:40:17.775+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+🏃 View run predict_best_model_hybrid_deep at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/11/runs/bee46e80f935472a86c7b2d4f8ba3cc7
+🧪 View experiment at: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/#/experiments/11
+
+[2025-06-08T19:40:17.776+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-08 19:39:55,735 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry
+2025-06-08 19:39:55,735 - INFO - 📦 Lade Modell: models:/hybrid_deep_model@best_model
+
+Downloading artifacts:   0%|          | 0/8 [00:00<?, ?it/s]
+Downloading artifacts:  12%|█▎        | 1/8 [00:00<00:00, 14614.30it/s]
+Downloading artifacts:  25%|██▌       | 2/8 [00:01<00:03,  1.78it/s]   
+Downloading artifacts:  25%|██▌       | 2/8 [00:01<00:03,  1.78it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:01<00:03,  1.52it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:01<00:03,  1.52it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:03<00:03,  1.09it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:03<00:03,  1.09it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:03<00:02,  1.19it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:03<00:02,  1.19it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:04<00:01,  1.12it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:04<00:01,  1.12it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:05<00:00,  1.09it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:05<00:00,  1.09it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:06<00:00,  1.05it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:06<00:00,  1.05it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:06<00:00,  1.15it/s]
+2025-06-08 19:40:08,468 - INFO - 📥 Embedding geladen: /opt/***/data/processed/hybrid_deep_embedding_best.csv – Shape: (10381, 32)
+2025-06-08 19:40:08,599 - INFO - 💾 Vorhersagen gespeichert unter: /opt/***/data/processed/predictions_hybrid_deep_model.csv
+2025-06-08 19:40:17,356 - INFO - ✅ Predictions erfolgreich in MLflow geloggt
+
+[2025-06-08T19:40:17.777+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-08T19:40:17.786+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=predict_best_model, execution_date=20250608T193724, start_date=20250608T193953, end_date=20250608T194017
+[2025-06-08T19:40:17.834+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T19:40:17.849+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

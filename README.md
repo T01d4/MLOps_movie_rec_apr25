@@ -96,6 +96,9 @@ DVC Configuration (.dvc/config.local or .dvc/config)
 Streamlit: http://localhost:8501/
 
 
+https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+
+
 **| USER: admin / PW: admin  |**
 
 

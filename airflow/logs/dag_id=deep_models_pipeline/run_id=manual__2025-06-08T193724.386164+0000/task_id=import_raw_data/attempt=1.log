@@ -1,0 +1,51 @@
+[2025-06-08T19:37:25.299+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-08T19:37:24.386164+00:00 [queued]>
+[2025-06-08T19:37:25.304+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-08T19:37:24.386164+00:00 [queued]>
+[2025-06-08T19:37:25.305+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T19:37:25.315+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): import_raw_data> on 2025-06-08 19:37:24.386164+00:00
+[2025-06-08T19:37:25.321+0000] {standard_task_runner.py:60} INFO - Started process 1390 to run task
+[2025-06-08T19:37:25.323+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'import_raw_data', 'manual__2025-06-08T19:37:24.386164+00:00', '--job-id', '3390', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpaa_umc_i']
+[2025-06-08T19:37:25.324+0000] {standard_task_runner.py:88} INFO - Job 3390: Subtask import_raw_data
+[2025-06-08T19:37:25.355+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-08T19:37:24.386164+00:00 [running]> on host dbf42b316bce
+[2025-06-08T19:37:25.407+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='import_raw_data' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T19:37:24.386164+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T19:37:24.386164+00:00'
+[2025-06-08T19:37:25.408+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/data/import_raw_data.py
+[2025-06-08T19:38:17.457+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+To track the changes with git, run:
+
+	git add data/processed/hybrid_deep_embedding_best.csv.dvc
+
+To enable auto staging, run:
+
+	dvc config core.autostage true
+[master 7f1ab16] Track new best embedding (validate pipeline)
+ 1 file changed, 5 insertions(+)
+ create mode 100644 data/processed/hybrid_deep_embedding_best.csv.dvc
+Everything is up to date.
+rm 'data/processed/hybrid_deep_embedding_best.csv.dvc'
+[master 5273e8c] Remove .dvc file for best embedding
+ 1 file changed, 5 deletions(-)
+ delete mode 100644 data/processed/hybrid_deep_embedding_best.csv.dvc
+
+[2025-06-08T19:38:17.458+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-08 19:37:50,947 - root - INFO - ✅ dvc add erfolgreich.
+2025-06-08 19:37:50,991 - root - INFO - ✅ git add erfolgreich.
+2025-06-08 19:37:51,534 - root - INFO - ✅ git commit erfolgreich.
+2025-06-08 19:38:16,869 - root - INFO - ✅ DVC add, git commit & push für Best-Embedding abgeschlossen!
+2025-06-08 19:38:16,870 - root - INFO - ✅ /opt/***/data/processed/hybrid_deep_embedding_best.csv.dvc gelöscht (lokal).
+2025-06-08 19:38:16,916 - root - INFO - ✅ /opt/***/data/processed/hybrid_deep_embedding_best.csv.dvc aus Git entfernt.
+2025-06-08 19:38:17,168 - root - INFO - ✅ git commit (Remove .dvc file) erfolgreich.
+fatal: could not read Username for 'https://github.com': No such device or address
+2025-06-08 19:38:17,435 - root - ERROR - ❌ Fehler beim DVC push und Entfernen der _best-Embedding-Datei: Command '['git', 'push']' returned non-zero exit status 128.
+2025-06-08 19:38:17,438 - root - INFO - ✅ Datei bereits vorhanden, überspringe: genome-scores.csv
+2025-06-08 19:38:17,439 - root - INFO - ✅ Datei bereits vorhanden, überspringe: genome-tags.csv
+2025-06-08 19:38:17,440 - root - INFO - ✅ Datei bereits vorhanden, überspringe: links.csv
+2025-06-08 19:38:17,441 - root - INFO - ✅ Datei bereits vorhanden, überspringe: movies.csv
+2025-06-08 19:38:17,442 - root - INFO - ✅ Datei bereits vorhanden, überspringe: ratings.csv
+2025-06-08 19:38:17,443 - root - INFO - ✅ Datei bereits vorhanden, überspringe: README.txt
+2025-06-08 19:38:17,444 - root - INFO - ✅ Datei bereits vorhanden, überspringe: tags.csv
+2025-06-08 19:38:17,444 - root - INFO - ✅ Rohdatenprüfung abgeschlossen.
+
+[2025-06-08T19:38:17.458+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-08T19:38:17.466+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=import_raw_data, execution_date=20250608T193724, start_date=20250608T193725, end_date=20250608T193817
+[2025-06-08T19:38:17.519+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T19:38:17.534+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
