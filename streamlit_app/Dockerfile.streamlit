@@ -3,6 +3,13 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
+# Docker-Client installieren
+RUN apt-get update && \
+    apt-get install -y docker.io curl && \
+    mkdir -p /usr/local/lib/docker/cli-plugins/ && \
+    curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose && \
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
 # Requirements & Code kopieren
 COPY requirements.streamlit.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

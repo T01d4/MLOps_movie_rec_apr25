@@ -1,0 +1,20 @@
+[2025-06-08T20:39:29.062+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.make_dataset manual__2025-06-08T20:39:27.348672+00:00 [queued]>
+[2025-06-08T20:39:29.068+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.make_dataset manual__2025-06-08T20:39:27.348672+00:00 [queued]>
+[2025-06-08T20:39:29.068+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T20:39:29.078+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): make_dataset> on 2025-06-08 20:39:27.348672+00:00
+[2025-06-08T20:39:29.084+0000] {standard_task_runner.py:60} INFO - Started process 1902 to run task
+[2025-06-08T20:39:29.086+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'make_dataset', 'manual__2025-06-08T20:39:27.348672+00:00', '--job-id', '3422', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpct2tfgiq']
+[2025-06-08T20:39:29.087+0000] {standard_task_runner.py:88} INFO - Job 3422: Subtask make_dataset
+[2025-06-08T20:39:29.118+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.make_dataset manual__2025-06-08T20:39:27.348672+00:00 [running]> on host 6b572a9ca403
+[2025-06-08T20:39:29.169+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='make_dataset' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T20:39:27.348672+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T20:39:27.348672+00:00'
+[2025-06-08T20:39:29.170+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/data/make_dataset.py
+[2025-06-08T20:39:29.672+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+[2025-06-08T20:39:29.673+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-08 20:39:29,633 - __main__ - INFO - 📦 Starte Verarbeitung der Rohdaten.
+2025-06-08 20:39:29,634 - __main__ - INFO - ✅ movies_matrix.csv bereits vorhanden – Verarbeitung wird übersprungen.
+
+[2025-06-08T20:39:29.673+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-08T20:39:29.681+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=make_dataset, execution_date=20250608T203927, start_date=20250608T203929, end_date=20250608T203929
+[2025-06-08T20:39:29.700+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T20:39:29.718+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

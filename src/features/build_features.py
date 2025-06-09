@@ -2,13 +2,18 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 import os
 
-def read_ratings(ratings_csv, data_dir="data/raw") -> pd.DataFrame:
+# Hole ENV-Variablen oder nimm Fallbacks
+DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+
+def read_ratings(ratings_csv, data_dir=RAW_DIR) -> pd.DataFrame:
     data = pd.read_csv(os.path.join(data_dir, ratings_csv))
     temp = pd.DataFrame(LabelEncoder().fit_transform(data["movieId"]))
     data["movieId"] = temp
     return data
 
-def read_movies(movies_csv, data_dir="data/raw") -> pd.DataFrame:
+def read_movies(movies_csv, data_dir=RAW_DIR) -> pd.DataFrame:
     df = pd.read_csv(os.path.join(data_dir, movies_csv))
     genres = df["genres"].str.get_dummies(sep="|")
     result_df = pd.concat([df[["movieId", "title"]], genres], axis=1)
@@ -22,9 +27,8 @@ def create_user_matrix(ratings, movies):
 
 def main(force_rebuild=False):
     # Zielpfade
-    processed_dir = "/opt/airflow/data/processed"
-    movie_matrix_path = os.path.join(processed_dir, "movie_matrix.csv")
-    user_matrix_path = os.path.join(processed_dir, "user_matrix.csv")
+    movie_matrix_path = os.path.join(PROCESSED_DIR, "movie_matrix.csv")
+    user_matrix_path = os.path.join(PROCESSED_DIR, "user_matrix.csv")
 
     # Nur bauen, wenn Files fehlen oder force_rebuild=True
     if (not os.path.exists(movie_matrix_path) or
@@ -32,10 +36,10 @@ def main(force_rebuild=False):
         force_rebuild):
 
         print("🔄 Baue Feature-Files ...")
-        ratings = read_ratings("ratings.csv", data_dir="/opt/airflow/data/raw")
-        movies = read_movies("movies.csv", data_dir="/opt/airflow/data/raw")
+        ratings = read_ratings("ratings.csv")
+        movies = read_movies("movies.csv")
         user_matrix = create_user_matrix(ratings, movies)
-        os.makedirs(processed_dir, exist_ok=True)
+        os.makedirs(PROCESSED_DIR, exist_ok=True)
         movies_no_title = movies.drop(columns=["title"])
         movies_no_title.to_csv(movie_matrix_path, index=False)
         user_matrix.to_csv(user_matrix_path)

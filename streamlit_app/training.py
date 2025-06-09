@@ -1,61 +1,111 @@
+#training.py
 import streamlit as st
 import os
-from mlflow.tracking import MlflowClient
+import requests
 import pandas as pd
 import plotly.graph_objects as go
-import pytz
-import requests
 from requests.auth import HTTPBasicAuth
-from auth import set_mlflow_from_env
 from dotenv import load_dotenv
-from recommender import show_best_model_info
-import subprocess
-import traceback
+import time
 
 load_dotenv()
 
-# === Für Airflow IMMER AIRFLOW_API_URL nehmen! ===
-def fetch_dag_task_statuses():
-    AIRFLOW_USER = "admin"
-    AIRFLOW_PASS = "admin"
-    airflow_url = os.getenv("AIRFLOW_API_URL", "http://localhost:8080/api/v1")
-    dag_id = "deep_models_pipeline"
-    auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
+API_URL = os.getenv("API_URL", "http://api_service:8000")
+DAGS = {
+    "deep_models_pipeline": {
+        "label": "Deep Hybrid Training",
+        "task_order": [
+            "import_raw_data", "make_dataset", "build_features",
+            "train_deep_hybrid_model", "validate_models", "predict_best_model"
+        ]
+    },
+    "bento_api_pipeline": {
+        "label": "BentoML-Pipeline",
+        "task_order": ["bento_train", "bento_validate", "bento_predict"]
+    }
+}
 
-    run_url = f"{airflow_url}/dags/{dag_id}/dagRuns?order_by=-execution_date&limit=1"
-    run_resp = requests.get(run_url, auth=auth)
-    run_resp.raise_for_status()
-    dag_run_id = run_resp.json()["dag_runs"][0]["dag_run_id"]
+def get_dag_status(dag_id):
+    url = f"{API_URL}/airflow/dag-status?dag_id={dag_id}"
+    try:
+        resp = requests.get(url, timeout=5)
+        return resp.json().get("active")
+    except Exception as e:
+        st.warning(f"Fehler beim Abrufen des Status für {dag_id}: {e}")
+        return None
 
-    task_url = f"{airflow_url}/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances"
-    task_resp = requests.get(task_url, auth=auth)
-    task_resp.raise_for_status()
-    return task_resp.json()["task_instances"], dag_run_id
+def set_dag_status(dag_id, enable):
+    url = f"{API_URL}/airflow/set-dag-status"
+    try:
+        resp = requests.post(url, json={"dag_id": dag_id, "enable": enable})
+        return resp.json().get("ok")
+    except Exception as e:
+        st.error(f"Fehler beim Umschalten des DAGs: {e}")
+        return False
 
-def fetch_airflow_logs(dag_id, dag_run_id, task_ids):
-    logs = {}
-    airflow_url = os.getenv("AIRFLOW_API_URL", "http://airflow-webserver:8080/api/v1")
-    auth = HTTPBasicAuth("admin", "admin")
-    for task_id in task_ids:
-        url = f"{airflow_url}/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/1"
-        resp = requests.get(url, auth=auth)
-        if resp.ok:
-            logs[task_id] = resp.text
-        else:
-            logs[task_id] = f"Fehler beim Abrufen des Logs: {resp.status_code}\n{resp.text}"
-    return logs
+def trigger_dag(dag_id, conf):
+    url = f"{API_URL}/airflow/trigger-dag?dag_id={dag_id}"
+    resp = requests.post(url, json={"conf": conf})
+    return resp
 
-def show_airflow_logs_tabbed(dag_id, dag_run_id, task_ids):
-    logs = fetch_airflow_logs(dag_id, dag_run_id, task_ids)
-    tabs = st.tabs(task_ids)
-    for i, task_id in enumerate(task_ids):
-        with tabs[i]:
-            st.markdown(f"### Log: `{task_id}`")
-            st.code(logs[task_id], language="log")
+def show_dag_progress(dag_id):
+    task_order = DAGS[dag_id]["task_order"]
+    progress_placeholder = st.empty()
+    task_placeholder = st.empty()
+    log_placeholder = st.empty()
+    active = True
+    last_percent = -1
 
+    while active:
+        try:
+            progress_data = requests.get(f"{API_URL}/airflow/progress?dag_id={dag_id}").json()
+            steps = progress_data.get("progress", [])
+            if not steps:
+                task_placeholder.info("Noch kein aktiver Run.")
+                break
+
+            step = steps[-1]
+            percent = step.get("percent", 0)
+            finished = step.get("finished", False)
+
+            # Fortschrittsbalken nur aktualisieren, wenn sich was ändert (sonst flackert er!)
+            if percent != last_percent:
+                progress_placeholder.progress(percent)
+                last_percent = percent
+
+            task_placeholder.markdown(step["task_output"])
+            log_placeholder.markdown("#### 📝 Logs")
+            logs = step["logs"]
+            tabs = log_placeholder.tabs(task_order)
+            for i, task_id in enumerate(task_order):
+                with tabs[i]:
+                    st.markdown(f"**Task:** `{task_id}`")
+                    st.code(logs.get(task_id, "Kein Log gefunden."), language="log")
+
+            if finished:
+                progress_placeholder.progress(100)
+                st.success("🎉 Alle Tasks abgeschlossen.")
+                active = False
+            else:
+                # 1 Sekunde warten, dann neu abfragen
+                time.sleep(1)
+        except Exception as e:
+            st.error(f"Fehler beim Polling: {e}")
+            break
+
+def poll_and_rerun(dag_id, min_interval=2.0):
+    # Neues Pattern für flüssiges Polling!
+    now = time.time()
+    last_poll_key = f"{dag_id}_last_poll"
+    last_poll = st.session_state.get(last_poll_key, 0)
+    finished = show_dag_progress(dag_id)
+    if not finished:
+        # Warte minimal min_interval Sekunden, bevor neu geladen wird
+        if now - last_poll > min_interval:
+            st.session_state[last_poll_key] = now
+            st.experimental_rerun()
 
 def formatalias(alias_str):
-    """Formatiert die Aliase als Badges mit Emoji für @best_model."""
     if not alias_str:
         return ""
     badges = []
@@ -73,186 +123,60 @@ def formatalias(alias_str):
     return " ".join(badges)
 
 def show_registry_metrics():
-    model_name = "hybrid_deep_model"
-    client = MlflowClient()
-    versions = client.search_model_versions(f"name='{model_name}'")
-    rows = []
+    url = f"{API_URL}/mlflow/registry-metrics"
+    resp = requests.get(url)
+    j = resp.json()
+    if "table_html" in j:
+        st.markdown(j["table_html"], unsafe_allow_html=True)
+    else:
+        st.info(j.get("message", "Keine Modelle in der Registry gefunden."))
+    plot_data = j.get("plot_data", {})
+    if plot_data:
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=plot_data["x"],
+            y=plot_data["y"],
+            mode="lines+markers",
+            name="Precision@10",
+            line=dict(color="#E45756", width=2),
+            marker=dict(size=10, color=plot_data["marker_color"]),
+            text=plot_data["text"],
+            hovertemplate="Version: %{x}<br>Precision@10: %{y:.3f}<br>%{text}<extra></extra>",
+        ))
+        fig.update_layout(
+            title="Precision@10 je Registry-Version",
+            xaxis_title="Registrierungszeit",
+            yaxis_title="Precision@10",
+            height=400,
+            plot_bgcolor="#f9fafb",
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    try:
-        mv = client.get_model_version_by_alias(model_name, "best_model")
-        best_model_version = int(mv.version)
-    except Exception:
-        best_model_version = None
-
-    for v in versions:
-        # Aliase weiterhin versuchen (aber egal, da Workaround)
-        if hasattr(v, "aliases") and v.aliases:
-            alias_str = " | ".join(list(v.aliases))
-        else:
-            alias_str = ""
-        tags = v.tags
-        version = int(v.version)
-
-        row = {
-            "Version": int(v.version),
-            "Created_at": pd.to_datetime(v.creation_timestamp, unit='ms').tz_localize('UTC').tz_convert('Europe/Berlin').strftime('%d.%m.%y %H:%M'),
-            "Alias": alias_str,
-            "precision_10": float(tags.get("precision_10", "nan")) if tags.get("precision_10") else float('nan'),
-            "n_neighbors": tags.get("n_neighbors", ""),
-            "latent_dim": tags.get("latent_dim", ""),
-            "epochs": tags.get("epochs", ""),
-            "tfidf_features": tags.get("tfidf_features", ""),
-            "algorithm": tags.get("algorithm", ""),
-            "tags": tags,  # Optional für Tooltip/Detail
-        }
-        rows.append(row)
-
-    df = pd.DataFrame(rows)
-    if df.empty:
-        st.info("Keine Modelle in der Registry gefunden.")
+def dag_toggle_ui(dag_id):
+    status = get_dag_status(dag_id)
+    label = DAGS[dag_id]["label"]
+    st.subheader(f"🟢 / 🔴 Airflow Pipeline steuern: **{label}**")
+    if status is None:
+        st.warning("Konnte Status nicht abfragen.")
         return
-    
-    # Markiere best_model-Version
-    df["is_best"] = df["Version"] == best_model_version
-
-    def highlight_best(row):
-        if row["is_best"]:
-            return '🏅 <b style="background:#ffd707;border-radius:6px;padding:2px 8px;color:#333">BEST</b>'
-        return ""
-
-    df["Alias"] = df.apply(lambda r: highlight_best(r), axis=1)
-
-    df = df.sort_values("Version", ascending=False).reset_index(drop=True)
-    df_display = df.drop(columns=["tags"])
-
-    # Aliase als Badge/Emoji formatieren
-    df_display["Alias"] = df_display["Alias"].apply(formatalias)
-
-    # Precision als grün/rot
-    def color_prec(val):
-        if pd.isna(val):
-            return ""
-        color = "#27AE60" if val > 0.25 else "#E45756"
-        return f'<b style="color:{color}">{val:.3f}</b>'
-    df_display["precision_10"] = df_display["precision_10"].apply(color_prec)
-
-    # Tabelle schön anzeigen
-    st.markdown(df_display.to_html(escape=False, index=False), unsafe_allow_html=True)
-
-    # Plotly: Linie mit Markierung "best_model"
-    fig = go.Figure()
-    best_idx = [i for i, a in enumerate(df["Alias"]) if "best_model" in a]
-    fig.add_trace(go.Scatter(
-        x=df["Created_at"],
-        y=df["precision_10"].astype(float),
-        mode="lines+markers",
-        name="Precision@10",
-        line=dict(color="#E45756", width=2),
-        marker=dict(size=10, color=["#FFD700" if i in best_idx else "#E45756" for i in range(len(df))]),
-        text=[
-            "<br>".join([f"{k}: {v}" for k, v in tags.items()])
-            for tags in df["tags"]
-        ],
-        hovertemplate=
-            "Version: %{x}<br>Precision@10: %{y:.3f}<br>%{text}<extra></extra>"
-    ))
-    fig.update_layout(
-        title="Precision@10 je Registry-Version",
-        xaxis_title="Registrierungszeit",
-        yaxis_title="Precision@10",
-        height=400,
-        plot_bgcolor="#f9fafb",
-    )
-    st.plotly_chart(fig, use_container_width=True)
-
-
-
-def show_dag_progress():
-    import time
-
-    if st.session_state.get("dag_triggered", False):
-        st.markdown("---")
-        st.markdown("### 📋 Laufende DAG-Ausführung")
-
-        progress_bar = st.progress(0)
-        task_placeholder = st.empty()
-
-        status_colors = {
-            "success": "🟩",
-            "failed": "🟥",
-            "up_for_retry": "🟧",
-            "running": "🔵",
-            "queued": "⬜",
-            "no_status": "⚪"
-        }
-        task_order = [
-            "import_raw_data", "make_dataset", "build_features",
-            "train_deep_hybrid_model", "validate_models", "predict_best_model"
-        ]
-
-        for attempt in range(40):
-            try:
-                tasks, run_id = fetch_dag_task_statuses()
-            except Exception as e:
-                st.error(f"Fehler beim Abrufen der Task-Status: {e}")
-                break
-
-            if tasks:
-                task_states = {task["task_id"]: (task["state"] or "no_status") for task in tasks}
-                task_output = f"🧭 Letzter Run: `{run_id}`\n\n"
-
-                finished = sum(1 for t in task_order if task_states.get(t) == "success")
-                total = len(task_order)
-                percent = int((finished / total) * 100)
-                progress_bar.progress(percent)
-
-                for task_id in task_order:
-                    status = task_states.get(task_id, "no_status")
-                    emoji = status_colors.get(status, "⚪")
-                    task_output += f"{emoji} `{task_id}` → **{status}**\n"
-
-                task_placeholder.markdown(task_output)
-
-                # === *** NEU: Zeige Logs von abgeschlossenen Tasks (Status success) ***
-                finished_tasks = [t for t in task_order if task_states.get(t) == "success"]
-                if finished_tasks:
-                    st.markdown("#### ✅ Logs abgeschlossener Tasks")
-                    tabs = st.tabs(finished_tasks)
-                    logs = fetch_airflow_logs("deep_models_pipeline", run_id, finished_tasks)
-                    for i, task_id in enumerate(finished_tasks):
-                        with tabs[i]:
-                            st.markdown(f"**Log für `{task_id}`**")
-                            st.code(logs[task_id], language="log")
-                # === ***
-
-                if finished == total:
-                    st.success("🎉 Alle Tasks abgeschlossen.")
-                    st.session_state["dag_triggered"] = False
-                    st.session_state["last_dag_run_id"] = run_id
-                    break
-
-            time.sleep(3)
-            st.rerun()
-            
-    # **Log-Button und Anzeige nach Abschluss**
-    if "last_dag_run_id" in st.session_state:
-        if st.button("📜 Zeige Airflow Logs"):
-            task_ids = [
-                "import_raw_data", "make_dataset", "build_features",
-                "train_deep_hybrid_model", "validate_models", "predict_best_model"
-            ]
-            st.subheader("Airflow Logs")
-            show_airflow_logs_tabbed(
-                dag_id="deep_models_pipeline",
-                dag_run_id=st.session_state["last_dag_run_id"],
-                task_ids=task_ids
-            )
+    if status:
+        st.success(f"🟢 {label} ist **AKTIV**")
+        if st.button(f"🛑 Deaktiviere {label}"):
+            if set_dag_status(dag_id, False):
+                st.info(f"{label} wurde deaktiviert.")
+                st.experimental_rerun()
+    else:
+        st.warning(f"🔴 {label} ist **INAKTIV**")
+        if st.button(f"✅ Aktiviere {label}"):
+            if set_dag_status(dag_id, True):
+                st.success(f"{label} wurde aktiviert.")
+                st.experimental_rerun()
 
 def show_admin_panel():
     st.header("👑 Admin Panel & Pipeline-Optionen")
     test_user_count = st.slider("Anzahl Test-User für Validierung", 10, 200, 100)
-    n_neighbors = st.slider("KNN Nachbarn (n_neighbors)", 5, 50, 15)
-    tfidf_features = st.slider("TF-IDF max_features", 50, 2000, 300)
+    n_neighbors = st.slider("KNN Nachbarn (n_neighbors)", 5, 80, 15)
+    tfidf_features = st.slider("TF-IDF max_features", 50, 3000, 300)
     latent_dim = st.slider("Latente Dimension (latent_dim)", 8, 128, 32, step=8)
     epochs = st.slider("Epochen (epochs)", 5, 100, 30, step=5)
 
@@ -264,65 +188,82 @@ def show_admin_panel():
         "epochs": epochs
     }
 
-
-    AIRFLOW_API_URL = os.getenv("AIRFLOW_API_URL", "http://localhost:8080/api/v1")
-    AIRFLOW_USER = "admin"
-    AIRFLOW_PASS = "admin"
-
-
-
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("▶️ Starte Deep Hybrid Training (DAG: deep_models_pipeline)"):
-                try:
-                    dag_id = "deep_models_pipeline"
-                    airflow_url = AIRFLOW_API_URL  # <-- HIER KORRIGIERT!
+    col_left, col_right = st.columns([2, 1])
+    with col_left:
+        for dag_id in DAGS:
+            label = DAGS[dag_id]["label"]
+            dag_toggle_ui(dag_id)
+            if get_dag_status(dag_id):
+                btn_label = f"▶️ Starte {label} (DAG: {dag_id})"
+                if st.button(btn_label, key=f"run_{dag_id}"):
+                    # --- NEU: Laufende Runs abbrechen wie im alten Code ---
+                    AIRFLOW_API_URL = os.getenv("AIRFLOW_API_URL", "http://localhost:8080/api/v1")
+                    AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
+                    AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
                     auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
 
-                    deep_conf = {
-                        "test_user_count": test_user_count,
-                        "n_neighbors": n_neighbors,
-                        "latent_dim": latent_dim,
-                        "tfidf_features": tfidf_features,
-                        "epochs": epochs
-                    }
-
-                    # Step 1: Laufende Runs abbrechen
-                    running_runs_url = f"{airflow_url}/dags/{dag_id}/dagRuns?state=running"
+                    # Alle laufenden Runs auf 'failed' setzen
+                    running_runs_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns?state=running"
                     runs_resp = requests.get(running_runs_url, auth=auth)
-                    runs_resp.raise_for_status()
-                    running_runs = runs_resp.json().get("dag_runs", [])
+                    if runs_resp.ok:
+                        running_runs = runs_resp.json().get("dag_runs", [])
+                        for run in running_runs:
+                            run_id = run["dag_run_id"]
+                            patch_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns/{run_id}"
+                            patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
+                            if patch_resp.status_code == 200:
+                                st.info(f"❗ Abgebrochen: Run {run_id}")
+                            else:
+                                st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
 
-                    for run in running_runs:
-                        run_id = run["dag_run_id"]
-                        patch_url = f"{airflow_url}/dags/{dag_id}/dagRuns/{run_id}"
-                        patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
-                        if patch_resp.status_code == 200:
-                            st.info(f"❗ Abgebrochen: Run {run_id}")
-                        else:
-                            st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
-
-                    # Step 2: Starte neuen Run
-                    response = requests.post(
-                        f"{airflow_url}/dags/{dag_id}/dagRuns",
-                        json={"conf": deep_conf},
-                        auth=auth
-                    )
-                    if response.status_code == 200:
-                        st.success("✅ DAG Deep Hybrid Model wurde erfolgreich getriggert")
-                        st.session_state["dag_triggered"] = True
-                        st.session_state["progress"] = 0
-                        st.session_state["last_dag"] = "deep_models_pipeline"
+                    # Jetzt neuen Run triggern
+                    response = trigger_dag(dag_id, st.session_state["pipeline_conf"])
+                    if response.status_code in (200, 201):
+                        st.success(f"{label} gestartet!")
+                        st.session_state[f"{dag_id}_triggered"] = True
                     else:
-                        st.error(f"❌ Fehler beim Triggern des DAGs: {response.text}")
-                except Exception as e:
-                    st.error(f"❌ Fehler bei API-Aufruf: {e}")
-  
+                        st.error(response.text)
+            else:
+                st.info(f"ℹ️ {label} ist **deaktiviert** – aktiviere ihn oben, um zu starten.")
 
-    with col2:
+            # Fortschritt wie gewohnt anzeigen
+            if st.session_state.get(f"{dag_id}_triggered", False):
+                show_dag_progress(dag_id)
+                st.session_state[f"{dag_id}_triggered"] = False
+
+        with st.expander("🛠️ BentoML Service (Docker)", expanded=False):
+            container_col1, container_col2 = st.columns(2)
+            with container_col1:
+                if st.button("▶️ BentoML Service STARTEN", key="bento_start"):
+                    os.system("docker compose up -d bentoml_service")
+                    st.success("BentoML-Service gestartet!")
+                    st.experimental_rerun()
+            with container_col2:
+                if st.button("🛑 BentoML Service STOPPEN", key="bento_stop"):
+                    os.system("docker compose stop bentoml_service")
+                    st.warning("BentoML-Service gestoppt!")
+                    st.experimental_rerun()
+
+            def is_bento_running():
+                import subprocess
+                result = subprocess.run(
+                    "docker ps --filter 'name=bentoml_service' --filter 'status=running' --format '{{.Names}}'",
+                    shell=True, capture_output=True, text=True
+                )
+                return "bentoml_service" in result.stdout
+
+            if is_bento_running():
+                st.success("🟢 BentoML-Service läuft")
+            else:
+                st.error("🔴 BentoML-Service gestoppt (manuell oder automatisch).")
+
+    with col_right:
         with st.expander("📊 Zeige Registry-Modelle & Tags (DagsHub)", expanded=False):
             try:
                 show_registry_metrics()
             except Exception as e:
                 st.error(f"Fehler beim Laden der Registry-Metriken: {e}")
-    show_dag_progress()
+
+# ---- Main UI ----
+if __name__ == "__main__" or "streamlit" in os.getenv("RUN_MAIN", ""):
+    show_admin_panel()

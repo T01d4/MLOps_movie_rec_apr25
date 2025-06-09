@@ -6,14 +6,18 @@ import logging
 import subprocess
 import shutil
 import getpass
+from dotenv import load_dotenv, find_dotenv
 
-EMBEDDING_PATH = "/opt/airflow/data/processed/hybrid_deep_embedding.csv"
+# === ENV laden ===
+load_dotenv(find_dotenv())
+DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+RAW_DIR = os.path.join(DATA_DIR, "raw")
 
-def import_raw_data(raw_data_relative_path, filenames, bucket_folder_url):
-    """Import filenames from bucket_folder_url into raw_data_relative_path."""
-    os.makedirs(raw_data_relative_path, exist_ok=True)
+def import_raw_data(raw_data_path, filenames, bucket_folder_url):
+    """Import filenames from bucket_folder_url into raw_data_path."""
+    os.makedirs(raw_data_path, exist_ok=True)
     for filename in filenames:
-        output_file = os.path.join(raw_data_relative_path, filename)
+        output_file = os.path.join(raw_data_path, filename)
         if os.path.exists(output_file):
             logging.info(f"✅ Datei bereits vorhanden, überspringe: {filename}")
             continue
@@ -28,10 +32,9 @@ def import_raw_data(raw_data_relative_path, filenames, bucket_folder_url):
         except requests.exceptions.RequestException as e:
             logging.error(f"❌ Fehler beim Download von {url}: {e}")
 
-def main(raw_data_relative_path="./data/raw",
+def main(raw_data_path=RAW_DIR,
          filenames=None,
          bucket_folder_url="https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/"):
-
 
     if filenames is None:
         filenames = [
@@ -39,7 +42,7 @@ def main(raw_data_relative_path="./data/raw",
             "movies.csv", "ratings.csv", "README.txt", "tags.csv"
         ]
 
-    import_raw_data(raw_data_relative_path, filenames, bucket_folder_url)
+    import_raw_data(raw_data_path, filenames, bucket_folder_url)
     logging.info("✅ Rohdatenprüfung abgeschlossen.")
 
 if __name__ == '__main__':

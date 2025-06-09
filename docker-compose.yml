@@ -11,29 +11,38 @@ services:
     ports:
       - "8501:8501"
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
-      - ./models:/app/models      # Modelle (optional, z. B. für local serving)
-      - ./src:/app/src            # Trainingscode
-      - ./.dvc:/app/.dvc           # <--- KORREKT!
-      - ./.git:/app/.git           # <--- KORREKT!
+      - ./models:/app/models
+      - ./src:/app/src
+      - ./.dvc:/app/.dvc
+      - ./.git:/app/.git
     env_file: .env
-
+    environment:
+      - DATA_DIR=/app/data
+      - MODEL_DIR=/app/models
     networks:
       - airflow_net
 
   api:
     build:
       context: ./api_service
+      dockerfile: Dockerfile.API
     container_name: api_service
     ports:
       - "8000:8000"
     volumes:
       - ./data:/app/data
+      - ./models:/app/models
+      - ./src:/app/src
+      - ./.dvc:/app/.dvc
+      - ./.git:/app/.git
     env_file: .env
+    environment:
+      - DATA_DIR=/app/data
+      - MODEL_DIR=/app/models
     networks:
       - airflow_net
-
-  # MLflow-Service wird **NICHT** benötigt – du nutzt DagsHub als Remote Registry!
 
   postgres:
     image: postgres:13
@@ -63,6 +72,8 @@ services:
     environment:
       - PYTHONPATH=/opt/airflow
       - AIRFLOW_UID=50000
+      - DATA_DIR=/opt/airflow/data
+      - MODEL_DIR=/opt/airflow/models
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
@@ -70,9 +81,8 @@ services:
       - ./src:/opt/airflow/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
-      - ./.dvc:/opt/airflow/.dvc           # <--- das hinzufügen!
-      - ./.git:/opt/airflow/.git             # <-- NEU!
-
+      - ./.dvc:/opt/airflow/.dvc
+      - ./.git:/opt/airflow/.git
     command: >
       bash -c "
         airflow db upgrade &&
@@ -95,6 +105,8 @@ services:
     environment:
       - PYTHONPATH=/opt/airflow
       - AIRFLOW_UID=50000
+      - DATA_DIR=/opt/airflow/data
+      - MODEL_DIR=/opt/airflow/models
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
@@ -102,12 +114,34 @@ services:
       - ./src:/opt/airflow/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
-      - ./.dvc:/opt/airflow/.dvc           # <--- das hinzufügen!
-      - ./.git:/opt/airflow/.git             # <-- NEU
-
+      - ./.dvc:/opt/airflow/.dvc
+      - ./.git:/opt/airflow/.git
     command: airflow scheduler
     networks:
       - airflow_net
+
+  bentoml:
+    build:
+      context: ./bento_service
+      dockerfile: Dockerfile.Bento
+    container_name: bentoml_service
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./bento_service:/app
+      - ./src:/app/src
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./.dvc:/app/.dvc
+      - ./.git:/app/.git
+    env_file: .env        # <--- DAS FEHLT!
+    environment:
+      - TZ=Europe/Berlin
+      - DATA_DIR=/app/data
+      - MODEL_DIR=/app/models
+    networks:
+      - airflow_net
+    restart: always
 
 volumes:
   postgres_db:

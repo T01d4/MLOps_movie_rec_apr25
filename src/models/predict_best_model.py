@@ -6,56 +6,56 @@ from dotenv import load_dotenv
 import os
 import logging
 import argparse
-import subprocess
+from mlflow.tracking import MlflowClient
 
-def ensure_best_files_exist():
-    # Prüfe, ob das Best-Embedding existiert, sonst DVC pull
-    best_embedding_path = "/opt/airflow/data/processed/hybrid_deep_embedding_best.csv"
-    if not os.path.exists(best_embedding_path):
-        logging.warning(f"Best-Embedding fehlt: {best_embedding_path} – Starte dvc pull ...")
-        try:
-            subprocess.run(["dvc", "pull", best_embedding_path], check=True)
-            logging.info("DVC pull abgeschlossen.")
-        except Exception as e:
-            logging.error(f"❌ DVC pull fehlgeschlagen: {e}")
-            raise
-        # Check, ob Datei nach dvc pull vorhanden ist
-        if not os.path.exists(best_embedding_path):
-            raise FileNotFoundError(f"Nach DVC pull fehlt immer noch: {best_embedding_path}")
-    return best_embedding_path
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 load_dotenv()
-mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-mlflow.set_experiment("model_validate")
 
 REGISTRY_NAME = "hybrid_deep_model"
-EMBEDDING_PATH = "/opt/airflow/data/processed/hybrid_deep_embedding_best.csv"
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+mlflow.set_experiment("model_validate")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+def load_artifact_df_from_best_model(model_name, artifact_rel_path):
+    """
+    Lädt ein CSV-Artifact (als DataFrame) direkt aus der besten Model-Version im MLflow Registry.
+    """
+    client = MlflowClient()
+    mv = client.get_model_version_by_alias(model_name, "best_model")
+    run_id = mv.run_id
+    file_path = client.download_artifacts(run_id, artifact_rel_path)
+    return pd.read_csv(file_path, index_col=0)
+
+def load_artifact_pkl_from_best_model(model_name, artifact_rel_path):
+    """
+    Lädt ein Pickle-Artifact direkt aus der besten Model-Version im MLflow Registry.
+    """
+    import pickle
+    client = MlflowClient()
+    mv = client.get_model_version_by_alias(model_name, "best_model")
+    run_id = mv.run_id
+    file_path = client.download_artifacts(run_id, artifact_rel_path)
+    with open(file_path, "rb") as f:
+        return pickle.load(f)
 
 def predict_best_model(n_users=10):
-    ensure_best_files_exist()
     logging.info("🚀 Starte Prediction für hybrid_deep_model über MLflow Registry")
-    # --- Modell aus Registry laden ---
+    # Modell (pyfunc, Wrapper) direkt aus Registry laden (wie immer)
     model_uri = f"models:/{REGISTRY_NAME}@best_model"
-    logging.info(f"📦 Lade Modell: {model_uri}")
-    try:
-        model = mlflow.pyfunc.load_model(model_uri)
-    except Exception as e:
-        logging.error(f"❌ Konnte Modell nicht laden: {e}")
-        raise
+    model = mlflow.pyfunc.load_model(model_uri)
 
-    # --- Eingabematrix laden ---
-    input_matrix = pd.read_csv(EMBEDDING_PATH, index_col=0)
+    # Embedding-CSV direkt als DataFrame aus Registry holen (kein Kopieren!)
+    input_matrix = load_artifact_df_from_best_model(
+        REGISTRY_NAME, "best_embedding/hybrid_deep_embedding_best.csv"
+    )
     feature_count = input_matrix.shape[1]
     input_matrix.columns = [f"emb_{i}" for i in range(feature_count)]
     input_df = input_matrix.iloc[:n_users].copy().astype("float32")
-    logging.info(f"📥 Embedding geladen: {EMBEDDING_PATH} – Shape: {input_matrix.shape}")
+    logging.info(f"📥 Embedding geladen (direkt aus Registry): Shape: {input_matrix.shape}")
 
-    # --- Prediction für die ersten n_users ---
-    input_df = input_matrix.iloc[:n_users].copy()
-    # *** WICHTIG: Typ auf float32 casten ***
-    input_df = input_df.astype("float32")
+    # Beispiel: Falls du noch einen echten Sklearn-KNN brauchst:
+    # knn_model = load_artifact_pkl_from_best_model(REGISTRY_NAME, "knn_model/knn_model.pkl")
 
+    # Prediction
     try:
         predictions = model.predict(input_df)
         if hasattr(predictions, 'tolist'):
@@ -68,19 +68,11 @@ def predict_best_model(n_users=10):
         logging.error(f"❌ Fehler bei der Modellvorhersage: {e}")
         raise
 
-    # --- Logging ---
-    out_path = "/opt/airflow/data/processed/predictions_hybrid_deep_model.csv"
-    result_df.to_csv(out_path, index=False)
-    logging.info(f"💾 Vorhersagen gespeichert unter: {out_path}")
+    # Ergebnis NUR im RAM!
+    logging.info("✅ Prediction erfolgreich – keine Speicherung auf Disk, nur im RAM.")
 
-    with mlflow.start_run(run_name="predict_best_model_hybrid_deep") as run:
-        mlflow.set_tag("source", "airflow")
-        mlflow.set_tag("task", "predict_best_model")
-        mlflow.set_tag("model_type", "hybrid_deep_model")
-        mlflow.set_tag("model_registry", REGISTRY_NAME)
-        mlflow.log_param("n_predicted", len(result_df))
-        mlflow.log_artifact(out_path, artifact_path="recommendations")
-    logging.info("✅ Predictions erfolgreich in MLflow geloggt")
+    # Wenn du willst, kannst du result_df weiterreichen, zurückgeben oder sonst was
+    print(result_df.head())  # Nur für Testzwecke
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

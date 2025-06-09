@@ -19,9 +19,19 @@ load_dotenv()
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 mlflow.set_experiment("model_validate")
 
-MODEL_DIR = "/opt/airflow/models"
+DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")
+
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+
 MODEL_PATH = os.path.join(MODEL_DIR, "hybrid_deep_knn.pkl")
-EMBEDDING_PATH = "/opt/airflow/data/processed/hybrid_deep_embedding.csv"
+EMBEDDING_PATH = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
+RATINGS_PATH = os.path.join(RAW_DIR, "ratings.csv")
+BEST_EMBEDDING_PATH = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
+VALIDATION_SCORES_PATH = os.path.join(PROCESSED_DIR, "validation_scores_hybrid_deep.csv")
+DVC_FILE = f"{BEST_EMBEDDING_PATH}.dvc"
+
 
 def update_best_model_in_mlflow(precision, client, model_name, model_version):
     # 1. Aktuellen best_model-Wert aus der Registry holen (MLflow)
@@ -43,44 +53,35 @@ def update_best_model_in_mlflow(precision, client, model_name, model_version):
         client.set_registered_model_alias(model_name, "best_model", model_version)
         logging.info(f"Alias 'best_model' wurde auf Version {model_version} gesetzt!")
 
-        # ==== NUR das Featurefile/Embedding speichern und mit DVC versionieren ====
+        # ==== Feature-File als Champion speichern und in MLflow hochladen ====
         try:
-            best_embedding_path = "/opt/airflow/data/processed/hybrid_deep_embedding_best.csv"
-
-            logging.info(f"--- Test: Kopiere Best-Embedding (User: {getpass.getuser()}) ---")
-            logging.info(f"EMBEDDING_PATH: {EMBEDDING_PATH}")
-            logging.info(f"Best-Embedding Ziel: {best_embedding_path}")
-            logging.info(f"Write permission on Zielverzeichnis: {os.access(os.path.dirname(best_embedding_path), os.W_OK)}")
-            try:
-                if not os.path.exists(EMBEDDING_PATH):
-                    logging.error(f"❌ EMBEDDING_PATH existiert nicht: {EMBEDDING_PATH}")
-                    return
-                if os.path.exists(best_embedding_path):
-                    os.remove(best_embedding_path)
-                shutil.copy(EMBEDDING_PATH, best_embedding_path)
-                logging.info("✅ Best-Embedding als _best gespeichert!")
-            except Exception as ex:
-                logging.error(f"❌ Fehler beim Überschreiben/Kopieren der Best-Embedding-Datei: {ex}")
+            # Speicher neues Champion-Embedding (lokal)
+            if not os.path.exists(EMBEDDING_PATH):
+                logging.error(f"❌ EMBEDDING_PATH existiert nicht: {EMBEDDING_PATH}")
                 return
+            if os.path.exists(BEST_EMBEDDING_PATH):
+                os.remove(BEST_EMBEDDING_PATH)
+            shutil.copy(EMBEDDING_PATH, BEST_EMBEDDING_PATH)
+            logging.info("✅ Best-Embedding als _best gespeichert!")
 
-            # DVC add, git add, commit und push (ohne precision)
-            try:
-                subprocess.run(["dvc", "add", best_embedding_path], check=True)
-                logging.info("✅ dvc add erfolgreich.")
-                subprocess.run(["git", "add", f"{best_embedding_path}.dvc"], check=True)
-                logging.info("✅ git add erfolgreich.")
-                subprocess.run([
-                    "git", "commit", "-m", "Track new best embedding (TEST-COMMIT)"
-                ], check=True)
-                logging.info("✅ git commit erfolgreich.")
-                subprocess.run(["dvc", "push"], check=True)
-                logging.info("✅ DVC add, git commit & push für Best-Embedding abgeschlossen!")
-            except Exception as e:
-                logging.error(f"❌ Fehler beim DVC push der _best-Embedding-Datei: {e}")
-        except Exception as e:
-            logging.error(f"❌ Fehler beim Kopieren oder DVC push der _best-Embedding-Datei: {e}")
+            # Lade es in den zugehörigen MLflow-Run (Training) als Artifact hoch!
+            model_version_obj = client.get_model_version(model_name, model_version)
+            train_run_id = model_version_obj.run_id
+
+            # Lade das _best.csv als neues Artifact im Trainings-Run hoch
+            mlflow.tracking.MlflowClient().log_artifact(
+                run_id=train_run_id,
+                local_path=BEST_EMBEDDING_PATH,
+                artifact_path="best_embedding"
+            )
+            logging.info("✅ Best-Embedding als Artifact im Trainings-Run gespeichert!")
+
+        except Exception as ex:
+            logging.error(f"❌ Fehler beim Hochladen des Best-Embedding in MLflow: {ex}")
+
     else:
         logging.info(f"Kein Bestwert – Präzision nicht verbessert ({precision:.4f} <= {best_prec:.4f})")
+
 
     # 3. **Immer** Tag für precision_10 auf aktuelle Modellversion updaten!
     client.set_model_version_tag(model_name, model_version, "precision_10", str(precision))
@@ -103,7 +104,7 @@ def validate_deep_hybrid(test_user_count=100):
     val_task = "full_eval"
 
     try:
-        ratings = pd.read_csv("/opt/airflow/data/raw/ratings.csv")
+        ratings = pd.read_csv(RATINGS_PATH)
         embedding_df = pd.read_csv(EMBEDDING_PATH, index_col=0)
         knn_model = pickle.load(open(MODEL_PATH, "rb"))
         logging.info("📥 Deep Hybrid Model & Embeddings geladen – Beginne Evaluation")
@@ -151,7 +152,7 @@ def validate_deep_hybrid(test_user_count=100):
                 "user_id": valid_users,
                 "hybrid_score": hybrid_scores,
             })
-            score_path = f"/opt/airflow/data/processed/validation_scores_hybrid_deep.csv"
+            score_path = VALIDATION_SCORES_PATH
             score_df.to_csv(score_path, index=False)
             mlflow.log_artifact(score_path, artifact_path="validation")
 

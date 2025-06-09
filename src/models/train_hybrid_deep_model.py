@@ -18,6 +18,12 @@ import argparse
 from mlflow.tracking import MlflowClient
 import logging
 
+DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")
+
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+
 class HybridAutoEncoder(nn.Module):
     def __init__(self, input_dim, latent_dim=64):
         super(HybridAutoEncoder, self).__init__()
@@ -58,9 +64,9 @@ def train_hybrid_deep_model(n_neighbors=10, latent_dim=64, epochs=30, tfidf_feat
 
     # --- Daten laden & Feature-Matrix erzeugen ---
     logger.info("📥 Lade Rohdaten und baue Hybrid-Feature-Matrix ...")
-    movies = pd.read_csv("/opt/airflow/data/raw/movies.csv")
-    tags = pd.read_csv("/opt/airflow/data/raw/tags.csv")
-    scores = pd.read_csv("/opt/airflow/data/raw/genome-scores.csv")
+    movies = pd.read_csv(os.path.join(RAW_DIR, "movies.csv"))
+    tags = pd.read_csv(os.path.join(RAW_DIR, "tags.csv"))
+    scores = pd.read_csv(os.path.join(RAW_DIR, "genome-scores.csv"))
 
     tags = tags.dropna(subset=["tag"])
     tags_combined = tags.groupby("movieId")["tag"].apply(lambda t: " ".join(str(x) for x in t)).reset_index()
@@ -96,7 +102,7 @@ def train_hybrid_deep_model(n_neighbors=10, latent_dim=64, epochs=30, tfidf_feat
 
     # Optional: Matrix speichern (mit Spaltenheader)
     if save_matrix_csv:
-        matrix_path = "/opt/airflow/data/processed/hybrid_matrix.csv"
+        matrix_path = os.path.join(PROCESSED_DIR, "hybrid_matrix.csv")
         hybrid_df.to_csv(matrix_path, index=False)
         logger.info(f"💾 Hybrid-Matrix gespeichert unter {matrix_path}")
 
@@ -129,7 +135,7 @@ def train_hybrid_deep_model(n_neighbors=10, latent_dim=64, epochs=30, tfidf_feat
 
     embedding_feature_names = [f"emb_{i}" for i in range(embeddings.shape[1])]
     embedding_df = pd.DataFrame(embeddings, index=movie_ids, columns=embedding_feature_names)
-    embedding_path = "/opt/airflow/data/processed/hybrid_deep_embedding.csv"
+    embedding_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
     embedding_df.to_csv(embedding_path)
     logger.info(f"✅ Hybrid-Embeddings gespeichert unter {embedding_path}")
     logger.info(f"✅ Hybrid-Embeddings gespeichert unter {embedding_path}")
@@ -137,9 +143,8 @@ def train_hybrid_deep_model(n_neighbors=10, latent_dim=64, epochs=30, tfidf_feat
     # --- KNN Training ---
     knn = NearestNeighbors(n_neighbors=n_neighbors, metric="cosine")
     knn.fit(embeddings)
-    model_dir = "/opt/airflow/models"
-    os.makedirs(model_dir, exist_ok=True)
-    knn_path = os.path.join(model_dir, "hybrid_deep_knn.pkl")
+    os.makedirs(MODEL_DIR, exist_ok=True)
+    knn_path = os.path.join(MODEL_DIR, "hybrid_deep_knn.pkl")
     with open(knn_path, "wb") as f:
         pickle.dump(knn, f)
     logger.info(f"✅ Deep KNN Modell gespeichert unter {knn_path}")

@@ -3,6 +3,10 @@
 from fastapi import FastAPI, UploadFile, HTTPException, Depends, File, Query, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
+from trainer import router as trainer_router
+from recommend import router as recommend_router  # <-- Das ist dein Router mit /recommend!
+import pandas as pd
+import numpy as np
 import mlflow
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -15,6 +19,8 @@ import os
 
 load_dotenv(".env")
 app = FastAPI()
+app.include_router(trainer_router)
+app.include_router(recommend_router) 
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
