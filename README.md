@@ -17,16 +17,16 @@ You need a single .env file in the project root (see example below).
 
 DagsHub Token is required for DVC and MLflow tracking.
 
-Required .env (root directory) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Required .env (root directory)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ==============================
 
 
 # Required .env (root directory) !!!!!
 
-#--- Airflow ---
+# --- Airflow ---
 AIRFLOW__CORE__EXECUTOR=LocalExecutor
 
-AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here
+AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here  # stays like this
 
 AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
 
@@ -47,13 +47,13 @@ AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
 # --- MLflow & DagsHub ---
 MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
 
-MLFLOW_TRACKING_USERNAME=your_dagshub_username
+MLFLOW_TRACKING_USERNAME=your_dagshub_username  # replace with your dagshub username
 
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+MLFLOW_TRACKING_PASSWORD=your_dagshub_token  # replace with your dagshub token
 
-DAGSHUB_USER=your_dagshub_username
+DAGSHUB_USER=your_dagshub_username  # example: yourusername
 
-DAGSHUB_TOKEN=your_dagshub_token
+DAGSHUB_TOKEN=your_dagshub_token  # example: asdfgxcgvsedfrsdg (supposed to have 40 charakters)
 
 # --- Streamlit & API ---
 MODEL_PATH=/app/models/model.pkl
