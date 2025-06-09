@@ -46,8 +46,8 @@ def get_user_role(user):
 
 def set_mlflow_from_env():
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
-    os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
-    os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
+    os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("DAGSHUB_USER")
+    os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("DAGSHUB_TOKEN")
 
 def set_airflow():
     API_URL = os.getenv("API_URL")

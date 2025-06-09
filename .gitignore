@@ -26,10 +26,10 @@ models/*.pkl
 # Env/Secrets/Build
 .env
 env/
-*.env
 build/
 dist/
 *.egg-info/
+*venv/
 
 # Notebooks, Jupyter-Checkpoints (optional)
 #.ipynb_checkpoints/
@@ -40,3 +40,7 @@ dist/
 # DVC/MLflow/Cache-Ordner (falls nötig)
 mlruns/
 model_cache/
+
+# Airflow
+airflow/logs/*
+airflow/*

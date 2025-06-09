@@ -22,47 +22,13 @@ Required .env (root directory)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 # Required .env (root directory) !!!!!
+change the dummy.env and rename it to .env.
+You have to change:
+* DAGSHUB_USER=your_dagshub_username  # replace with your dagshub username
+* DAGSHUB_TOKEN=your_dagshub_token  # replace with your dagshub token
 
-# --- Airflow ---
-AIRFLOW__CORE__EXECUTOR=LocalExecutor
-
-AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here  # stays like this
-
-AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
-
-AIRFLOW__CORE__LOAD_EXAMPLES=False
-
-AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-
-AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
-
-PYTHONPATH=/opt/airflow/src
-
-AIRFLOW_UID=50000
-
-AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
-
-AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
-
-# --- MLflow & DagsHub ---
-MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-MLFLOW_TRACKING_USERNAME=your_dagshub_username  # replace with your dagshub username
-
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token  # replace with your dagshub token
-
-DAGSHUB_USER=your_dagshub_username  # example: yourusername
-
-DAGSHUB_TOKEN=your_dagshub_token  # example: asdfgxcgvsedfrsdg (supposed to have 40 charakters)
-
-# --- Streamlit & API ---
-MODEL_PATH=/app/models/model.pkl
-
-JWT_SECRET=supersecretkey
-
-API_URL=http://api_service:8000
-
-TMDB_API_KEY=your API Key for Movie Pictures
+Optional:
+* TMDB_API_KEY=your API Key for Movie Pictures  # replace with your tmdb api, if you have one
 
 ##https://www.themoviedb.org/settings/api
 
