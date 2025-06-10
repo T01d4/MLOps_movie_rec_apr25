@@ -28,6 +28,7 @@ def get_recommendations_via_api(selected_movies):
         return {}
 
 def show_best_model_info():
+    set_mlflow_from_env()
     from mlflow.tracking import MlflowClient
     client = MlflowClient()
     try:

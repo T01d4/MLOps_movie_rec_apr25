@@ -14,6 +14,7 @@ import os
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 
 load_dotenv(".env")
+set_mlflow_from_env()
 
 required_env_vars = [
     "MLFLOW_TRACKING_URI", "DAGSHUB_USER",
