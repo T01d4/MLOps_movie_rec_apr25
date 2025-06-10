@@ -25,7 +25,7 @@ models/*.pkl
 
 # Env/Secrets/Build
 .env
-# dummy.env
+dummy.env
 env/
 build/
 dist/
