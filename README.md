@@ -20,7 +20,7 @@ Required .env (root directory)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 # Required .env (root directory) !!!!!
-change the dummy.env and rename it to .env.
+Add your information to the dummy.env. The .env will be created during start.sh.
 You have to change:
 * DAGSHUB_USER=your_dagshub_username  # replace with your dagshub username
 * DAGSHUB_TOKEN=your_dagshub_token  # replace with your dagshub token
@@ -111,8 +111,7 @@ Never share .env and .dvc/config.local with secrets in public repos.
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
+    ├── requirements.txt   <- The requirements file for reproducing the analysis environment
     │
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
@@ -140,37 +139,18 @@ Never share .env and .dvc/config.local with secrets in public repos.
 
 Convention : All python scripts must be run from the root specifying the relative file path.
 
-### 1- Create a virtual environment using Virtualenv.
+### 1- run the start.sh script
 
-    `python -m venv my_env`
+    ```bash
+    ./start.sh
+    ```
 
-###   Activate it 
+### 2- Proceed to the relating web resources:
 
-    `./my_env/Scripts/activate`
+    Streamlit: http://localhost:8501/
+    Airflow Web UI: http://localhost:8080/
 
-###   Install the packages from requirements.txt  (You can ignore the warning with "setup.py")
-
-    `pip install -r .\requirements.txt`
-
-### 2- Execute import_raw_data.py to import the 4 datasets (say yes when it asks you to create a new folder)
-
-    `python .\src\data\import_raw_data.py` 
-
-### 3- Execute make_dataset.py initializing `./data/raw` as input file path and `./data/processed` as output file path.
-
-    `python .\src\data\make_dataset.py`
-
-### 4- Execute build_features.py to preprocess the data (this can take a while)
-
-    `python .\src\features\build_features.py`
-
-### 5- Execute train_model.py to train the model
-
-    `python .\src\models\train_model.py`
-
-### 5- Finally, execute predict_model.py file to make the predictions (by default you will be printed predictions for the first 5 users of the dataset). 
-
-    `python .\src\models\predict_model.py`
+The rest is self-explaining.
 
 ### Note that we have 10 recommandations per user
 

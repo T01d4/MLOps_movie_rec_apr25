@@ -69,6 +69,14 @@
 #!/bin/bash
 set -e
 
+# copy dummy.env to .env if it doesn't exist
+if [ ! -f .env ]; then
+    echo "Copying dummy.env to .env..."
+    cp dummy.env .env
+else
+    echo ".env already exists, skipping copy."
+fi
+
 # Pfad zum Projekt-Root ermitteln (das Verzeichnis, wo diese start.sh liegt)
 PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
