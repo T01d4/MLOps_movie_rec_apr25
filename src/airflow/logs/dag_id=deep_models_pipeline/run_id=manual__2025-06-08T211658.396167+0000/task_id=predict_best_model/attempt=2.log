@@ -1,0 +1,52 @@
+[2025-06-08T21:25:45.306+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-08T21:16:58.396167+00:00 [queued]>
+[2025-06-08T21:25:45.313+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-08T21:16:58.396167+00:00 [queued]>
+[2025-06-08T21:25:45.314+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 3
+[2025-06-08T21:25:45.324+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-08 21:16:58.396167+00:00
+[2025-06-08T21:25:45.330+0000] {standard_task_runner.py:60} INFO - Started process 4068 to run task
+[2025-06-08T21:25:45.332+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-08T21:16:58.396167+00:00', '--job-id', '3536', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpv9bgwk7t']
+[2025-06-08T21:25:45.334+0000] {standard_task_runner.py:88} INFO - Job 3536: Subtask predict_best_model
+[2025-06-08T21:25:45.373+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-08T21:16:58.396167+00:00 [running]> on host 2049a80cedbe
+[2025-06-08T21:25:45.435+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T21:16:58.396167+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T21:16:58.396167+00:00'
+[2025-06-08T21:25:45.436+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-08T21:30:01.316+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+
+[2025-06-08T21:30:01.317+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts:   0%|          | 0/1 [04:12<?, ?it/s]
+Traceback (most recent call last):
+  File "/opt/***/src/models/predict_best_model.py", line 91, in <module>
+    predict_best_model(n_users=args.n_users)
+  File "/opt/***/src/models/predict_best_model.py", line 44, in predict_best_model
+    ensure_best_embedding_from_mlflow() 
+  File "/opt/***/src/models/predict_best_model.py", line 35, in ensure_best_embedding_from_mlflow
+    local_artifact_path = client.download_artifacts(run_id, artifact_name, tmpdir)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/tracking/client.py", line 3308, in download_artifacts
+    return self._tracking_client.download_artifacts(run_id, path, dst_path)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/tracking/_tracking_service/client.py", line 997, in download_artifacts
+    return self._get_artifact_repo(run_id).download_artifacts(path, dst_path)
+  File "/home/***/.local/lib/python3.10/site-packages/mlflow/store/artifact/artifact_repo.py", line 317, in download_artifacts
+    raise MlflowException(
+mlflow.exceptions.MlflowException: The following failures occurred while downloading one or more artifacts from https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow-artifacts/artifacts/2b8041adbf9f473d9fa511b906124b0e/69e15304b1664a2d917f991a50355d63/artifacts:
+##### File best_embedding/hybrid_deep_embedding_best.csv #####
+API request to https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow-artifacts/artifacts/2b8041adbf9f473d9fa511b906124b0e/69e15304b1664a2d917f991a50355d63/artifacts/best_embedding/hybrid_deep_embedding_best.csv failed with exception HTTPSConnectionPool(host='dagshub.com', port=443): Max retries exceeded with url: /sacer11/MLOps_movie_rec_apr25.mlflow/api/2.0/mlflow-artifacts/artifacts/2b8041adbf9f473d9fa511b906124b0e/69e15304b1664a2d917f991a50355d63/artifacts/best_embedding/hybrid_deep_embedding_best.csv (Caused by ResponseError('too many 500 error responses'))
+
+[2025-06-08T21:30:01.318+0000] {train_deep_model_dag.py:29} ERROR - ❌ Subprozess-Fehler (exit code 1): python /opt/***/src/models/predict_best_model.py
+[2025-06-08T21:30:01.318+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Command '['python', '/opt/***/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-08T21:30:01.319+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 71, in run_predict_best_model
+    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+  File "/opt/airflow/dags/train_deep_model_dag.py", line 30, in run_and_log
+    raise subprocess.CalledProcessError(result.returncode, command)
+subprocess.CalledProcessError: Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.
+[2025-06-08T21:30:01.331+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=deep_models_pipeline, task_id=predict_best_model, execution_date=20250608T211658, start_date=20250608T212545, end_date=20250608T213001
+[2025-06-08T21:30:01.343+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3536 for task predict_best_model (Command '['python', '/opt/airflow/src/models/predict_best_model.py']' returned non-zero exit status 1.; 4068)
+[2025-06-08T21:30:01.378+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-08T21:30:01.393+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

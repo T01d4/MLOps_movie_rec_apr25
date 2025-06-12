@@ -1,0 +1,17 @@
+bentoml==1.4.*
+mlflow==2.22.0           # Nur, wenn du direkt MLflow-Modelle nutzt (Optional, aber meist nützlich)
+dagshub>=0.3
+dvc
+pandas==2.2.2
+numpy>=1.24
+scikit-learn==1.6.1
+tqdm==4.66.1
+torch==2.3.0
+torchvision==0.18.0
+matplotlib
+plotly
+seaborn==0.12.2
+cryptography             # Falls in deinem MLflow oder DVC-Setup nötig
+# KEIN apache-airflow, Flask, Werkzeug, SQLAlchemy etc!
+evidently==0.6.7
+prometheus_client>=0.17.1

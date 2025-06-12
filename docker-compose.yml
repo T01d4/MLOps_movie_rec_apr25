@@ -1,11 +1,11 @@
-# ✅ version entfernt – Compose V2 benötigt das nicht mehr
-# docker-compose.yml – für DagsHub-only MLflow-Tracking
+# ✅ version removed – Compose V2 no longer requires it
+# docker-compose.yml – for DagsHub-only MLflow tracking
 
 services:
 
   streamlit:
     build:
-      context: ./streamlit_app
+      context: ./src/streamlit_app
       dockerfile: Dockerfile.streamlit
     container_name: streamlit_app
     ports:
@@ -14,9 +14,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
       - ./models:/app/models
-      - ./src:/app/src
-      - ./.dvc:/app/.dvc
-      - ./.git:/app/.git
+      - ./src/movie:/app/src
     env_file: .env
     environment:
       - DATA_DIR=/app/data
@@ -26,7 +24,7 @@ services:
 
   api:
     build:
-      context: ./api_service
+      context: ./src/api_service
       dockerfile: Dockerfile.API
     container_name: api_service
     ports:
@@ -34,9 +32,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./models:/app/models
-      - ./src:/app/src
-      - ./.dvc:/app/.dvc
-      - ./.git:/app/.git
+      - ./src/movie:/app/src
     env_file: .env
     environment:
       - DATA_DIR=/app/data
@@ -59,15 +55,15 @@ services:
 
   airflow-webserver:
     build:
-      context: .
-      dockerfile: airflow/Dockerfile.airflow
+      context: ./src/airflow
+      dockerfile: Dockerfile.airflow
     container_name: airflow-webserver
     restart: always
     depends_on:
       - postgres
     ports:
       - "8080:8080"
-    working_dir: /opt/airflow
+    working_dir: /opt/
     env_file: .env
     environment:
       - PYTHONPATH=/opt/airflow
@@ -75,14 +71,12 @@ services:
       - DATA_DIR=/opt/airflow/data
       - MODEL_DIR=/opt/airflow/models
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/plugins:/opt/airflow/plugins
-      - ./airflow/logs:/opt/airflow/logs
-      - ./src:/opt/airflow/src
+      - ./src/airflow/dags:/opt/airflow/dags
+      - ./src/airflow/plugins:/opt/airflow/plugins
+      - ./src/airflow/logs:/opt/airflow/logs
+      - ./src/movie:/opt/airflow/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
-      - ./.dvc:/opt/airflow/.dvc
-      - ./.git:/opt/airflow/.git
     command: >
       bash -c "
         airflow db upgrade &&
@@ -94,8 +88,8 @@ services:
 
   airflow-scheduler:
     build:
-      context: .
-      dockerfile: airflow/Dockerfile.airflow
+      context: ./src/airflow
+      dockerfile: Dockerfile.airflow
     container_name: airflow-scheduler
     restart: always
     depends_on:
@@ -108,33 +102,29 @@ services:
       - DATA_DIR=/opt/airflow/data
       - MODEL_DIR=/opt/airflow/models
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/plugins:/opt/airflow/plugins
-      - ./airflow/logs:/opt/airflow/logs
-      - ./src:/opt/airflow/src
+      - ./src/airflow/dags:/opt/airflow/dags
+      - ./src/airflow/plugins:/opt/airflow/plugins
+      - ./src/airflow/logs:/opt/airflow/logs
+      - ./src/movie:/opt/airflow/src
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
-      - ./.dvc:/opt/airflow/.dvc
-      - ./.git:/opt/airflow/.git
     command: airflow scheduler
     networks:
       - airflow_net
 
   bentoml:
     build:
-      context: ./bento_service
+      context: ./src/Bento_service
       dockerfile: Dockerfile.Bento
     container_name: bentoml_service
     ports:
-      - "3000:3000"
+      - "4000:4000"
     volumes:
-      - ./bento_service:/app
-      - ./src:/app/src
+      - ./src/Bento_service:/app
+      - ./src/movie:/app/src
       - ./models:/app/models
       - ./data:/app/data
-      - ./.dvc:/app/.dvc
-      - ./.git:/app/.git
-    env_file: .env        # <--- DAS FEHLT!
+    env_file: .env
     environment:
       - TZ=Europe/Berlin
       - DATA_DIR=/app/data
@@ -142,7 +132,32 @@ services:
     networks:
       - airflow_net
     restart: always
+    
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./src/prometheus/data:/prometheus
+    networks:
+      - airflow_net
+    restart: always
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src/grafana/data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - airflow_net
+    restart: always
+    
 volumes:
   postgres_db:
 

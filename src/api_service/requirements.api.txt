@@ -1,0 +1,23 @@
+fastapi
+uvicorn[standard]
+pandas==2.2.2
+python-dotenv
+mlflow==2.22.0
+dagshub
+dvc
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+plotly
+requests
+scikit-learn
+numpy
+# Optional je nach Nutzung (für das Handling von JWTs mit OAuth2)
+python-multipart
+# Für Typisierung und moderne Syntax (wird meist mit Python geliefert)
+typing_extensions
+# Für csv-Handling, falls du csv-Tabellen liest
+# Für Docker-Kompatibilität und Orchestrierung:
+psycopg2-binary    # (nur falls du direkt PostgreSQL ansprichst)
+evidently==0.6.7
+prometheus_client>=0.17.1

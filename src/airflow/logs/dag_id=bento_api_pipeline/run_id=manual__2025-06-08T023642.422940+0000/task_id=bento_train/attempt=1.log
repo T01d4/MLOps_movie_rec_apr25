@@ -1,0 +1,14 @@
+[2025-06-08T02:36:43.522+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T02:36:42.422940+00:00 [queued]>
+[2025-06-08T02:36:43.533+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T02:36:42.422940+00:00 [queued]>
+[2025-06-08T02:36:43.534+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T02:36:43.548+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_train> on 2025-06-08 02:36:42.422940+00:00
+[2025-06-08T02:36:43.555+0000] {standard_task_runner.py:60} INFO - Started process 419 to run task
+[2025-06-08T02:36:43.557+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_train', 'manual__2025-06-08T02:36:42.422940+00:00', '--job-id', '2848', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmpfoqr1z1p']
+[2025-06-08T02:36:43.558+0000] {standard_task_runner.py:88} INFO - Job 2848: Subtask bento_train
+[2025-06-08T02:36:43.596+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T02:36:42.422940+00:00 [running]> on host a096f0d31aa8
+[2025-06-08T02:36:43.663+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_train' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T02:36:42.422940+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T02:36:42.422940+00:00'
+[2025-06-08T02:37:43.725+0000] {bento_api_pipeline.py:12} INFO - BentoML-Training API Response: 504 {"error":"Not able to process the request in 60 seconds"}
+[2025-06-08T02:37:43.751+0000] {python.py:201} INFO - Done. Returned value was: {'error': 'Not able to process the request in 60 seconds'}
+[2025-06-08T02:37:44.072+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=bento_api_pipeline, task_id=bento_train, execution_date=20250608T023642, start_date=20250608T023643, end_date=20250608T023744
+[2025-06-08T02:37:44.138+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T02:37:44.341+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

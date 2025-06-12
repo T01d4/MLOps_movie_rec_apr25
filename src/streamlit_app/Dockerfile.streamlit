@@ -1,0 +1,32 @@
+#Dockerfile.streamlit
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Wenn du docker CLI & compose brauchst, installiere sie richtig über das offizielle Paket (nicht docker.io!)
+RUN apt-get update && \
+    apt-get install -y curl git bash ca-certificates && \
+    curl -fsSL https://get.docker.com -o get-docker.sh && \
+    sh get-docker.sh && \
+    rm get-docker.sh
+
+# CLI Plugins manuell hinzufügen
+RUN mkdir -p /usr/local/lib/docker/cli-plugins/ && \
+    curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose && \
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+# Requirements installieren
+COPY requirements.streamlit.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# App-Dateien kopieren
+COPY app.py ./app.py
+COPY auth.py ./auth.py
+COPY recommender.py ./recommender.py
+COPY training.py ./training.py
+
+RUN mkdir -p ./data/predictions
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

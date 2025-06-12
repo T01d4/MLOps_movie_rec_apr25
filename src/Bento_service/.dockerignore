@@ -1,0 +1,7 @@
+.git
+.dvc
+data
+models
+__pycache__/
+*.pyc
+*.log

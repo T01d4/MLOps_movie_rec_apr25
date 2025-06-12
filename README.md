@@ -3,6 +3,109 @@ MovieReco - MLOPS Project
 
 This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
 
+⚠️ BREAKING CHANGE: Repo complete Rewrite (force-push, Rewrite, File-Struktur, .dvc & Data/Models)! 
+No `git pull` to lokal Repos  – use gitclone 
+`git clone <REPO_URL>` in a fresh new folder 
+otherwise Merge-conflicts, History-Problems or wrong DVC-States!
+
+Project Setup
+==============================
+
+As of 02.06.2025
+
+You need a single .env file in the project root (see example below).
+
+DagsHub Token is required for DVC and MLflow tracking.
+
+Required .env (root directory) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+==============================
+
+
+# Required .env (root directory) !!!!!
+
+#--- Airflow ---
+AIRFLOW__CORE__EXECUTOR=LocalExecutor
+
+AIRFLOW__CORE__FERNET_KEY=oLfPThKYdHr7hjymM4p97WLVlGzJByb9ULqat9MqObs=
+
+AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+
+AIRFLOW__CORE__LOAD_EXAMPLES=False
+
+AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+
+AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
+
+PYTHONPATH=/opt/airflow/src
+
+AIRFLOW_UID=50000
+
+AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+
+AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
+
+# --- MLflow & DagsHub ---
+MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+
+MLFLOW_TRACKING_USERNAME=your_dagshub_username
+
+MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+
+
+
+# --- Streamlit & API ---
+
+API_URL=http://api_service:8000
+
+TMDB_API_KEY=your API Key for Movie Pictures
+
+
+
+
+============================== 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+⚠️ Replace your_dagshub_username and your_dagshub_token with your own credentials!
+Never commit real tokens to git!
+
+DVC Configuration (.dvc/config.local or .dvc/config)
+
+==============================
+
+['remote "dagshub"']
+
+    auth = basic
+
+    user = your_dagshub_username
+
+    password = your_dagshub_token
+
+==============================
+
+⚠️ Do not commit your .dvc/config.local with credentials! (Add it to .gitignore)
+
+
+**| Start the App  - after you have build the .env  -> docker compose up --build |**
+
+
+Streamlit: http://localhost:8501/
+
+
+https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+
+
+**| USER: admin / PW: admin  |**
+
+
+
+Airflow Web UI: http://localhost:8080/
+
+
+**| USER: admin / PW: admin  |**
+
+
+Airflow API (for service-to-service): http://airflow-webserver:8080/api/v1
+
 
 Notes
 All services read environment variables from the root .env (see env_file in docker-compose.yml).

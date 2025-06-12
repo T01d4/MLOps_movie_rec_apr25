@@ -1,0 +1,14 @@
+[2025-06-08T01:20:26.034+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_predict manual__2025-06-08T01:20:13.025236+00:00 [queued]>
+[2025-06-08T01:20:26.043+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_predict manual__2025-06-08T01:20:13.025236+00:00 [queued]>
+[2025-06-08T01:20:26.044+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T01:20:26.057+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_predict> on 2025-06-08 01:20:13.025236+00:00
+[2025-06-08T01:20:26.063+0000] {standard_task_runner.py:60} INFO - Started process 223 to run task
+[2025-06-08T01:20:26.065+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_predict', 'manual__2025-06-08T01:20:13.025236+00:00', '--job-id', '2838', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmphk4vaulk']
+[2025-06-08T01:20:26.067+0000] {standard_task_runner.py:88} INFO - Job 2838: Subtask bento_predict
+[2025-06-08T01:20:26.119+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_predict manual__2025-06-08T01:20:13.025236+00:00 [running]> on host dc73ed6deefa
+[2025-06-08T01:20:26.202+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_predict' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T01:20:13.025236+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T01:20:13.025236+00:00'
+[2025-06-08T01:20:29.439+0000] {bento_api_pipeline.py:27} INFO - BentoML-Prediction API Response: 200 {"status":"finished","stdout":"Command '['python', 'models/predict_best_model.py']' returned non-zero exit status 1."}
+[2025-06-08T01:20:29.440+0000] {python.py:201} INFO - Done. Returned value was: {'status': 'finished', 'stdout': "Command '['python', 'models/predict_best_model.py']' returned non-zero exit status 1."}
+[2025-06-08T01:20:29.456+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=bento_api_pipeline, task_id=bento_predict, execution_date=20250608T012013, start_date=20250608T012026, end_date=20250608T012029
+[2025-06-08T01:20:29.506+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T01:20:29.519+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
