@@ -1,0 +1,13 @@
+[2025-06-08T03:06:43.452+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T03:06:39.756654+00:00 [queued]>
+[2025-06-08T03:06:43.473+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T03:06:39.756654+00:00 [queued]>
+[2025-06-08T03:06:43.475+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T03:06:43.501+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_train> on 2025-06-08 03:06:39.756654+00:00
+[2025-06-08T03:06:43.516+0000] {standard_task_runner.py:60} INFO - Started process 1915 to run task
+[2025-06-08T03:06:43.538+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_train', 'manual__2025-06-08T03:06:39.756654+00:00', '--job-id', '3017', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmplo1os0h4']
+[2025-06-08T03:06:43.544+0000] {standard_task_runner.py:88} INFO - Job 3017: Subtask bento_train
+[2025-06-08T03:06:43.756+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_train manual__2025-06-08T03:06:39.756654+00:00 [running]> on host a096f0d31aa8
+[2025-06-08T03:07:08.773+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3017 for task bento_train ((psycopg2.OperationalError) could not translate host name "postgres" to address: Temporary failure in name resolution
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8); 1915)
+[2025-06-08T03:07:09.355+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-08T03:07:09.561+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

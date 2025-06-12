@@ -1,0 +1,17 @@
+[2025-06-09T00:05:13.368+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-09T00:05:08.160617+00:00 [queued]>
+[2025-06-09T00:05:13.374+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-09T00:05:08.160617+00:00 [queued]>
+[2025-06-09T00:05:13.375+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-09T00:05:13.384+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_deep_hybrid_model> on 2025-06-09 00:05:08.160617+00:00
+[2025-06-09T00:05:13.390+0000] {standard_task_runner.py:60} INFO - Started process 304 to run task
+[2025-06-09T00:05:13.392+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_deep_hybrid_model', 'manual__2025-06-09T00:05:08.160617+00:00', '--job-id', '3626', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpjq56ek5q']
+[2025-06-09T00:05:13.394+0000] {standard_task_runner.py:88} INFO - Job 3626: Subtask train_deep_hybrid_model
+[2025-06-09T00:05:13.423+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_deep_hybrid_model manual__2025-06-09T00:05:08.160617+00:00 [running]> on host c2ff0fb2d486
+[2025-06-09T00:05:13.488+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_deep_hybrid_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-09T00:05:08.160617+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-09T00:05:08.160617+00:00'
+[2025-06-09T00:05:13.489+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/train_hybrid_deep_model.py --n_neighbors=10 --latent_dim=64 --epochs=30 --tfidf_features=300
+[2025-06-09T00:05:23.488+0000] {local_task_job_runner.py:302} WARNING - State of this instance has been externally set to failed. Terminating instance.
+[2025-06-09T00:05:23.491+0000] {process_utils.py:131} INFO - Sending 15 to group 304. PIDs of all processes in the group: [306, 304]
+[2025-06-09T00:05:23.491+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 304
+[2025-06-09T00:05:23.493+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
+[2025-06-09T00:05:23.512+0000] {train_deep_model_dag.py:32} ERROR - ❌ Subprozess-Ausnahme: Task received SIGTERM signal
+[2025-06-09T00:05:23.520+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=306, status='terminated', started='00:05:13') (306) terminated with exit code None
+[2025-06-09T00:05:23.534+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=304, status='terminated', exitcode=0, started='00:05:12') (304) terminated with exit code 0
