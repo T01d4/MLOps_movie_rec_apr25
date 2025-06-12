@@ -105,11 +105,11 @@ def show_recommender_ui(user_role="guest"):
         return
 
     selected_movies = [
-        st.selectbox("Film 1", [""] + movie_titles, key="film1"),
-        st.selectbox("Film 2", [""] + movie_titles, key="film2"),
-        st.selectbox("Film 3", [""] + movie_titles, key="film3"),
-        st.selectbox("Film 4 (optional)", [""] + movie_titles, key="film4"),
-        st.selectbox("Film 5 (optional)", [""] + movie_titles, key="film5")
+        st.selectbox("Movie 1", [""] + movie_titles, key="film1"),
+        st.selectbox("Movie 2", [""] + movie_titles, key="film2"),
+        st.selectbox("Movie 3", [""] + movie_titles, key="film3"),
+        st.selectbox("Movie 4 (optional)", [""] + movie_titles, key="film4"),
+        st.selectbox("Movie 5 (optional)", [""] + movie_titles, key="film5")
     ]
     selected_movies = [f for f in selected_movies if f]
     links_df = pd.read_csv("data/raw/links.csv")

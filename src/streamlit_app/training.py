@@ -323,7 +323,7 @@ def show_admin_panel():
         border-bottom:none;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     ">
-    (DagsHub)
+    (DagsHub MLFLOW)
     </div>
     """, unsafe_allow_html=True)
 
