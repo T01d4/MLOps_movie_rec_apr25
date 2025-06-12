@@ -19,6 +19,7 @@ import os
 import json
 from pathlib import Path
 
+
 load_dotenv(".env")
 app = FastAPI()
 app.include_router(trainer_router)
@@ -77,26 +78,25 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
 
 
+
+
 @app.post("/train")
-def train_model(n_neighbors: int = 10, latent_dim: int = 64, epochs: int = 30, tfidf_features: int = 300):
-    # Starte Airflow DAG über REST (wie gehabt)
+def train_model():
+    
     airflow_url = os.getenv("AIRFLOW_API_URL", "http://airflow-webserver:8080") + "/api/v1/dags/deep_models_pipeline/dagRuns"
-    conf = {
-        "n_neighbors": n_neighbors,
-        "latent_dim": latent_dim,
-        "epochs": epochs,
-        "tfidf_features": tfidf_features,
-    }
+
     response = requests.post(
         airflow_url,
         auth=("admin", "admin"),
-        json={"conf": conf}
+        json={"conf": {}}  # leer, da alles intern gelesen wird
     )
+
     if response.status_code in (200, 201):
         data = response.json()
         run_id = data.get("dag_run_id") or data.get("run_id")
-        # <- Das in st.session_state speichern!
-        return {"status": "Train DAG triggered", "dag_run_id": run_id, "conf": conf}
+        return {"status": "Train DAG triggered", "dag_run_id": run_id, "conf": config}
+    else:
+        return {"status": "Error", "code": response.status_code, "response": response.text}
 
 @app.post("/validate")
 def validate_model(run_id: str = Body(...)):

@@ -44,20 +44,8 @@ def run_build_features():
 def run_train_model():
     run_and_log(["python", "/opt/airflow/src/models/train_model.py"])
 
-def run_train_deep_hybrid_model(**context):
-    conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
-    n_neighbors = conf.get("n_neighbors", 10)
-    latent_dim = conf.get("latent_dim", 64)
-    epochs = conf.get("epochs", 30)
-    tfidf_features = conf.get("tfidf_features", 300)
-
-    run_and_log([
-        "python", "/opt/airflow/src/models/train_hybrid_deep_model.py",
-        f"--n_neighbors={n_neighbors}",
-        f"--latent_dim={latent_dim}",
-        f"--epochs={epochs}",
-        f"--tfidf_features={tfidf_features}"
-    ])
+def run_train_deep_hybrid_model():
+    run_and_log(["python", "/opt/airflow/src/models/train_hybrid_deep_model.py"])
 
 def run_validate_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}

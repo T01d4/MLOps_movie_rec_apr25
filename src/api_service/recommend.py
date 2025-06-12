@@ -9,6 +9,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import NearestNeighbors
 from dotenv import load_dotenv
+from mlflow.tracking import MlflowClient
+import json
+import tempfile
+import shutil
 
 load_dotenv()
 
@@ -19,11 +23,7 @@ def ensure_best_embedding_exists():
     # Prüfe, ob die Embedding-CSV schon lokal vorhanden ist
     if not os.path.exists(best_embedding_path):
         try:
-            # Wenn nicht: Lade aus MLflow Registry, passend zum @best_model
-            from mlflow.tracking import MlflowClient
-            import tempfile
-            import shutil
-
+            # Wenn nicht: Lade aus MLflow Registry, passend zum @best_mode
             model_name = "hybrid_deep_model"
             artifact_name = "best_embedding/hybrid_deep_embedding_best.csv"
             client = MlflowClient()
@@ -38,6 +38,15 @@ def ensure_best_embedding_exists():
     # Jetzt ist das File garantiert da!
     return best_embedding_path
 
+
+def load_config_from_best_model():
+
+    client = MlflowClient()
+    mv = client.get_model_version_by_alias("hybrid_deep_model", "best_model")
+    run_id = mv.run_id
+    config_path = client.download_artifacts(run_id, "best_config/pipeline_conf_best.json")
+    with open(config_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 def get_tmdb_poster_url(movie_id, links_df, api_key):
     try:
@@ -67,6 +76,8 @@ def recommend_movies(payload: dict = Body(...)):
     try:
         matrix_path = ensure_best_embedding_exists()
         embedding_df = pd.read_csv(matrix_path, index_col=0)
+        config = load_config_from_best_model()
+        print("Best Config geladen:", config)
         # Lade IMMER das aktuelle best_model aus der MLflow Registry
         deep_knn = mlflow.pyfunc.load_model("models:/hybrid_deep_model@best_model")
         selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
@@ -88,21 +99,42 @@ def recommend_movies(payload: dict = Body(...)):
     try:
         matrix_path = "data/processed/hybrid_deep_embedding.csv"
         model_path = "models/hybrid_deep_knn.pkl"
+        config_path = "data/processed/pipeline_conf.json"
+
         embedding_df = pd.read_csv(matrix_path, index_col=0)
         with open(model_path, "rb") as f:
             deep_knn = pickle.load(f)
-        selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
+
+        # Lokale pipeline_conf.json laden
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+        else:
+            config = {}
+            print(f"⚠️ Kein pipeline_conf.json gefunden unter {config_path}")
+
+        selected_movie_ids = movies_df[movies_df["title"].str.lower().isin(
+            [t.lower() for t in selected_movies])]["movieId"].tolist()
         selected_indices = [embedding_df.index.get_loc(mid) for mid in selected_movie_ids if mid in embedding_df.index]
+
         rec = []
         if selected_indices:
             user_vec = embedding_df.iloc[selected_indices].values.mean(axis=0).reshape(1, -1)
             _, rec_indices = deep_knn.kneighbors(user_vec, n_neighbors=10 + len(selected_indices))
-            rec_movie_ids = [embedding_df.index[idx] for idx in rec_indices[0] if embedding_df.index[idx] not in selected_movie_ids]
+            rec_movie_ids = [embedding_df.index[idx] for idx in rec_indices[0]
+                             if embedding_df.index[idx] not in selected_movie_ids]
             recommended = movies_df[movies_df["movieId"].isin(rec_movie_ids)].copy()
             recommended = recommended.drop_duplicates("movieId")
-            rec = [{"movieId": int(row["movieId"]), "title": row["title"], "poster_url": get_tmdb_poster_url(row["movieId"], links_df, api_key)} for _, row in recommended.head(10).iterrows()]
+            rec = [{
+                "movieId": int(row["movieId"]),
+                "title": row["title"],
+                "poster_url": get_tmdb_poster_url(row["movieId"], links_df, api_key)
+            } for _, row in recommended.head(10).iterrows()]
+
         result["Deep Hybrid-KNN_local"] = rec
-    except Exception:
+
+    except Exception as e:
+        print(f"❌ Fehler bei der lokalen Vorhersage: {e}")
         result["Deep Hybrid-KNN_local"] = []
 
     # 3. Basis Modell

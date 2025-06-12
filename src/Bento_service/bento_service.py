@@ -7,6 +7,7 @@ import os
 import signal
 import time
 
+
 svc = bentoml.Service("hybrid_deep_model_service")
 
 
@@ -70,39 +71,32 @@ def run_and_log(command, cwd="/app/src"):
             "returncode": 1
         }
 
-@svc.api(input=JSON(), output=JSON())
-def train_deep_hybrid_model(body):
+
+def train_deep_hybrid_model():
     touch_last_request()
+
     if not training_lock.acquire(blocking=False):
         return {"status": "busy", "msg": "Training already running, try again later."}
+
     try:
-        n_neighbors = body.get("n_neighbors", 10)
-        latent_dim = body.get("latent_dim", 64)
-        epochs = body.get("epochs", 30)
-        tfidf_features = body.get("tfidf_features", 300)
+        
+
         cmd = [
-            "python", "models/train_hybrid_deep_model.py",
-            f"--n_neighbors={n_neighbors}",
-            f"--latent_dim={latent_dim}",
-            f"--epochs={epochs}",
-            f"--tfidf_features={tfidf_features}"
+            "python", "models/train_hybrid_deep_model.py"
         ]
+
         log_data = run_and_log(cmd, cwd="/app/src")
-        result = {
+
+        return {
             "status": "finished",
             "stdout": log_data["stdout"],
-            "stdout_lines": log_data["stdout_lines"],
             "stderr": log_data["stderr"],
+            "stdout_lines": log_data["stdout_lines"],
             "stderr_lines": log_data["stderr_lines"],
             "returncode": log_data["returncode"],
-            "params_used": {
-                "n_neighbors": n_neighbors,
-                "latent_dim": latent_dim,
-                "epochs": epochs,
-                "tfidf_features": tfidf_features
-            }
+            "params_used": config
         }
-        return result
+
     finally:
         training_lock.release()
 

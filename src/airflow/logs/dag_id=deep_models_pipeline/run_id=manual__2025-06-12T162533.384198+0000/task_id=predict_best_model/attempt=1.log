@@ -1,0 +1,68 @@
+[2025-06-12T16:27:44.466+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-12T16:25:33.384198+00:00 [queued]>
+[2025-06-12T16:27:44.472+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-12T16:25:33.384198+00:00 [queued]>
+[2025-06-12T16:27:44.473+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-12T16:27:44.481+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-12 16:25:33.384198+00:00
+[2025-06-12T16:27:44.487+0000] {standard_task_runner.py:60} INFO - Started process 661 to run task
+[2025-06-12T16:27:44.488+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-12T16:25:33.384198+00:00', '--job-id', '71', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpmcvjhclj']
+[2025-06-12T16:27:44.489+0000] {standard_task_runner.py:88} INFO - Job 71: Subtask predict_best_model
+[2025-06-12T16:27:44.517+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-12T16:25:33.384198+00:00 [running]> on host 6a2d883c7e9f
+[2025-06-12T16:27:44.565+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-12T16:25:33.384198+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-12T16:25:33.384198+00:00'
+[2025-06-12T16:27:44.566+0000] {train_deep_model_dag.py:13} INFO - 🟦 Running command: python /opt/***/src/models/predict_best_model.py
+[2025-06-12T16:28:06.925+0000] {train_deep_model_dag.py:20} INFO - 🟩 [stdout]:
+   user_id                                    recommendations
+0        1  [0, 4331, 2064, 2769, 5445, 8885, 7994, 7644, ...
+1        2  [1, 2138, 1790, 8359, 1591, 4946, 3076, 7600, ...
+2        3  [2, 407, 1886, 390, 1258, 1584, 5155, 4012, 4,...
+3        4  [3, 1889, 4651, 45, 8642, 6020, 1379, 1207, 74...
+4        5  [4, 5834, 2, 4675, 1886, 407, 4090, 4674, 834,...
+
+[2025-06-12T16:28:06.926+0000] {train_deep_model_dag.py:22} WARNING - 🟨 [stderr]:
+2025-06-12 16:27:46,398 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry
+
+Downloading artifacts:   0%|          | 0/8 [00:00<?, ?it/s]
+Downloading artifacts:  12%|█▎        | 1/8 [00:00<00:00, 12826.62it/s]
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:02,  2.07it/s]   
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:02,  2.07it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:01<00:03,  1.44it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:01<00:03,  1.44it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:03<00:03,  1.14it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:03<00:03,  1.14it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:04<00:02,  1.04it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:04<00:02,  1.04it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:04<00:01,  1.14it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:04<00:01,  1.14it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:05<00:00,  1.09it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:05<00:00,  1.09it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:06<00:00,  1.07it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:06<00:00,  1.07it/s]
+Downloading artifacts: 100%|██████████| 8/8 [00:06<00:00,  1.15it/s]
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.48s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.48s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.48s/it]
+2025-06-12 16:28:03,803 - INFO - 📥 Embedding geladen (direkt aus Registry): Shape: (10381, 32)
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.16s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.16s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.16s/it]
+2025-06-12 16:28:06,474 - INFO - 📄 Konfiguration geladen aus Registry:
+2025-06-12 16:28:06,475 - INFO -  - n_neighbors: 12
+2025-06-12 16:28:06,475 - INFO -  - latent_dim: 32
+2025-06-12 16:28:06,475 - INFO -  - hidden_dim: 256
+2025-06-12 16:28:06,475 - INFO -  - tfidf_features: 402
+2025-06-12 16:28:06,475 - INFO -  - epochs: 30
+2025-06-12 16:28:06,475 - INFO -  - lr: 0.001
+2025-06-12 16:28:06,475 - INFO -  - batch_size: 128
+2025-06-12 16:28:06,475 - INFO -  - metric: cosine
+2025-06-12 16:28:06,475 - INFO -  - content_weight: 0.5
+2025-06-12 16:28:06,475 - INFO -  - collab_weight: 0.5
+2025-06-12 16:28:06,475 - INFO -  - power_factor: 1.0
+2025-06-12 16:28:06,475 - INFO -  - drop_threshold: 0.0
+2025-06-12 16:28:06,538 - INFO - ✅ Prediction erfolgreich – keine Speicherung auf Disk, nur im RAM.
+
+[2025-06-12T16:28:06.926+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-12T16:28:06.934+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=predict_best_model, execution_date=20250612T162533, start_date=20250612T162744, end_date=20250612T162806
+[2025-06-12T16:28:06.955+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-12T16:28:06.967+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

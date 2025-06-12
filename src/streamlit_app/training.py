@@ -7,6 +7,8 @@ import plotly.graph_objects as go
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import time
+import json
+
 
 load_dotenv()
 
@@ -174,96 +176,116 @@ def dag_toggle_ui(dag_id):
 
 def show_admin_panel():
     st.header("👑 Admin Panel & Pipeline-Optionen")
-    test_user_count = st.slider("Anzahl Test-User für Validierung", 10, 200, 100)
-    n_neighbors = st.slider("KNN Nachbarn (n_neighbors)", 5, 80, 15)
-    tfidf_features = st.slider("TF-IDF max_features", 50, 3000, 300)
-    latent_dim = st.slider("Latente Dimension (latent_dim)", 8, 128, 32, step=8)
-    epochs = st.slider("Epochen (epochs)", 5, 100, 30, step=5)
 
-    st.session_state["pipeline_conf"] = {
-        "test_user_count": test_user_count,
+    # Pipeline-Parameter
+    test_user_count = st.slider("Anzahl Test-User für Validierung", 10, 200, 100)
+   # Hauptparameter (einspaltig)
+    n_neighbors = st.slider("KNN neighbors (n_neighbors)", 5, 80, 10)
+    latent_dim = st.slider("Latent dimension (latent_dim)", 8, 128, 32, step=8)
+    hidden_dim = st.slider("Hidden layer size (hidden_dim)", 16, 512, 256, step=16)
+    tfidf_features = st.slider("TF-IDF max_features (tfidf_features)", 50, 3000, 300)
+    epochs = st.slider("Epochs", 5, 100, 30, step=5)
+    lr = st.select_slider("Learning rate (lr)", options=[0.0001, 0.0005, 0.001, 0.005, 0.01], value=0.001)
+    batch_size = st.selectbox("Batch size", [16, 32, 64, 128, 256], index=3)
+    metric = st.selectbox("Distance metric", ["cosine", "euclidean", "manhattan"], index=0)
+
+    # Gewichte und Schwellenwerte kompakter in 2 Spalten
+    col1, col2 = st.columns(2)
+    with col1:
+        content_weight = st.slider("Content Weight", 0.0, 1.0, 0.5, step=0.1)
+        power_factor = st.slider("Power Factor", 0.1, 5.0, 1.0, step=0.1)
+    with col2:
+        collab_weight = st.slider("Collaborative Weight", 0.0, 1.0, 0.5, step=0.1)
+        drop_threshold = st.slider("Drop Threshold", 0.0, 1.0, 0.0, step=0.05)
+
+    # Speichern
+    st.session_state["pipeline_conf"] = {"test_user_count": test_user_count}
+    config_dict = {
         "n_neighbors": n_neighbors,
-        "tfidf_features": tfidf_features,
         "latent_dim": latent_dim,
-        "epochs": epochs
+        "hidden_dim": hidden_dim,
+        "tfidf_features": tfidf_features,
+        "epochs": epochs,
+        "lr": lr,
+        "batch_size": batch_size,
+        "metric": metric,
+        "content_weight": content_weight,
+        "collab_weight": collab_weight,
+        "power_factor": power_factor,
+        "drop_threshold": drop_threshold
     }
 
-    col_left, col_right = st.columns([2, 1])
-    with col_left:
-        for dag_id in DAGS:
-            label = DAGS[dag_id]["label"]
-            dag_toggle_ui(dag_id)
-            if get_dag_status(dag_id):
-                btn_label = f"▶️ Starte {label} (DAG: {dag_id})"
-                if st.button(btn_label, key=f"run_{dag_id}"):
-                    # --- NEU: Laufende Runs abbrechen wie im alten Code ---
-                    AIRFLOW_API_URL = os.getenv("AIRFLOW_API_URL", "http://localhost:8080/api/v1")
-                    AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
-                    AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
-                    auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
+    data_dir = os.getenv("DATA_DIR", "/app/data")
+    config_path = os.path.join(data_dir, "processed", "pipeline_conf.json")
+    os.makedirs(os.path.dirname(config_path), exist_ok=True)
+    with open(config_path, "w") as f:
+        json.dump(config_dict, f, indent=4)
 
-                    # Alle laufenden Runs auf 'failed' setzen
-                    running_runs_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns?state=running"
-                    runs_resp = requests.get(running_runs_url, auth=auth)
-                    if runs_resp.ok:
-                        running_runs = runs_resp.json().get("dag_runs", [])
-                        for run in running_runs:
-                            run_id = run["dag_run_id"]
-                            patch_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns/{run_id}"
-                            patch_resp = requests.patch(patch_url, json={"state": "failed"}, auth=auth)
-                            if patch_resp.status_code == 200:
-                                st.info(f"❗ Abgebrochen: Run {run_id}")
-                            else:
-                                st.warning(f"⚠️ Konnte Run {run_id} nicht abbrechen: {patch_resp.text}")
+    st.success("✅ Pipeline-Konfiguration gespeichert!")
 
-                    # Jetzt neuen Run triggern
-                    response = trigger_dag(dag_id, st.session_state["pipeline_conf"])
-                    if response.status_code in (200, 201):
-                        st.success(f"{label} gestartet!")
-                        st.session_state[f"{dag_id}_triggered"] = True
-                    else:
-                        st.error(response.text)
-            else:
-                st.info(f"ℹ️ {label} ist **deaktiviert** – aktiviere ihn oben, um zu starten.")
+    # 🔁 DAG Trigger-UI (volle Breite)
+    for dag_id in DAGS:
+        label = DAGS[dag_id]["label"]
+        dag_toggle_ui(dag_id)
+        if get_dag_status(dag_id):
+            btn_label = f"▶️ Starte {label} (DAG: {dag_id})"
+            if st.button(btn_label, key=f"run_{dag_id}"):
+                AIRFLOW_API_URL = os.getenv("AIRFLOW_API_URL", "http://localhost:8080/api/v1")
+                AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
+                AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
+                auth = HTTPBasicAuth(AIRFLOW_USER, AIRFLOW_PASS)
 
-            # Fortschritt wie gewohnt anzeigen
-            if st.session_state.get(f"{dag_id}_triggered", False):
-                show_dag_progress(dag_id)
-                st.session_state[f"{dag_id}_triggered"] = False
+                running_runs_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns?state=running"
+                runs_resp = requests.get(running_runs_url, auth=auth)
+                if runs_resp.ok:
+                    for run in runs_resp.json().get("dag_runs", []):
+                        run_id = run["dag_run_id"]
+                        patch_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns/{run_id}"
+                        requests.patch(patch_url, json={"state": "failed"}, auth=auth)
 
-        with st.expander("🛠️ BentoML Service (Docker)", expanded=False):
-            container_col1, container_col2 = st.columns(2)
-            with container_col1:
-                if st.button("▶️ BentoML Service STARTEN", key="bento_start"):
-                    os.system("docker compose up -d bentoml_service")
-                    st.success("BentoML-Service gestartet!")
-                    st.experimental_rerun()
-            with container_col2:
-                if st.button("🛑 BentoML Service STOPPEN", key="bento_stop"):
-                    os.system("docker compose stop bentoml_service")
-                    st.warning("BentoML-Service gestoppt!")
-                    st.experimental_rerun()
+                response = trigger_dag(dag_id, st.session_state["pipeline_conf"])
+                if response.status_code in (200, 201):
+                    st.success(f"{label} gestartet!")
+                    st.session_state[f"{dag_id}_triggered"] = True
+                else:
+                    st.error(response.text)
+        else:
+            st.info(f"ℹ️ {label} ist **deaktiviert** – aktiviere ihn oben, um zu starten.")
 
-            def is_bento_running():
-                import subprocess
-                result = subprocess.run(
-                    "docker ps --filter 'name=bentoml_service' --filter 'status=running' --format '{{.Names}}'",
-                    shell=True, capture_output=True, text=True
-                )
-                return "bentoml_service" in result.stdout
+        if st.session_state.get(f"{dag_id}_triggered", False):
+            show_dag_progress(dag_id)
+            st.session_state[f"{dag_id}_triggered"] = False
 
-            if is_bento_running():
-                st.success("🟢 BentoML-Service läuft")
-            else:
-                st.error("🔴 BentoML-Service gestoppt (manuell oder automatisch).")
+    # 🔧 BentoML Service UI (volle Breite)
+    with st.expander("🛠️ BentoML Service (Docker)", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("▶️ BentoML Service STARTEN", key="bento_start"):
+                os.system("docker compose up -d bentoml_service")
+                st.success("BentoML-Service gestartet!")
+                st.experimental_rerun()
+        with col2:
+            if st.button("🛑 BentoML Service STOPPEN", key="bento_stop"):
+                os.system("docker compose stop bentoml_service")
+                st.warning("BentoML-Service gestoppt!")
+                st.experimental_rerun()
 
-    with col_right:
-        with st.expander("📊 Zeige Registry-Modelle & Tags (DagsHub)", expanded=False):
-            try:
-                show_registry_metrics()
-            except Exception as e:
-                st.error(f"Fehler beim Laden der Registry-Metriken: {e}")
+        def is_bento_running():
+            import subprocess
+            result = subprocess.run(
+                "docker ps --filter 'name=bentoml_service' --filter 'status=running' --format '{{.Names}}'",
+                shell=True, capture_output=True, text=True
+            )
+            return "bentoml_service" in result.stdout
 
-# ---- Main UI ----
-if __name__ == "__main__" or "streamlit" in os.getenv("RUN_MAIN", ""):
-    show_admin_panel()
+        if is_bento_running():
+            st.success("🟢 BentoML-Service läuft")
+        else:
+            st.error("🔴 BentoML-Service gestoppt (manuell oder automatisch).")
+
+    # 📊 MLflow Registry Metrics (volle Breite)
+    with st.expander("📊 Zeige Registry-Modelle & Tags (DagsHub)", expanded=False):
+        try:
+            show_registry_metrics()
+        except Exception as e:
+            st.error(f"Fehler beim Laden der Registry-Metriken: {e}")

@@ -7,6 +7,7 @@ import os
 import logging
 import argparse
 from mlflow.tracking import MlflowClient
+import json
 
 load_dotenv()
 
@@ -37,6 +38,17 @@ def load_artifact_pkl_from_best_model(model_name, artifact_rel_path):
     with open(file_path, "rb") as f:
         return pickle.load(f)
 
+def load_config_from_best_model(model_name):
+    """
+    Lädt die pipeline_conf_best.json aus dem MLflow Registry Run mit Alias 'best_model'
+    """
+    client = MlflowClient()
+    mv = client.get_model_version_by_alias(model_name, "best_model")
+    run_id = mv.run_id
+    config_path = client.download_artifacts(run_id, "best_config/pipeline_conf_best.json")
+    with open(config_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
 def predict_best_model(n_users=10):
     logging.info("🚀 Starte Prediction für hybrid_deep_model über MLflow Registry")
     # Modell (pyfunc, Wrapper) direkt aus Registry laden (wie immer)
@@ -54,7 +66,15 @@ def predict_best_model(n_users=10):
 
     # Beispiel: Falls du noch einen echten Sklearn-KNN brauchst:
     # knn_model = load_artifact_pkl_from_best_model(REGISTRY_NAME, "knn_model/knn_model.pkl")
-
+    # Konfig laden
+    try:
+        config = load_config_from_best_model(REGISTRY_NAME)
+        logging.info(f"📄 Konfiguration geladen aus Registry:")
+        for key, value in config.items():
+            logging.info(f" - {key}: {value}")
+    except Exception as e:
+        logging.warning(f"⚠️ Konnte pipeline_conf.json nicht laden: {e}")
+        config = {}
     # Prediction
     try:
         predictions = model.predict(input_df)

@@ -36,19 +36,25 @@ def show_best_model_info():
         run_id = mv.run_id
         tags = mv.tags
         st.info(f"🔖 Aktive Modell-Version (`@best_model`): **v{version}** (Run ID: {run_id})")
-        keys_of_interest = ["precision_10", "n_neighbors", "latent_dim", "tfidf_features", "algorithm"]
-        shown = False
-        for k in keys_of_interest:
-            if k in tags:
-                st.markdown(f"**{k}**: `{tags[k]}`")
-                shown = True
+        keys_of_interest = [
+            "precision_10", "n_neighbors", "latent_dim", "hidden_dim",
+            "tfidf_features", "epochs", "lr", "batch_size", "metric",
+            "content_weight", "collab_weight", "power_factor", "drop_threshold"
+        ]
+        col1, col2 = st.columns(2)
+        for i, key in enumerate(keys_of_interest):
+            if key in tags:
+                col = col1 if i % 2 == 0 else col2
+                col.markdown(f"**{key}**: `{tags[key]}`")
+
+        # Zeige ggf. übrige Tags separat
         other_tags = {k: v for k, v in tags.items() if k not in keys_of_interest}
         if other_tags:
-            with st.expander("Weitere Modell-Tags"):
+            with st.expander("🧩 Weitere Modell-Tags", expanded=False):
                 for k, v in other_tags.items():
-                    st.write(f"{k}: {v}")
-        elif not shown:
-            st.info("ℹ️ Keine Tags an dieser Modellversion hinterlegt.")
+                    st.write(f"**{k}**: `{v}`")
+        else:
+            st.info("ℹ️ Keine weiteren Tags an dieser Modellversion hinterlegt.")
     except Exception as e:
         st.warning(f"Kein best_model-Alias gefunden oder Fehler: {e}")
 

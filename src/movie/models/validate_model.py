@@ -13,6 +13,7 @@ from datetime import datetime
 import shutil
 import subprocess
 import getpass
+import json
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 load_dotenv()
@@ -34,7 +35,6 @@ DVC_FILE = f"{BEST_EMBEDDING_PATH}.dvc"
 
 
 def update_best_model_in_mlflow(precision, client, model_name, model_version):
-    # 1. Aktuellen best_model-Wert aus der Registry holen (MLflow)
     try:
         alias_version = client.get_model_version_by_alias(model_name, "best_model")
         best_version = alias_version.version
@@ -47,15 +47,12 @@ def update_best_model_in_mlflow(precision, client, model_name, model_version):
         best_prec = 0.0
         best_version = None
 
-    # 2. Vergleich und ggf. neuen Bestwert setzen
     if precision > best_prec:
         logging.info(f"🏆 Neuer Bestwert! {precision:.4f} > {best_prec:.4f} (Version: {model_version})")
         client.set_registered_model_alias(model_name, "best_model", model_version)
         logging.info(f"Alias 'best_model' wurde auf Version {model_version} gesetzt!")
 
-        # ==== Feature-File als Champion speichern und in MLflow hochladen ====
         try:
-            # Speicher neues Champion-Embedding (lokal)
             if not os.path.exists(EMBEDDING_PATH):
                 logging.error(f"❌ EMBEDDING_PATH existiert nicht: {EMBEDDING_PATH}")
                 return
@@ -64,11 +61,9 @@ def update_best_model_in_mlflow(precision, client, model_name, model_version):
             shutil.copy(EMBEDDING_PATH, BEST_EMBEDDING_PATH)
             logging.info("✅ Best-Embedding als _best gespeichert!")
 
-            # Lade es in den zugehörigen MLflow-Run (Training) als Artifact hoch!
             model_version_obj = client.get_model_version(model_name, model_version)
             train_run_id = model_version_obj.run_id
 
-            # Lade das _best.csv als neues Artifact im Trainings-Run hoch
             mlflow.tracking.MlflowClient().log_artifact(
                 run_id=train_run_id,
                 local_path=BEST_EMBEDDING_PATH,
@@ -76,8 +71,25 @@ def update_best_model_in_mlflow(precision, client, model_name, model_version):
             )
             logging.info("✅ Best-Embedding als Artifact im Trainings-Run gespeichert!")
 
+            # === pipeline_conf_best.json erzeugen und hochladen ===
+            original_conf = os.path.join(PROCESSED_DIR, "pipeline_conf.json")
+            best_conf = os.path.join(PROCESSED_DIR, "pipeline_conf_best.json")
+
+            if os.path.exists(original_conf):
+                shutil.copy(original_conf, best_conf)
+                logging.info("✅ pipeline_conf_best.json lokal gespeichert!")
+
+                mlflow.tracking.MlflowClient().log_artifact(
+                    run_id=train_run_id,
+                    local_path=best_conf,
+                    artifact_path="best_config"
+                )
+                logging.info("✅ pipeline_conf_best.json als Artifact im Trainings-Run gespeichert!")
+            else:
+                logging.warning(f"⚠️ pipeline_conf.json nicht gefunden unter {original_conf}")
+
         except Exception as ex:
-            logging.error(f"❌ Fehler beim Hochladen des Best-Embedding in MLflow: {ex}")
+            logging.error(f"❌ Fehler beim Hochladen der Best-Artefakte in MLflow: {ex}")
 
     else:
         logging.info(f"Kein Bestwert – Präzision nicht verbessert ({precision:.4f} <= {best_prec:.4f})")

@@ -9,6 +9,7 @@ from typing import Dict, Any, List, Optional
 import requests
 import time
 import html
+from pydantic import BaseModel, Field
 
 load_dotenv()
 
@@ -168,15 +169,28 @@ def show_registry_metrics():
         version = int(v.version)
         row = {
             "Version": int(v.version),
-            "Created_at": pd.to_datetime(v.creation_timestamp, unit='ms').tz_localize('UTC').tz_convert('Europe/Berlin').strftime('%d.%m.%y %H:%M'),
+            "Created_at": pd.to_datetime(v.creation_timestamp, unit='ms')
+                            .tz_localize('UTC')
+                            .tz_convert('Europe/Berlin')
+                            .strftime('%d.%m.%y %H:%M'),
             "Alias": alias_str,
             "precision_10": float(tags.get("precision_10", "nan")) if tags.get("precision_10") else float('nan'),
+
+            # Parameter aus dem Training
             "n_neighbors": tags.get("n_neighbors", ""),
             "latent_dim": tags.get("latent_dim", ""),
+            "hidden_dim": tags.get("hidden_dim", ""),
             "epochs": tags.get("epochs", ""),
+            "lr": tags.get("lr", ""),
+            "batch_size": tags.get("batch_size", ""),
             "tfidf_features": tags.get("tfidf_features", ""),
-            "algorithm": tags.get("algorithm", ""),
-            "tags": tags,  # Optional für Tooltip/Detail
+            "metric": tags.get("metric", ""),        # optional, wenn 'algorithm' nicht mehr genutzt wird
+            "content_weight": tags.get("content_weight", ""),
+            "collab_weight": tags.get("collab_weight", ""),
+            "power_factor": tags.get("power_factor", ""),
+            "drop_threshold": tags.get("drop_threshold", ""),
+            # Alles für Tooltip etc.
+            "tags": tags,
         }
         rows.append(row)
 
