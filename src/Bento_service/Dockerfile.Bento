@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# System-Tools installieren (wie in Airflow)
+# Install system tools (similar to Airflow setup)
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -12,20 +12,19 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# requirements.txt aus bento_service/
-#COPY requirements.txt .
+# Copy and install requirements
 COPY requirements.bento.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# GIT Config im Container (optional, aber empfohlen für DVC)
+# Git config inside container (optional, but recommended for DVC integration)
 RUN git config --global --add safe.directory /app \
     && git config --global user.name "bento" \
     && git config --global user.email "bento@container"
 
-# Restlichen Code kopieren (bleibt gleich)
+# Copy the rest of the app code
 COPY bento_service.py ./bento_service.py
 
-# Optional: Pythonpath anpassen (wenn nötig)
+# Optional: Adjust PYTHONPATH if needed
 ENV PYTHONPATH="/app/src:/app:${PYTHONPATH}"
 
 # BentoML Entrypoint

@@ -1,31 +1,32 @@
 #Dockerfile.api
 FROM python:3.10-slim
 
-# 1. Setze Arbeitsverzeichnis
+# 1. Set working directory
 WORKDIR /app
 
-# 2. Installiere System-Dependencies (optional: falls du z. B. build-essential oder git brauchst)
+# 2. Install system dependencies (optional: e.g., if you need build-essential or git)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# 3. Requirements kopieren und installieren
+
+# 3. Copy and install requirements
 #COPY requirements.txt .
 COPY requirements.api.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 4. Den gesamten App-Code kopieren (inkl. .env, falls benötigt)
+# 4. Copy all application code (including .env if needed)
 COPY main.py ./main.py
 COPY pw.py ./pw.py
 COPY recommend.py ./recommend.py
 COPY trainer.py ./trainer.py
 COPY users.json ./users.json
-# 5. Explizit Environment-File setzen (empfohlen: in .dockerignore nur sensible lokale Daten ausschließen)
+# 5. Explicitly set environment variable (recommended: exclude sensitive local data via .dockerignore)
 ENV PYTHONUNBUFFERED=1
 
-# 6. (Optional) Default-Port als ENV für Uvicorn/FastAPI (kann von außen überschrieben werden)
+# 6. (Optional) Set default port as ENV for Uvicorn/FastAPI (can be overridden externally)
 ENV PORT=8000
 
-# 7. Start-Command (CMD als JSON, besser für Entrypoint-Parsing)
+# 7. Start command (CMD as JSON for better entrypoint parsing)
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
