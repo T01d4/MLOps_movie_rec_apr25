@@ -4,7 +4,7 @@ from fastapi import FastAPI, UploadFile, HTTPException, Depends, File, Query, Bo
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from trainer import router as trainer_router
-from recommend import router as recommend_router  # <-- Das ist dein Router mit /recommend!
+from recommend import router as recommend_router  # <--  router with /recommend!
 import pandas as pd
 import numpy as np
 import mlflow
@@ -29,7 +29,7 @@ MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-MLFLOW_EXPERIMENT = "hybrid_deep_model"  # oder wie im Training
+MLFLOW_EXPERIMENT = "hybrid_deep_model"  # or the name used during training
 
 
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecret123")
@@ -88,7 +88,7 @@ def train_model():
     response = requests.post(
         airflow_url,
         auth=("admin", "admin"),
-        json={"conf": {}}  # leer, da alles intern gelesen wird
+        json={"conf": {}}   # empty, everything is read internally
     )
 
     if response.status_code in (200, 201):
@@ -100,7 +100,7 @@ def train_model():
 
 @app.post("/validate")
 def validate_model(run_id: str = Body(...)):
-    # Startet Validierung per Airflow (kann als conf die run_id weitergeben!)
+    # Starts validation via Airflow (can pass run_id as config!)
     airflow_url = os.getenv("AIRFLOW_API_URL", "http://airflow-webserver:8080") + "/api/v1/dags/deep_models_pipeline/dagRuns"
     response = requests.post(
         airflow_url,
@@ -113,10 +113,10 @@ def validate_model(run_id: str = Body(...)):
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...), run_id: str = Query(None), model_version: int = Query(None), model_alias: str = Query("best_model")):
-    # Laden je nach übergebenem run_id, version oder alias
+    # Load based on passed run_id, version or alias
     model_uri = None
     if run_id:
-        # Suche Modellversion zu Run-ID (geht über mlflow)
+        # Look up model version for run_id (via MLflow)
         client = mlflow.tracking.MlflowClient()
         versions = client.search_model_versions(f"name='{MLFLOW_EXPERIMENT}'")
         mv = [v for v in versions if v.run_id == run_id]
@@ -129,11 +129,11 @@ async def predict(file: UploadFile = File(...), run_id: str = Query(None), model
 
     if not model_uri:
         return JSONResponse(status_code=400, content={"error": "Kein Modell angegeben"})
-    # Dann wie gehabt: Datei lesen, Modell laden, predicten
+    # Continue as usual: read file, load model, predict
 
 @app.get("/metrics")
 def get_metrics(run_id: str = Query(None), model_alias: str = Query("best_model")):
-    # Metrik-Output für einen bestimmten Run oder das best_model
+    # Metric output for a specific run or the best_model
     client = mlflow.tracking.MlflowClient()
     if run_id:
         run = mlflow.get_run(run_id)

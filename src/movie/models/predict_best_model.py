@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 def load_artifact_df_from_best_model(model_name, artifact_rel_path):
     """
-    Lädt ein CSV-Artifact (als DataFrame) direkt aus der besten Model-Version im MLflow Registry.
+    Loads a CSV artifact (as DataFrame) directly from the best model version in the MLflow registry.
     """
     client = MlflowClient()
     mv = client.get_model_version_by_alias(model_name, "best_model")
@@ -28,7 +28,7 @@ def load_artifact_df_from_best_model(model_name, artifact_rel_path):
 
 def load_artifact_pkl_from_best_model(model_name, artifact_rel_path):
     """
-    Lädt ein Pickle-Artifact direkt aus der besten Model-Version im MLflow Registry.
+    Loads a Pickle artifact directly from the best model version in the MLflow registry.
     """
     import pickle
     client = MlflowClient()
@@ -40,7 +40,7 @@ def load_artifact_pkl_from_best_model(model_name, artifact_rel_path):
 
 def load_config_from_best_model(model_name):
     """
-    Lädt die pipeline_conf_best.json aus dem MLflow Registry Run mit Alias 'best_model'
+    Loads the pipeline_conf_best.json from the MLflow run with alias 'best_model'.
     """
     client = MlflowClient()
     mv = client.get_model_version_by_alias(model_name, "best_model")
@@ -51,29 +51,30 @@ def load_config_from_best_model(model_name):
 
 def predict_best_model(n_users=10):
     logging.info("🚀 Starte Prediction für hybrid_deep_model über MLflow Registry")
-    # Modell (pyfunc, Wrapper) direkt aus Registry laden (wie immer)
+    # Load model (pyfunc, wrapper) directly from registry
     model_uri = f"models:/{REGISTRY_NAME}@best_model"
     model = mlflow.pyfunc.load_model(model_uri)
 
-    # Embedding-CSV direkt als DataFrame aus Registry holen (kein Kopieren!)
+    # Load embedding CSV as DataFrame directly from registry (no local copy!)
     input_matrix = load_artifact_df_from_best_model(
         REGISTRY_NAME, "best_embedding/hybrid_deep_embedding_best.csv"
     )
     feature_count = input_matrix.shape[1]
     input_matrix.columns = [f"emb_{i}" for i in range(feature_count)]
     input_df = input_matrix.iloc[:n_users].copy().astype("float32")
-    logging.info(f"📥 Embedding geladen (direkt aus Registry): Shape: {input_matrix.shape}")
+    logging.info(f"📥 Embedding loaded (directly from registry): Shape: {input_matrix.shape}")
 
-    # Beispiel: Falls du noch einen echten Sklearn-KNN brauchst:
+    # Optional: Load sklearn KNN model if needed
     # knn_model = load_artifact_pkl_from_best_model(REGISTRY_NAME, "knn_model/knn_model.pkl")
-    # Konfig laden
+
+    # Load config
     try:
         config = load_config_from_best_model(REGISTRY_NAME)
         logging.info(f"📄 Konfiguration geladen aus Registry:")
         for key, value in config.items():
             logging.info(f" - {key}: {value}")
     except Exception as e:
-        logging.warning(f"⚠️ Konnte pipeline_conf.json nicht laden: {e}")
+        logging.warning(f"⚠️ Could not load pipeline_conf.json: {e}")
         config = {}
     # Prediction
     try:
@@ -85,14 +86,14 @@ def predict_best_model(n_users=10):
             "recommendations": predictions
         })
     except Exception as e:
-        logging.error(f"❌ Fehler bei der Modellvorhersage: {e}")
+        logging.error(f"❌ Error during model prediction: {e}")
         raise
 
-    # Ergebnis NUR im RAM!
-    logging.info("✅ Prediction erfolgreich – keine Speicherung auf Disk, nur im RAM.")
+    # Result is kept in memory only!
+    logging.info("✅ Prediction successful – result is kept in RAM, not saved to disk.")
 
-    # Wenn du willst, kannst du result_df weiterreichen, zurückgeben oder sonst was
-    print(result_df.head())  # Nur für Testzwecke
+    # You can return, pass or further process result_df if needed
+    print(result_df.head())  # For test purposes only
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

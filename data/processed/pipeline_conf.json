@@ -1,14 +1,14 @@
 {
     "n_neighbors": 14,
-    "latent_dim": 40,
-    "hidden_dim": 272,
-    "tfidf_features": 452,
-    "epochs": 35,
-    "lr": 0.001,
+    "latent_dim": 24,
+    "hidden_dim": 208,
+    "tfidf_features": 427,
+    "epochs": 25,
+    "lr": 0.0005,
     "batch_size": 64,
-    "metric": "cosine",
-    "content_weight": 0.6,
-    "collab_weight": 0.4,
-    "power_factor": 1.3,
-    "drop_threshold": 0.05
+    "metric": "euclidean",
+    "content_weight": 0.75,
+    "collab_weight": 0.25,
+    "power_factor": 1.5,
+    "drop_threshold": 0.3
 }

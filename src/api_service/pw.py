@@ -1,9 +1,9 @@
 from passlib.context import CryptContext
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Für admin
+# for admin
 print(pwd_context.hash("admin"))
-# Für user
+# for user
 print(pwd_context.hash("user"))
-# Für guest
+# for guest
 print(pwd_context.hash("guest"))

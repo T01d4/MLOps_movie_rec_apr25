@@ -29,12 +29,12 @@ def show_login():
                     st.session_state["jwt_token"] = data["access_token"]
                     st.session_state["role"] = data["role"]
                     st.session_state["username"] = username
-                    st.success(f"Angemeldet als {data['role'].upper()}")
+                    st.success(f"Logged in as {data['role'].upper()}")
                     st.rerun()
                 else:
-                    st.error(f"❌ Login fehlgeschlagen – Status: {resp.status_code} – {resp.text}")
+                    st.error(f"❌ Login failed – Status: {resp.status_code} – {resp.text}")
             except Exception as e:
-                st.error(f"❌ Login-API nicht erreichbar: {e}")
+                st.error(f"❌ Login API not reachable: {e}")
     jwt_token = st.session_state.get("jwt_token")
     if jwt_token:
         return st.session_state["username"]

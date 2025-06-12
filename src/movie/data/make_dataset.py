@@ -6,23 +6,23 @@ import os
 import pandas as pd
 from tqdm import tqdm
 
-# === ENV laden ===
+# === ENV load ===
 load_dotenv(find_dotenv())
 
-# Hole ENV-Variablen oder nutze Fallbacks
+# Get ENV variables or use fallbacks
 DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
 def main(input_filepath=RAW_DIR, output_filepath=PROCESSED_DIR):
     logger = logging.getLogger(__name__)
-    logger.info('📦 Starte Verarbeitung der Rohdaten.')
+    logger.info('📦 Starting preprocessing of raw data.')
 
     movie_matrix_path = os.path.join(output_filepath, "movies_matrix.csv")
 
     # Falls Datei existiert: Verarbeitung überspringen
     if os.path.exists(movie_matrix_path):
-        logger.info("✅ movies_matrix.csv bereits vorhanden – Verarbeitung wird übersprungen.")
+        logger.info("✅ movies_matrix.csv already exists – skipping processing.")
         return
 
     scores_path = os.path.join(input_filepath, "genome-scores.csv")
@@ -53,7 +53,7 @@ def main(input_filepath=RAW_DIR, output_filepath=PROCESSED_DIR):
     os.makedirs(output_filepath, exist_ok=True)
     movies_matrix.reset_index(inplace=True)
     movies_matrix.to_csv(movie_matrix_path, index=False, encoding='utf-8')
-    logger.info(f"✅ movies_matrix.csv gespeichert unter: {movie_matrix_path}")
+    logger.info(f"✅ movies_matrix.csv saved to: {movie_matrix_path}")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

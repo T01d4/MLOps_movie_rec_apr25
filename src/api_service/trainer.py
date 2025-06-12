@@ -42,7 +42,7 @@ def get_dag_status(dag_id: str):
         resp.raise_for_status()
         return {"active": not resp.json()["is_paused"]}
     except Exception as e:
-        return {"error": f"Fehler beim Abrufen des Status für {dag_id}: {str(e)}"}
+        return {"error": f"Error while retrieving status for {dag_id}: {str(e)}"}
 
 @router.post("/airflow/set-dag-status")
 def set_dag_status(data: dict = Body(...)):
@@ -54,7 +54,7 @@ def set_dag_status(data: dict = Body(...)):
         resp.raise_for_status()
         return {"ok": resp.ok}
     except Exception as e:
-        return {"error": f"Fehler beim Umschalten des DAGs: {str(e)}"}
+        return {"error": f"Error while toggling the DAG: {str(e)}"}
 
 @router.post("/airflow/trigger-dag")
 def trigger_dag(dag_id: str, conf: dict = Body(...)):
@@ -93,7 +93,7 @@ def fetch_airflow_logs(dag_id: str, dag_run_id: str):
     for task_id in task_order:
         url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns/{dag_run_id}/taskInstances/{task_id}/logs/1"
         resp = requests.get(url, auth=AUTH)
-        logs[task_id] = resp.text if resp.ok else f"Fehler beim Abrufen des Logs: {resp.status_code}\n{resp.text}"
+        logs[task_id] = resp.text if resp.ok else f"Error while fetching logs: {resp.status_code}\n{resp.text}"
     return logs
 
 @router.get("/airflow/progress")
@@ -176,7 +176,7 @@ def show_registry_metrics():
             "Alias": alias_str,
             "precision_10": float(tags.get("precision_10", "nan")) if tags.get("precision_10") else float('nan'),
 
-            # Parameter aus dem Training
+            # Training parameters
             "n_neighbors": tags.get("n_neighbors", ""),
             "latent_dim": tags.get("latent_dim", ""),
             "hidden_dim": tags.get("hidden_dim", ""),
@@ -184,12 +184,11 @@ def show_registry_metrics():
             "lr": tags.get("lr", ""),
             "batch_size": tags.get("batch_size", ""),
             "tfidf_features": tags.get("tfidf_features", ""),
-            "metric": tags.get("metric", ""),        # optional, wenn 'algorithm' nicht mehr genutzt wird
+            "metric": tags.get("metric", ""),        
             "content_weight": tags.get("content_weight", ""),
             "collab_weight": tags.get("collab_weight", ""),
             "power_factor": tags.get("power_factor", ""),
             "drop_threshold": tags.get("drop_threshold", ""),
-            # Alles für Tooltip etc.
             "tags": tags,
         }
         rows.append(row)

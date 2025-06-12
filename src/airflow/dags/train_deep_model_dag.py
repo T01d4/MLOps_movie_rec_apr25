@@ -23,13 +23,13 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
         if result.returncode == 1:
             output = (result.stdout or "") + (result.stderr or "")
             if ("nothing to commit" in output.lower() or "no changes added to commit" in output.lower()):
-                logging.info("✅ Kein Commit nötig (nichts zu committen).")
+                logging.info("✅ No commit necessary (nothing to commit).")
                 return
         if result.returncode != 0:
-            logging.error(f"❌ Subprozess-Fehler (exit code {result.returncode}): {' '.join(map(str, command))}")
+            logging.error(f"❌ Subprocess error (exit code {result.returncode}): {' '.join(map(str, command))}")
             raise subprocess.CalledProcessError(result.returncode, command)
     except Exception as e:
-        logging.error(f"❌ Subprozess-Ausnahme: {e}")
+        logging.error(f"❌ Subprocess exception: {e}")
         raise
 
 def run_import_raw_data():
@@ -104,6 +104,6 @@ with DAG(
         python_callable=run_predict_best_model
     )
 
-    # DAG-Flow (analog zum klassischen Pipeline)
+    # DAG flow (analogous to a classic pipeline)
     import_raw_data >> make_dataset >> build_features
     build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict

@@ -12,7 +12,7 @@ svc = bentoml.Service("hybrid_deep_model_service")
 
 
 LAST_REQUEST_FILE = "/tmp/bento_last_request.txt"
-AUTO_SHUTDOWN_MINUTES = 60  # Minuten Inaktivität bis Shutdown
+AUTO_SHUTDOWN_MINUTES = 60  # Minutes inactivity Shutdown
 
 def touch_last_request():
     with open(LAST_REQUEST_FILE, "w") as f:
@@ -33,14 +33,14 @@ def auto_shutdown_watcher():
             if inactive_minutes > AUTO_SHUTDOWN_MINUTES:
                 print(f"[AutoShutdown] Keine Requests seit {inactive_minutes:.1f} min – beende Service.")
                 os.kill(os.getpid(), signal.SIGTERM)
-        time.sleep(60)  # jede Minute prüfen
+        time.sleep(60)  # every minute
 
-# Starte Auto-Shutdown-Thread (am Anfang des Scripts)
+# Start Auto-Shutdown-Thread (beginning Script)
 t = threading.Thread(target=auto_shutdown_watcher, daemon=True)
 t.start()
 
 
-# Lock für Training
+# Lock Training
 training_lock = threading.Lock()
 
 def run_and_log(command, cwd="/app/src"):

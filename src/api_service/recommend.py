@@ -20,10 +20,10 @@ router = APIRouter()
 
 def ensure_best_embedding_exists():
     best_embedding_path = "data/processed/hybrid_deep_embedding_best.csv"
-    # Prüfe, ob die Embedding-CSV schon lokal vorhanden ist
+    # Check if the embedding CSV is already available locally
     if not os.path.exists(best_embedding_path):
         try:
-            # Wenn nicht: Lade aus MLflow Registry, passend zum @best_mode
+            # If not: download from MLflow registry for @best_model
             model_name = "hybrid_deep_model"
             artifact_name = "best_embedding/hybrid_deep_embedding_best.csv"
             client = MlflowClient()
@@ -34,8 +34,8 @@ def ensure_best_embedding_exists():
                 assert os.path.exists(local_artifact_path), "MLflow download hat das File nicht erzeugt!"
                 shutil.copy(local_artifact_path, best_embedding_path)
         except Exception as e:
-            raise RuntimeError(f"MLflow Artifact Download fehlgeschlagen: {e}")
-    # Jetzt ist das File garantiert da!
+            raise RuntimeError(f"MLflow artifact download failed: {e}")
+    # At this point the file is guaranteed to exist
     return best_embedding_path
 
 
@@ -77,8 +77,8 @@ def recommend_movies(payload: dict = Body(...)):
         matrix_path = ensure_best_embedding_exists()
         embedding_df = pd.read_csv(matrix_path, index_col=0)
         config = load_config_from_best_model()
-        print("Best Config geladen:", config)
-        # Lade IMMER das aktuelle best_model aus der MLflow Registry
+        print("Loaded best config:", config)
+        # Always load the current best_model from MLflow registry
         deep_knn = mlflow.pyfunc.load_model("models:/hybrid_deep_model@best_model")
         selected_movie_ids = movies_df[movies_df["title"].str.lower().isin([t.lower() for t in selected_movies])]["movieId"].tolist()
         selected_indices = [embedding_df.index.get_loc(mid) for mid in selected_movie_ids if mid in embedding_df.index]
@@ -105,13 +105,13 @@ def recommend_movies(payload: dict = Body(...)):
         with open(model_path, "rb") as f:
             deep_knn = pickle.load(f)
 
-        # Lokale pipeline_conf.json laden
+        # Load local pipeline_conf.json
         if os.path.exists(config_path):
             with open(config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
         else:
             config = {}
-            print(f"⚠️ Kein pipeline_conf.json gefunden unter {config_path}")
+            print(f"⚠️ No pipeline_conf.json found at {config_path}")
 
         selected_movie_ids = movies_df[movies_df["title"].str.lower().isin(
             [t.lower() for t in selected_movies])]["movieId"].tolist()
@@ -134,7 +134,7 @@ def recommend_movies(payload: dict = Body(...)):
         result["Deep Hybrid-KNN_local"] = rec
 
     except Exception as e:
-        print(f"❌ Fehler bei der lokalen Vorhersage: {e}")
+        print(f"❌ Error during local prediction: {e}")
         result["Deep Hybrid-KNN_local"] = []
 
     # 3. Basis Modell

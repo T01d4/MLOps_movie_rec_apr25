@@ -80,7 +80,7 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
     mlflow.set_experiment("hybrid_deep_model")
 
-    logger.info("📥 Lade Rohdaten und baue Hybrid-Feature-Matrix ...")
+    logger.info("📥 Loading raw data and building hybrid feature matrix ...")
     movies = pd.read_csv(os.path.join(RAW_DIR, "movies.csv"))
     tags = pd.read_csv(os.path.join(RAW_DIR, "tags.csv"))
     scores = pd.read_csv(os.path.join(RAW_DIR, "genome-scores.csv"))
@@ -121,17 +121,17 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     hybrid_df = pd.DataFrame(hybrid_matrix, columns=collab_feature_names + content_feature_names)
     hybrid_df.insert(0, "movieId", common_ids["movieId"].values)
 
-    logger.info(f"📐 Hybrid-Matrix erstellt mit Shape: {hybrid_df.shape}, Feature-Namen: {len(feature_names)}")
+    logger.info(f"📐 Hybrid matrix created with shape: {hybrid_df.shape}, number of features: {len(feature_names)}")
 
     if save_matrix_csv:
         matrix_path = os.path.join(PROCESSED_DIR, "hybrid_matrix.csv")
         hybrid_df.to_csv(matrix_path, index=False)
-        logger.info(f"💾 Hybrid-Matrix gespeichert unter {matrix_path}")
+        logger.info(f"💾 Hybrid matrix saved at {matrix_path}")
 
     X = hybrid_df.drop(columns=["movieId"]).values.astype(np.float32)
     movie_ids = hybrid_df["movieId"].values
 
-    logger.info("🚀 Starte Training Autoencoder ...")
+    logger.info("🚀 Starting Autoencoder training ...")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = HybridAutoEncoder(X.shape[1], hidden_dim, latent_dim).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -159,7 +159,7 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     embedding_df = pd.DataFrame(embeddings, index=movie_ids, columns=embedding_feature_names)
     embedding_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
     embedding_df.to_csv(embedding_path)
-    logger.info(f"✅ Hybrid-Embeddings gespeichert unter {embedding_path}")
+    logger.info(f"✅ Hybrid embeddings saved at {embedding_path}")
 
     knn = NearestNeighbors(n_neighbors=n_neighbors, metric=metric)
     knn.fit(embeddings)
@@ -167,7 +167,7 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     knn_path = os.path.join(MODEL_DIR, "hybrid_deep_knn.pkl")
     with open(knn_path, "wb") as f:
         pickle.dump(knn, f)
-    logger.info(f"✅ Deep KNN Modell gespeichert unter {knn_path}")
+    logger.info(f"✅ Deep KNN model saved at {knn_path}")
 
     with mlflow.start_run(run_name="train_hybrid_deep_model") as run:
         mlflow.set_tag("source", "airflow")
@@ -229,19 +229,21 @@ def train_hybrid_deep_model(save_matrix_csv=True):
             client.set_model_version_tag(model_name, model_version, "content_weight", str(content_weight))
             client.set_model_version_tag(model_name, model_version, "collab_weight", str(collab_weight))
             client.set_model_version_tag(model_name, model_version, "power_factor", str(power_factor))
+            if drop_threshold is not None:
+                client.set_model_version_tag(model_name, model_version, "drop_threshold", str(drop_threshold))
             client.set_model_version_tag(model_name, model_version, "precision_10", 0.0)
 
             logger.info(
-                f"📝 Tags gesetzt für Modellversion {model_version}: "
+                f"📝 Tags set for model version {model_version}: "
                 f"n_neighbors={n_neighbors}, latent_dim={latent_dim}, hidden_dim={hidden_dim}, "
                 f"tfidf_features={tfidf_features}, epochs={epochs}, lr={lr}, batch_size={batch_size}, "
                 f"metric={metric}, content_weight={content_weight}, collab_weight={collab_weight}, "
                 f"power_factor={power_factor}, precision_10=0.0"
             )
         else:
-            logger.warning("⚠️ Konnte Modellversion für Tagging nicht bestimmen.")
+            logger.warning("⚠️ Could not determine model version for tagging.")
 
-    logger.info("🏁 Deep Hybrid-Model Training abgeschlossen und geloggt.")
+    logger.info("🏁 Deep hybrid model training completed and logged.")
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
