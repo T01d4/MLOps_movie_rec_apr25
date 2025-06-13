@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from src.movie.models.predict_best_model import predict_best_model
+from src.models.predict_best_model import predict_best_model
 
 class TestPredictBestModel(unittest.TestCase):
-    @patch("src.movie.models.predict_best_model.load_artifact_df_from_best_model")
-    @patch("src.movie.models.predict_best_model.mlflow.pyfunc.load_model")
+    @patch("src.models.predict_best_model.load_artifact_df_from_best_model")
+    @patch("src.models.predict_best_model.mlflow.pyfunc.load_model")
     def test_predict_best_model(self, mock_load_model, mock_load_artifact_df):
         # Mock data
         mock_embedding = pd.DataFrame({
@@ -23,7 +23,7 @@ class TestPredictBestModel(unittest.TestCase):
         predict_best_model(n_users=2)
 
         # Assertions
-        mock_load_artifact_df.assert_called_once_with("hybrid_deep_model", "best_embedding/hybrid_deep_embedding_best.csv")
+        mock_load_artifact_df.assert_called_once_with("hybrid_deep_model", "./data/processed/best_embedding/hybrid_deep_embedding_best.csv")
         mock_load_model.assert_called_once_with("models:/hybrid_deep_model@best_model")
         mock_model.predict.assert_called_once()
 
