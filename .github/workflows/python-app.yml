@@ -28,11 +28,13 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Set PYTHONPATH
-      run: echo "PYTHONPATH=$GITHUB_WORKSPACE/src/movie" >> $GITHUB_ENV
+    - name: Add src to PYTHONPATH
+      run: echo "PYTHONPATH=${{ github.workspace }}/src" >> $GITHUB_ENV
 
-    - name: Write pytest.ini (for correct import)
-      run: echo -e "[pytest]\npythonpath = src/movie" > pytest.ini
+    - name: Write pytest.ini
+      run: |
+        echo "[pytest]" > pytest.ini
+        echo "pythonpath = src" >> pytest.ini
 
     - name: Lint with flake8
       run: |
