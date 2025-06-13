@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from src.models.predict_best_model import predict_best_model
+from src.movie.models.predict_best_model import predict_best_model
 
 class TestPredictBestModel(unittest.TestCase):
     @patch("src.models.predict_best_model.load_artifact_df_from_best_model")

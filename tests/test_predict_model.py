@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from src.models.predict_model import predict_hybrid_deep_model
+from src.movie.models.predict_model import predict_hybrid_deep_model
 
 class TestPredictModel(unittest.TestCase):
     @patch("src.models.predict_model.pd.read_csv")

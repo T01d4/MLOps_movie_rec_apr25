@@ -2,7 +2,7 @@ import os
 import unittest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-from src.data.make_dataset import main
+from src.movie.data.make_dataset import main
 
 class TestMakeDataset(unittest.TestCase):
     @patch("src.data.make_dataset.os.makedirs")

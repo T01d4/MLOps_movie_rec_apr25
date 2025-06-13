@@ -1,7 +1,7 @@
 import os
 import unittest
 from unittest.mock import patch, MagicMock
-from src.data.import_raw_data import import_raw_data
+from src.movie.data.import_raw_data import import_raw_data
 
 class TestImportRawData(unittest.TestCase):
     @patch("src.data.import_raw_data.requests.get")

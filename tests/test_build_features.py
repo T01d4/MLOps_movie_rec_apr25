@@ -2,7 +2,7 @@ import os
 import unittest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-from src.features.build_features import read_ratings, read_movies, create_user_matrix, main
+from src.movie.features.build_features import read_ratings, read_movies, create_user_matrix, main
 
 class TestBuildFeatures(unittest.TestCase):
     @patch("src.features.build_features.pd.read_csv")
