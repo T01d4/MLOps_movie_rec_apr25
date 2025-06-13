@@ -5,9 +5,9 @@ from unittest.mock import patch, MagicMock
 from src.movie.data.make_dataset import main
 
 class TestMakeDataset(unittest.TestCase):
-    @patch("src.data.make_dataset.os.makedirs")
-    @patch("src.data.make_dataset.pd.read_csv")
-    @patch("src.data.make_dataset.pd.DataFrame.to_csv")
+    @patch("src.movie.data.make_dataset.os.makedirs")
+    @patch("src.movie.data.make_dataset.pd.read_csv")
+    @patch("src.movie.data.make_dataset.pd.DataFrame.to_csv")
     def test_main(self, mock_to_csv, mock_read_csv, mock_makedirs):
         # Setup
         input_filepath = "/tmp/test_raw_data"

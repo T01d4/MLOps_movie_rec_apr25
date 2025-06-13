@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 from src.movie.data.import_raw_data import import_raw_data
 
 class TestImportRawData(unittest.TestCase):
-    @patch("src.data.import_raw_data.requests.get")
+    @patch("src.movie.data.import_raw_data.requests.get")
     @patch("os.makedirs")
     def test_import_raw_data(self, mock_makedirs, mock_requests_get):
         # Setup

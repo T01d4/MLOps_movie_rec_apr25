@@ -5,8 +5,8 @@ import numpy as np
 from src.movie.models.validate_model import validate_deep_hybrid, update_best_model_in_mlflow, get_latest_model_version
 
 class TestValidateModel(unittest.TestCase):
-    @patch("src.models.validate_model.pd.read_csv")
-    @patch("src.models.validate_model.pickle.load")
+    @patch("src.movie.models.validate_model.pd.read_csv")
+    @patch("src.movie.models.validate_model.pickle.load")
     def test_validate_deep_hybrid(self, mock_pickle_load, mock_read_csv):
         # Mock data
         mock_ratings = pd.DataFrame({
@@ -46,7 +46,7 @@ class TestValidateModel(unittest.TestCase):
         # Assertions
         mock_client.set_registered_model_alias.assert_called_once_with("test_model", "best_model", "1")
 
-    @patch("src.models.validate_model.MlflowClient")
+    @patch("src.movie.models.validate_model.MlflowClient")
     def test_get_latest_model_version(self, mock_mlflow_client):
         # Mock client
         mock_client = MagicMock()

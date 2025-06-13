@@ -4,9 +4,9 @@ import pandas as pd
 from src.movie.models.train_model import train_hybrid_deep_model
 
 class TestTrainModel(unittest.TestCase):
-    @patch("src.models.train_model.pd.read_csv")
-    @patch("src.models.train_model.pickle.dump")
-    @patch("src.models.train_model.os.makedirs")
+    @patch("src.movie.models.train_model.pd.read_csv")
+    @patch("src.movie.models.train_model.pickle.dump")
+    @patch("src.movie.models.train_model.os.makedirs")
     def test_train_hybrid_deep_model(self, mock_makedirs, mock_pickle_dump, mock_read_csv):
         # Mock data
         mock_embedding = pd.DataFrame({

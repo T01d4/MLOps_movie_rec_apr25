@@ -4,8 +4,8 @@ import pandas as pd
 from src.movie.models.predict_model import predict_hybrid_deep_model
 
 class TestPredictModel(unittest.TestCase):
-    @patch("src.models.predict_model.pd.read_csv")
-    @patch("src.models.predict_model.pickle.load")
+    @patch("src.movie.models.predict_model.pd.read_csv")
+    @patch("src.movie.models.predict_model.pickle.load")
     def test_predict_hybrid_deep_model(self, mock_pickle_load, mock_read_csv):
         # Mock data
         mock_embedding = pd.DataFrame({
