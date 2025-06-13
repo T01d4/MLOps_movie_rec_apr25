@@ -27,8 +27,7 @@ You have to change:
 
 Optional:
 * TMDB_API_KEY=your API Key for Movie Pictures  # replace with your tmdb api, if you have one
-
-##https://www.themoviedb.org/settings/api
+=======
 
 
 ============================== 
@@ -135,9 +134,8 @@ Never share .env and .dvc/config.local with secrets in public repos.
 
 --------
 
-## Steps to follow 
 
-Convention : All python scripts must be run from the root specifying the relative file path.
+## Steps to Execute the Project
 
 ### 1- run the start.sh script
 
@@ -152,6 +150,67 @@ Convention : All python scripts must be run from the root specifying the relativ
 
 The rest is self-explaining.
 
-### Note that we have 10 recommandations per user
+---
+
+### 4. Access the Services
+
+Once the containers are running, access the services:
+
+- **Streamlit App:**  
+  URL: [http://localhost:8501](http://localhost:8501)  
+  Login: `admin / admin`
+
+- **Airflow Web UI:**  
+  URL: [http://localhost:8080](http://localhost:8080)  
+  Login: `admin / admin`
+
+---
+
+### 5. Verify Airflow DAGs
+
+1. Open the Airflow Web UI.
+2. Check if the DAGs (e.g., `movie_recommendation_pipeline`) are listed.
+3. Trigger the DAG manually if needed.
+
+---
+
+### Optional: Run Python Scripts Locally
+
+If you want to test the Python scripts manually (without Airflow), follow these steps:
+
+#### Create Virtual Environment
+
+```bash
+python -m venv my_env
+```
+
+Activate the virtual environment:
+
+```bash
+source my_env/bin/activate  # For Linux/MacOS
+./my_env/Scripts/activate   # For Windows
+```
+
+#### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+#### Run Scripts
+
+Execute the Python scripts step-by-step:
+
+```bash
+python src/data/import_raw_data.py
+python src/data/make_dataset.py
+python src/features/build_features.py
+python src/models/train_model.py
+python src/models/predict_model.py
+```
+
+---
+
+Let me know if you need help with any specific command or step!
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>

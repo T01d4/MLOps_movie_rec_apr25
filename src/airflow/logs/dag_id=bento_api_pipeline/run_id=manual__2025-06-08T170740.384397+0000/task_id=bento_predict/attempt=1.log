@@ -1,0 +1,21 @@
+[2025-06-08T17:08:57.932+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_predict manual__2025-06-08T17:07:40.384397+00:00 [queued]>
+[2025-06-08T17:08:57.938+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_predict manual__2025-06-08T17:07:40.384397+00:00 [queued]>
+[2025-06-08T17:08:57.939+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T17:08:57.949+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_predict> on 2025-06-08 17:07:40.384397+00:00
+[2025-06-08T17:08:57.955+0000] {standard_task_runner.py:60} INFO - Started process 243 to run task
+[2025-06-08T17:08:57.956+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_predict', 'manual__2025-06-08T17:07:40.384397+00:00', '--job-id', '3319', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmpziv14avf']
+[2025-06-08T17:08:57.958+0000] {standard_task_runner.py:88} INFO - Job 3319: Subtask bento_predict
+[2025-06-08T17:08:57.988+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_predict manual__2025-06-08T17:07:40.384397+00:00 [running]> on host afbd43d9b97f
+[2025-06-08T17:08:58.043+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_predict' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T17:07:40.384397+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T17:07:40.384397+00:00'
+[2025-06-08T17:09:02.898+0000] {bento_api_pipeline.py:57} INFO - BentoML-Prediction API Response: 200 {"status":"finished","stdout":"","stderr":"2025-06-08 19:08:59,749 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry\n2025-06-08 19:08:59,750 - INFO - 📦 Lade Modell: models:/hybrid_deep_model@best_model\n2025-06-08 19:09:01,572 - INFO - 📥 Embedding geladen: /app/data/processed/hybrid_deep_embedding_best.csv – Shape: (10381, 32)\n2025-06-08 19:09:01,586 - INFO - 💾 Vorhersagen gespeichert unter: /app/data/processed/predictions_hybrid_deep_model.csv\n2025-06-08 19:09:02,411 - INFO - ✅ Predictions erfolgreich in MLflow geloggt\n","returncode":0}
+[2025-06-08T17:09:02.899+0000] {bento_api_pipeline.py:14} WARNING - BentoML [PREDICT] STDERR:
+2025-06-08 19:08:59,749 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry
+2025-06-08 19:08:59,750 - INFO - 📦 Lade Modell: models:/hybrid_deep_model@best_model
+2025-06-08 19:09:01,572 - INFO - 📥 Embedding geladen: /app/data/processed/hybrid_deep_embedding_best.csv – Shape: (10381, 32)
+2025-06-08 19:09:01,586 - INFO - 💾 Vorhersagen gespeichert unter: /app/data/processed/predictions_hybrid_deep_model.csv
+2025-06-08 19:09:02,411 - INFO - ✅ Predictions erfolgreich in MLflow geloggt
+
+[2025-06-08T17:09:02.899+0000] {python.py:201} INFO - Done. Returned value was: {'status': 'finished', 'stdout': '', 'stderr': '2025-06-08 19:08:59,749 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry\n2025-06-08 19:08:59,750 - INFO - 📦 Lade Modell: models:/hybrid_deep_model@best_model\n2025-06-08 19:09:01,572 - INFO - 📥 Embedding geladen: /app/data/processed/hybrid_deep_embedding_best.csv – Shape: (10381, 32)\n2025-06-08 19:09:01,586 - INFO - 💾 Vorhersagen gespeichert unter: /app/data/processed/predictions_hybrid_deep_model.csv\n2025-06-08 19:09:02,411 - INFO - ✅ Predictions erfolgreich in MLflow geloggt\n', 'returncode': 0}
+[2025-06-08T17:09:02.916+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=bento_api_pipeline, task_id=bento_predict, execution_date=20250608T170740, start_date=20250608T170857, end_date=20250608T170902
+[2025-06-08T17:09:02.954+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-08T17:09:02.968+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

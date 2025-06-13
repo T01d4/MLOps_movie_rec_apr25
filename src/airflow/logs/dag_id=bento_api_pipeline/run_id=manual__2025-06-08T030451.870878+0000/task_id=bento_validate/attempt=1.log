@@ -1,0 +1,12 @@
+[2025-06-08T03:05:56.486+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T03:04:51.870878+00:00 [queued]>
+[2025-06-08T03:05:56.500+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T03:04:51.870878+00:00 [queued]>
+[2025-06-08T03:05:56.501+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-08T03:05:56.520+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): bento_validate> on 2025-06-08 03:04:51.870878+00:00
+[2025-06-08T03:05:56.532+0000] {standard_task_runner.py:60} INFO - Started process 1888 to run task
+[2025-06-08T03:05:56.548+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'bento_api_pipeline', 'bento_validate', 'manual__2025-06-08T03:04:51.870878+00:00', '--job-id', '3010', '--raw', '--subdir', 'DAGS_FOLDER/bento_api_pipeline.py', '--cfg-path', '/tmp/tmp_ebrifd1']
+[2025-06-08T03:05:56.570+0000] {standard_task_runner.py:88} INFO - Job 3010: Subtask bento_validate
+[2025-06-08T03:05:56.714+0000] {task_command.py:423} INFO - Running <TaskInstance: bento_api_pipeline.bento_validate manual__2025-06-08T03:04:51.870878+00:00 [running]> on host a096f0d31aa8
+[2025-06-08T03:05:56.995+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bento_api_pipeline' AIRFLOW_CTX_TASK_ID='bento_validate' AIRFLOW_CTX_EXECUTION_DATE='2025-06-08T03:04:51.870878+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-08T03:04:51.870878+00:00'
+[2025-06-08T03:07:09.044+0000] {bento_api_pipeline.py:21} INFO - BentoML-Validierung API Response: 504 {"error":"Not able to process the request in 60 seconds"}
+[2025-06-08T03:07:09.089+0000] {python.py:201} INFO - Done. Returned value was: {'error': 'Not able to process the request in 60 seconds'}
+[2025-06-08T03:07:09.758+0000] {local_task_job_runner.py:121} ERROR - Received SIGTERM. Terminating subprocesses
