@@ -3,9 +3,6 @@
 import requests
 import os
 import logging
-import subprocess
-import shutil
-import getpass
 from dotenv import load_dotenv, find_dotenv
 
 # === ENV laden ===

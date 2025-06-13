@@ -19,8 +19,8 @@ load_dotenv()
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 mlflow.set_experiment("model_validate")
 
-DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
-MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")
+DATA_DIR = os.getenv("DATA_DIR", "/app/data")
+MODEL_DIR = os.getenv("MODEL_DIR", "/app/models")
 
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")

@@ -6,8 +6,8 @@ from dotenv import load_dotenv, find_dotenv
 
 # === ENV laden ===
 load_dotenv(find_dotenv())
-DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
-MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")
+DATA_DIR = os.getenv("DATA_DIR", "/app/data")
+MODEL_DIR = os.getenv("MODEL_DIR", "/app/models")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
 def train_model(movie_matrix):
@@ -17,7 +17,7 @@ def train_model(movie_matrix):
     return nbrs
 
 if __name__ == "__main__":
-    movie_matrix_path = os.path.join(PROCESSED_DIR, "movie_matrix.csv")
+    movie_matrix_path = os.path.join(DATA_DIR, "processed", "movie_matrix.csv")
     model_path = os.path.join(MODEL_DIR, "model.pkl")
 
     movie_matrix = pd.read_csv(movie_matrix_path)

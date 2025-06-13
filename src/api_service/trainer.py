@@ -1,4 +1,4 @@
-# api_service/trainer.py
+# src/api_service/trainer.py
 import os
 import pandas as pd
 import plotly.graph_objects as go

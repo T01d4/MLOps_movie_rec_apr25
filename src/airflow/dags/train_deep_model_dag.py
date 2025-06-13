@@ -33,16 +33,16 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
         raise
 
 def run_import_raw_data():
-    run_and_log(["python", "/opt/airflow/src/data/import_raw_data.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/data/import_raw_data.py"])
 
 def run_make_dataset():
-    run_and_log(["python", "/opt/airflow/src/data/make_dataset.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/data/make_dataset.py"])
 
 def run_build_features():
-    run_and_log(["python", "/opt/airflow/src/features/build_features.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/features/build_features.py"])
 
 def run_train_model():
-    run_and_log(["python", "/opt/airflow/src/models/train_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/train_model.py"])
 
 def run_train_deep_hybrid_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
@@ -52,7 +52,7 @@ def run_train_deep_hybrid_model(**context):
     tfidf_features = conf.get("tfidf_features", 300)
 
     run_and_log([
-        "python", "/opt/airflow/src/models/train_hybrid_deep_model.py",
+        "python", "/opt/airflow/src/movie/models/train_hybrid_deep_model.py",
         f"--n_neighbors={n_neighbors}",
         f"--latent_dim={latent_dim}",
         f"--epochs={epochs}",
@@ -63,12 +63,12 @@ def run_validate_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
     test_user_count = conf.get("test_user_count", 100)
     run_and_log([
-        "python", "/opt/airflow/src/models/validate_model.py",
+        "python", "/opt/airflow/src/movie/models/validate_model.py",
         f"--test_user_count={test_user_count}"
     ])
 
 def run_predict_best_model():
-    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/predict_best_model.py"])
 
 default_args = {
     'owner': 'airflow',

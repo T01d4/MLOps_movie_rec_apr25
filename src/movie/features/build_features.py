@@ -3,7 +3,8 @@ from sklearn.preprocessing import LabelEncoder
 import os
 
 # Hole ENV-Variablen oder nimm Fallbacks
-DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+DATA_DIR = os.getenv("DATA_DIR", os.path.join(BASE_DIR, "data"))
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 

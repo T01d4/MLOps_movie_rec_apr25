@@ -1,4 +1,4 @@
-# src/models/train_hybrid_deep_model.py
+# src/movie/models/train_hybrid_deep_model.py
 
 import torch
 import torch.nn as nn

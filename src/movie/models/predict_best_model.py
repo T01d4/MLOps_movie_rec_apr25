@@ -1,4 +1,4 @@
-# src/models/predict_best_model.py
+# src/movie/models/predict_best_model.py
 
 import pandas as pd
 import mlflow
@@ -45,7 +45,7 @@ def predict_best_model(n_users=10):
 
     # Embedding-CSV direkt als DataFrame aus Registry holen (kein Kopieren!)
     input_matrix = load_artifact_df_from_best_model(
-        REGISTRY_NAME, "best_embedding/hybrid_deep_embedding_best.csv"
+        REGISTRY_NAME, "features/hybrid_deep_embedding.csv"
     )
     feature_count = input_matrix.shape[1]
     input_matrix.columns = [f"emb_{i}" for i in range(feature_count)]
@@ -53,7 +53,7 @@ def predict_best_model(n_users=10):
     logging.info(f"📥 Embedding geladen (direkt aus Registry): Shape: {input_matrix.shape}")
 
     # Beispiel: Falls du noch einen echten Sklearn-KNN brauchst:
-    # knn_model = load_artifact_pkl_from_best_model(REGISTRY_NAME, "knn_model/knn_model.pkl")
+    # knn_model = load_artifact_pkl_from_best_model(REGISTRY_NAME, "backup_model/hybrid_deep_knn.pkl")
 
     # Prediction
     try:

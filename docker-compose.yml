@@ -1,8 +1,6 @@
-# ✅ version removed – Compose V2 no longer requires it
+# :weißes_häkchen: version removed – Compose V2 no longer requires it
 # docker-compose.yml – for DagsHub-only MLflow tracking
-
 services:
-
   streamlit:
     build:
       context: ./src/streamlit_app
@@ -14,14 +12,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
       - ./models:/app/models
-      - ./src/movie:/app/src
+      - ./reports:/app/reports
+      - ./src/monitoring:/app/src/monitoring
+      - ./src/movie:/app/src/movie
     env_file: .env
     environment:
       - DATA_DIR=/app/data
       - MODEL_DIR=/app/models
+      - REPORT_DIR=/app/reports
     networks:
       - airflow_net
-
   api:
     build:
       context: ./src/api_service
@@ -30,16 +30,19 @@ services:
     ports:
       - "8000:8000"
     volumes:
+    #  - ./src/api_service:/app/src/api_service
       - ./data:/app/data
       - ./models:/app/models
-      - ./src/movie:/app/src
+      - ./reports:/app/reports
+      - ./src/monitoring:/app/src/monitoring
+      - ./src/movie:/app/src/movie
     env_file: .env
     environment:
       - DATA_DIR=/app/data
       - MODEL_DIR=/app/models
+      - REPORT_DIR=/app/reports
     networks:
       - airflow_net
-
   postgres:
     image: postgres:13
     container_name: postgres_airflow
@@ -52,7 +55,6 @@ services:
       - postgres_db:/var/lib/postgresql/data
     networks:
       - airflow_net
-
   airflow-webserver:
     build:
       context: ./src/airflow
@@ -70,11 +72,14 @@ services:
       - AIRFLOW_UID=50000
       - DATA_DIR=/opt/airflow/data
       - MODEL_DIR=/opt/airflow/models
+      - REPORT_DIR=/opt/airflow/reports
     volumes:
       - ./src/airflow/dags:/opt/airflow/dags
       - ./src/airflow/plugins:/opt/airflow/plugins
       - ./src/airflow/logs:/opt/airflow/logs
-      - ./src/movie:/opt/airflow/src
+      - ./src/movie:/opt/airflow/src/movie
+      - ./src/monitoring:/opt/airflow/src/monitoring
+      - ./reports:/opt/airflow/reports
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
     command: >
@@ -85,7 +90,6 @@ services:
       "
     networks:
       - airflow_net
-
   airflow-scheduler:
     build:
       context: ./src/airflow
@@ -101,17 +105,19 @@ services:
       - AIRFLOW_UID=50000
       - DATA_DIR=/opt/airflow/data
       - MODEL_DIR=/opt/airflow/models
+      - REPORT_DIR=/opt/airflow/reports
     volumes:
       - ./src/airflow/dags:/opt/airflow/dags
       - ./src/airflow/plugins:/opt/airflow/plugins
       - ./src/airflow/logs:/opt/airflow/logs
-      - ./src/movie:/opt/airflow/src
+      - ./src/movie:/opt/airflow/src/movie
+      - ./src/monitoring:/opt/airflow/src/monitoring
+      - ./reports:/opt/airflow/reports
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
     command: airflow scheduler
     networks:
       - airflow_net
-
   bentoml:
     build:
       context: ./src/Bento_service
@@ -120,8 +126,10 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./src/Bento_service:/app
-      - ./src/movie:/app/src
+      - ./src/Bento_service:/app/src/Bento_service
+      - ./src/movie:/app/src/movie
+      - ./reports:/app/reports
+      - ./src/monitoring:/app/src/monitoring
       - ./models:/app/models
       - ./data:/app/data
     env_file: .env
@@ -129,10 +137,10 @@ services:
       - TZ=Europe/Berlin
       - DATA_DIR=/app/data
       - MODEL_DIR=/app/models
+      - REPORT_DIR=/app/reports
     networks:
       - airflow_net
     restart: always
-    
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -141,10 +149,10 @@ services:
     volumes:
       - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./src/prometheus/data:/prometheus
+      - ./data/monitoring:/prometheus/metrics
     networks:
       - airflow_net
     restart: always
-
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -157,9 +165,23 @@ services:
     networks:
       - airflow_net
     restart: always
-    
+  node_exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.textfile.directory=/textfiles'
+    volumes:
+      - ./reports:/textfiles
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    ports:
+      - "9100:9100"
+    networks:
+      - airflow_net
+    restart: always
 volumes:
   postgres_db:
-
 networks:
   airflow_net: {}

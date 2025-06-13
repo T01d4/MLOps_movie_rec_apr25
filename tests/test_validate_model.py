@@ -30,8 +30,8 @@ class TestValidateModel(unittest.TestCase):
         validate_deep_hybrid(test_user_count=2)
 
         # Assertions
-        mock_read_csv.assert_any_call("/opt/airflow/data/raw/ratings.csv")
-        mock_read_csv.assert_any_call("/opt/airflow/data/processed/hybrid_deep_embedding.csv")
+        mock_read_csv.assert_any_call("./data/raw/ratings.csv")
+        mock_read_csv.assert_any_call("./data/processed/hybrid_deep_embedding.csv")
         mock_pickle_load.assert_called_once()
 
     @patch("src.models.validate_model.MlflowClient")

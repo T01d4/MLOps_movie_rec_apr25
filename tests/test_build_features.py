@@ -2,10 +2,10 @@ import os
 import unittest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-from src.features.build_features import read_ratings, read_movies, create_user_matrix, main
+from src.movie.features.build_features import read_ratings, read_movies, create_user_matrix, main
 
 class TestBuildFeatures(unittest.TestCase):
-    @patch("src.features.build_features.pd.read_csv")
+    @patch("src.movie.features.build_features.pd.read_csv")
     def test_read_ratings(self, mock_read_csv):
         # Mock data
         mock_data = pd.DataFrame({"movieId": [1, 2], "userId": [101, 102], "rating": [4.5, 3.0]})
@@ -18,7 +18,7 @@ class TestBuildFeatures(unittest.TestCase):
         mock_read_csv.assert_called_once_with(os.path.join("/opt/airflow/data/raw", "ratings.csv"))
         self.assertIn("movieId", result.columns)
 
-    @patch("src.features.build_features.pd.read_csv")
+    @patch("src.movie.features.build_features.pd.read_csv")
     def test_read_movies(self, mock_read_csv):
         # Mock data
         mock_data = pd.DataFrame({"movieId": [1, 2], "title": ["Movie1", "Movie2"], "genres": ["Action|Comedy", "Drama"]})
@@ -55,8 +55,8 @@ class TestBuildFeatures(unittest.TestCase):
         self.assertIn("Action", result.columns)
         self.assertIn("Comedy", result.columns)
 
-    @patch("src.features.build_features.os.makedirs")
-    @patch("src.features.build_features.pd.DataFrame.to_csv")
+    @patch("src.movie.features.build_features.os.makedirs")
+    @patch("src.movie.features.build_features.pd.DataFrame.to_csv")
     def test_main(self, mock_to_csv, mock_makedirs):
         # Test
         main(force_rebuild=True)

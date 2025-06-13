@@ -23,7 +23,7 @@ class TestPredictBestModel(unittest.TestCase):
         predict_best_model(n_users=2)
 
         # Assertions
-        mock_load_artifact_df.assert_called_once_with("hybrid_deep_model", "best_embedding/hybrid_deep_embedding_best.csv")
+        mock_load_artifact_df.assert_called_once_with("hybrid_deep_model", "./data/processed/best_embedding/hybrid_deep_embedding_best.csv")
         mock_load_model.assert_called_once_with("models:/hybrid_deep_model@best_model")
         mock_model.predict.assert_called_once()
 

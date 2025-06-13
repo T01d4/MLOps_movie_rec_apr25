@@ -1,5 +1,8 @@
 import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+DATA_DIR = os.getenv("DATA_DIR", os.path.join(BASE_DIR, "data"))
+
 def check_existing_file(file_path):
     '''Check if a file already exists. Log the result.'''
     if os.path.isfile(file_path):

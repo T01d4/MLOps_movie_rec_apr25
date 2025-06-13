@@ -12,10 +12,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+DATA_DIR = os.getenv("DATA_DIR", os.path.join(BASE_DIR, "data"))
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+MODELS_DIR = os.path.join(BASE_DIR, "models")
+
 router = APIRouter()
 
 def ensure_best_embedding_exists():
-    best_embedding_path = "data/processed/hybrid_deep_embedding_best.csv"
+    best_embedding_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
     # Prüfe, ob die Embedding-CSV schon lokal vorhanden ist
     if not os.path.exists(best_embedding_path):
         try:
@@ -25,7 +31,7 @@ def ensure_best_embedding_exists():
             import shutil
 
             model_name = "hybrid_deep_model"
-            artifact_name = "best_embedding/hybrid_deep_embedding_best.csv"
+            artifact_name = "features/hybrid_deep_embedding.csv"
             client = MlflowClient()
             mv = client.get_model_version_by_alias(model_name, "best_model")
             run_id = mv.run_id
@@ -58,8 +64,8 @@ def get_tmdb_poster_url(movie_id, links_df, api_key):
 def recommend_movies(payload: dict = Body(...)):
     selected_movies = payload.get("selected_movies", [])
     api_key = os.getenv("TMDB_API_KEY")
-    movies_df = pd.read_csv("data/raw/movies.csv")
-    links_df = pd.read_csv("data/raw/links.csv")
+    movies_df = pd.read_csv(os.path.join(RAW_DIR, "movies.csv"))
+    links_df = pd.read_csv(os.path.join(RAW_DIR, "links.csv"))
 
     result = {}
 
@@ -86,8 +92,8 @@ def recommend_movies(payload: dict = Body(...)):
 
     # 2. Deep Hybrid-KNN_local
     try:
-        matrix_path = "data/processed/hybrid_deep_embedding.csv"
-        model_path = "models/hybrid_deep_knn.pkl"
+        matrix_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
+        model_path = os.path.join(MODELS_DIR, "hybrid_deep_knn.pkl")
         embedding_df = pd.read_csv(matrix_path, index_col=0)
         with open(model_path, "rb") as f:
             deep_knn = pickle.load(f)
@@ -107,8 +113,8 @@ def recommend_movies(payload: dict = Body(...)):
 
     # 3. Basis Modell
     try:
-        tags = pd.read_csv("data/raw/tags.csv").dropna(subset=["tag"])
-        scores = pd.read_csv("data/raw/genome-scores.csv")
+        tags = pd.read_csv(os.path.join(RAW_DIR, "tags.csv")).dropna(subset=["tag"])
+        scores = pd.read_csv(os.path.join(RAW_DIR, "genome-scores.csv"))
         tags_combined = tags.groupby("movieId")["tag"].apply(lambda t: " ".join(t)).reset_index()
         movies = pd.merge(movies_df, tags_combined, on="movieId", how="left")
         movies["combined"] = movies["genres"].str.replace("|", " ", regex=False) + " " + movies["tag"].fillna("")

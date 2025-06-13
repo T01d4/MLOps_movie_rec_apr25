@@ -15,9 +15,8 @@ def make_predictions(users_id, model_filename, user_matrix_filename):
     users = users.drop("userId", axis=1)
 
     # Open model
-    filehandler = open(model_filename, "rb")
-    model = pickle.load(filehandler)
-    filehandler.close()
+    with open(model_filename, "rb") as filehandler:
+        model = pickle.load(filehandler)
 
     # Calculate nearest neighbors
     _, indices = model.kneighbors(users)
@@ -36,7 +35,7 @@ if __name__ == "__main__":
 
     # Make predictions using `model.pkl`
     predictions = make_predictions(
-        users_id, "models/model.pkl", "data/processed/user_matrix.csv"
+        users_id, "src/movie/models/model.pkl", "data/processed/user_matrix.csv"
     )
 
     print(predictions)
