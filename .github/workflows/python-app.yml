@@ -28,10 +28,10 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Add src to PYTHONPATH
+    - name: Add src to PYTHONPATH (for all following steps)
       run: echo "PYTHONPATH=${{ github.workspace }}/src" >> $GITHUB_ENV
 
-    - name: Write pytest.ini
+    - name: Write pytest.ini (optional, fallback for local tests)
       run: |
         echo "[pytest]" > pytest.ini
         echo "pythonpath = src" >> pytest.ini
@@ -44,6 +44,6 @@ jobs:
     - name: Run tests with pytest
       run: |
         mkdir -p test-results
-        pytest tests -v --tb=short --disable-warnings \
+        PYTHONPATH=src pytest tests -v --tb=short --disable-warnings \
           --junitxml=test-results/results.xml > test-results/testlog.txt || true
         cat test-results/testlog.txt
