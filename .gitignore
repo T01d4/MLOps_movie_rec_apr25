@@ -40,3 +40,6 @@ dist/
 # DVC/MLflow/Cache-Ordner (falls nötig)
 mlruns/
 model_cache/
+
+# archives
+*.zip
