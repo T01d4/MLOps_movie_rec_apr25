@@ -94,7 +94,7 @@ def train_model():
     if response.status_code in (200, 201):
         data = response.json()
         run_id = data.get("dag_run_id") or data.get("run_id")
-        return {"status": "Train DAG triggered", "dag_run_id": run_id, "conf": config}
+        return {"status": "Train DAG triggered", "dag_run_id": run_id}
     else:
         return {"status": "Error", "code": response.status_code, "response": response.text}
 
