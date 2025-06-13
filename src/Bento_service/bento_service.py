@@ -93,8 +93,7 @@ def train_deep_hybrid_model():
             "stderr": log_data["stderr"],
             "stdout_lines": log_data["stdout_lines"],
             "stderr_lines": log_data["stderr_lines"],
-            "returncode": log_data["returncode"],
-            "params_used": config
+            "returncode": log_data["returncode"]
         }
 
     finally:
