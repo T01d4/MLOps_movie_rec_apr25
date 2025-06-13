@@ -69,6 +69,15 @@
 #!/bin/bash
 set -e
 
+# create .venv if it doesn't exist
+if [ ! -f .venv ]; then
+    python3 -m venv .venv
+    source .venv/bin/activate
+else
+    echo ".venv already exists."
+    source .venv/bin/activate
+fi
+
 # copy dummy.env to .env if it doesn't exist
 if [ ! -f .env ]; then
     echo "Copying dummy.env to .env..."
@@ -77,30 +86,38 @@ else
     echo ".env already exists, skipping copy."
 fi
 
+# revert changes to dummy.env to make sure credentials are not pusehed to git
+if [ -f dummy.env ]; then
+    echo "Reverting changes to dummy.env..."
+    git checkout -- dummy.env
+else
+    echo "dummy.env does not exist, skipping revert."
+fi
+
 # Pfad zum Projekt-Root ermitteln (das Verzeichnis, wo diese start.sh liegt)
-PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-AIRFLOW_UID=50000
-AIRFLOW_GID=50000
+# AIRFLOW_UID=50000
+# AIRFLOW_GID=50000
 
-echo "Fixing permissions recursively only for runtime folders..."
+# echo "Fixing permissions recursively only for runtime folders..."
 
-sudo chown -R $AIRFLOW_UID:$AIRFLOW_GID \
-    "$PROJECT_ROOT/airflow/logs" \
-    "$PROJECT_ROOT/data/raw" \
-    "$PROJECT_ROOT/data/processed" \
-    "$PROJECT_ROOT/models" \
-    "$PROJECT_ROOT/src"
+# sudo chown -R $AIRFLOW_UID:$AIRFLOW_GID \
+#     "$PROJECT_ROOT/airflow/logs" \
+#     "$PROJECT_ROOT/data/raw" \
+#     "$PROJECT_ROOT/data/processed" \
+#     "$PROJECT_ROOT/models" \
+#     "$PROJECT_ROOT/src"
 
-echo "Setting directory permissions (775) and file permissions (664) only in runtime dirs..."
+# echo "Setting directory permissions (775) and file permissions (664) only in runtime dirs..."
 
-for dir in "$PROJECT_ROOT/airflow/logs" "$PROJECT_ROOT/data/raw" "$PROJECT_ROOT/data/processed" "$PROJECT_ROOT/models" "$PROJECT_ROOT/src"
-do
-  sudo find "$dir" -type d -exec chmod 775 {} +
-  sudo find "$dir" -type f -exec chmod 664 {} +
-done
+# for dir in "$PROJECT_ROOT/airflow/logs" "$PROJECT_ROOT/data/raw" "$PROJECT_ROOT/data/processed" "$PROJECT_ROOT/models" "$PROJECT_ROOT/src"
+# do
+#   sudo find "$dir" -type d -exec chmod 775 {} +
+#   sudo find "$dir" -type f -exec chmod 664 {} +
+# done
 
-echo "Permissions fixed."
+# echo "Permissions fixed."
 
 echo "Starting Docker Compose..."
 docker compose up --build -d
