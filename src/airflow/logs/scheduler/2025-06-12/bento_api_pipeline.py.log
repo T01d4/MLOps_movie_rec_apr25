@@ -5882,3 +5882,45 @@
 [2025-06-12T23:56:16.970+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:56:16.970+0000] {dag.py:3036} INFO - Sync 1 DAGs
 [2025-06-12T23:56:16.983+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:56:16.982+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
 [2025-06-12T23:56:17.005+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.092 seconds
+[2025-06-12T23:57:00.433+0000] {processor.py:161} INFO - Started process (PID=191) to work on /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:57:00.433+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/bento_api_pipeline.py for tasks to queue
+[2025-06-12T23:57:00.434+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:57:00.434+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:57:00.450+0000] {processor.py:840} INFO - DAG(s) 'bento_api_pipeline' retrieved from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:57:00.470+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:57:00.469+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-06-12T23:57:00.479+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:57:00.479+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
+[2025-06-12T23:57:00.494+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.064 seconds
+[2025-06-12T23:57:30.689+0000] {processor.py:161} INFO - Started process (PID=201) to work on /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:57:30.689+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/bento_api_pipeline.py for tasks to queue
+[2025-06-12T23:57:30.691+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:57:30.690+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:57:30.718+0000] {processor.py:840} INFO - DAG(s) 'bento_api_pipeline' retrieved from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:57:30.956+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:57:30.955+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-06-12T23:57:30.966+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:57:30.966+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
+[2025-06-12T23:57:30.989+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.304 seconds
+[2025-06-12T23:58:01.224+0000] {processor.py:161} INFO - Started process (PID=211) to work on /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:58:01.225+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/bento_api_pipeline.py for tasks to queue
+[2025-06-12T23:58:01.226+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:58:01.226+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:58:01.252+0000] {processor.py:840} INFO - DAG(s) 'bento_api_pipeline' retrieved from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:58:01.283+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:58:01.283+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-06-12T23:58:01.297+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:58:01.297+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
+[2025-06-12T23:58:01.317+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.097 seconds
+[2025-06-12T23:58:31.453+0000] {processor.py:161} INFO - Started process (PID=221) to work on /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:58:31.454+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/bento_api_pipeline.py for tasks to queue
+[2025-06-12T23:58:31.455+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:58:31.454+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:58:31.478+0000] {processor.py:840} INFO - DAG(s) 'bento_api_pipeline' retrieved from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:58:31.506+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:58:31.506+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-06-12T23:58:31.527+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:58:31.527+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
+[2025-06-12T23:58:31.555+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.106 seconds
+[2025-06-12T23:59:01.715+0000] {processor.py:161} INFO - Started process (PID=231) to work on /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:59:01.715+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/bento_api_pipeline.py for tasks to queue
+[2025-06-12T23:59:01.715+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:59:01.715+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:59:01.730+0000] {processor.py:840} INFO - DAG(s) 'bento_api_pipeline' retrieved from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:59:01.750+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:59:01.750+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-06-12T23:59:01.759+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:59:01.759+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
+[2025-06-12T23:59:01.773+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.059 seconds
+[2025-06-12T23:59:32.015+0000] {processor.py:161} INFO - Started process (PID=241) to work on /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:59:32.016+0000] {processor.py:830} INFO - Processing file /opt/airflow/dags/bento_api_pipeline.py for tasks to queue
+[2025-06-12T23:59:32.017+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:59:32.016+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:59:32.038+0000] {processor.py:840} INFO - DAG(s) 'bento_api_pipeline' retrieved from /opt/airflow/dags/bento_api_pipeline.py
+[2025-06-12T23:59:32.065+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:59:32.065+0000] {dag.py:3036} INFO - Sync 1 DAGs
+[2025-06-12T23:59:32.079+0000] {logging_mixin.py:188} INFO - [2025-06-12T23:59:32.078+0000] {dag.py:3823} INFO - Setting next_dagrun for bento_api_pipeline to None, run_after=None
+[2025-06-12T23:59:32.101+0000] {processor.py:183} INFO - Processing /opt/airflow/dags/bento_api_pipeline.py took 0.088 seconds
