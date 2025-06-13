@@ -1,10 +1,12 @@
 # === api_service/main.py ===
 
-from fastapi import FastAPI, UploadFile, HTTPException, Depends, File, Query, Body
+from fastapi import FastAPI, UploadFile, HTTPException, Response, Depends, File, Query, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from trainer import router as trainer_router
 from recommend import router as recommend_router  # <--  router with /recommend!
+from metrics import router as metrics_router
+from metrics import prometheus_middleware, metrics_endpoint, drift_metrics_endpoint
 import pandas as pd
 import numpy as np
 import mlflow
@@ -24,6 +26,9 @@ load_dotenv(".env")
 app = FastAPI()
 app.include_router(trainer_router)
 app.include_router(recommend_router) 
+app.include_router(metrics_router)
+# Middleware register
+app.middleware("http")(prometheus_middleware)
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
@@ -67,6 +72,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+
 @app.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
@@ -78,6 +85,11 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
 
 
+
+# Health Endpoint
+@app.get("/healthz")
+def health():
+    return {"status": "ok"}
 
 
 @app.post("/train")

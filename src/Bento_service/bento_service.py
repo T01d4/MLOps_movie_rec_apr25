@@ -1,3 +1,4 @@
+#bento_service/bento_service.py
 import bentoml
 from bentoml.io import JSON
 import subprocess
@@ -6,7 +7,20 @@ import threading
 import os
 import signal
 import time
+from fastapi import FastAPI
+from src.Bento_service.metrics import prometheus_middleware, prometheus_metrics
 
+app = FastAPI()
+
+app.middleware("http")(prometheus_middleware)
+
+@app.get("/metrics")
+def metrics():
+    return prometheus_metrics()
+
+@app.get("/healthz")
+def health():
+    return {"status": "ok"}
 
 svc = bentoml.Service("hybrid_deep_model_service")
 

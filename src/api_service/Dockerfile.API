@@ -21,7 +21,10 @@ COPY main.py ./main.py
 COPY pw.py ./pw.py
 COPY recommend.py ./recommend.py
 COPY trainer.py ./trainer.py
+COPY metrics.py ./metrics.py
 COPY users.json ./users.json
+
+#COPY api_service /app/api_service
 # 5. Explicitly set environment variable (recommended: exclude sensitive local data via .dockerignore)
 ENV PYTHONUNBUFFERED=1
 

@@ -58,6 +58,9 @@ def run_validate_model(**context):
 def run_predict_best_model():
     run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
 
+def run_drift_detection():
+    run_and_log(["python", "/opt/airflow/src/monitoring/analyze_drift.py"])
+
 default_args = {
     'owner': 'airflow',
     'start_date': days_ago(1),
@@ -103,7 +106,10 @@ with DAG(
         task_id="predict_best_model",
         python_callable=run_predict_best_model
     )
-
+    drift_detection = PythonOperator(
+        task_id="analyze_drift",
+        python_callable=run_drift_detection
+    )
     # DAG flow (analogous to a classic pipeline)
     import_raw_data >> make_dataset >> build_features
-    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict
+    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict >> drift_detection

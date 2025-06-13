@@ -13,10 +13,17 @@ from mlflow.tracking import MlflowClient
 import json
 import tempfile
 import shutil
-
+from prometheus_client import Counter, Summary, Gauge
+import time
 load_dotenv()
 
 router = APIRouter()
+
+
+REQUEST_COUNT = Counter("recommendation_requests_total", "Anzahl der Recommendation-Requests")
+REQUEST_LATENCY = Summary("recommendation_latency_seconds", "Latenz der Vorhersage in Sekunden")
+API_USAGE = Counter("recommendation_api_usage_total", "API-Interaktionen", ["model"])
+DRIFT_ALERT = Gauge("drift_alert", "Drift Alert Status (1=drift, 0=ok)", ["model"])
 
 def ensure_best_embedding_exists():
     best_embedding_path = "data/processed/hybrid_deep_embedding_best.csv"
@@ -65,6 +72,20 @@ def get_tmdb_poster_url(movie_id, links_df, api_key):
 
 @router.post("/recommend")
 def recommend_movies(payload: dict = Body(...)):
+    start_time = time.time()
+    REQUEST_COUNT.inc()
+
+        # ➕ Versuche Drift-Alert aus Evidently einzulesen
+    try:
+        with open("reports/drift_metrics.json", "r", encoding="utf-8") as f:
+            drift_data = json.load(f)
+        drift_score = drift_data["metrics"][0]["result"].get("dataset_drift", 0.0)
+        DRIFT_ALERT.labels("Deep Hybrid-KNN_best").set(int(drift_score > 0.3))
+        DRIFT_ALERT.labels("Deep Hybrid-KNN_local").set(int(drift_score > 0.3))
+    except Exception:
+        DRIFT_ALERT.set(0)  # Fallback
+
+
     selected_movies = payload.get("selected_movies", [])
     api_key = os.getenv("TMDB_API_KEY")
     movies_df = pd.read_csv("data/raw/movies.csv")
@@ -206,4 +227,7 @@ def recommend_movies(payload: dict = Body(...)):
     except Exception:
         result["TMDb-Similar"] = []
 
+        # Nur wenn der erste (beste) Modell-Pfad verwendet wurde
+    API_USAGE.labels("Deep Hybrid-KNN_best").inc()
+    REQUEST_LATENCY.observe(time.time() - start_time)
     return result

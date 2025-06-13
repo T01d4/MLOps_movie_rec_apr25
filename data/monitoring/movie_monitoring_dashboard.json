@@ -1,0 +1,68 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "🚨 Drift Alert Status",
+      "targets": [
+        {
+          "expr": "drift_alert",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": 0},
+              {"color": "red", "value": 1}
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 }
+    },
+    {
+      "type": "graph",
+      "title": "📈 API Latenz (Sekunden)",
+      "targets": [
+        {
+          "expr": "rate(recommendation_latency_seconds_sum[1m]) / rate(recommendation_latency_seconds_count[1m])",
+          "refId": "B"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 6, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "🎬 Recommendation Requests Total",
+      "targets": [
+        {
+          "expr": "recommendation_requests_total",
+          "refId": "C"
+        }
+      ],
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 4 }
+    },
+    {
+      "type": "table",
+      "title": "📊 API Nutzung pro Modell",
+      "targets": [
+        {
+          "expr": "recommendation_api_usage_total",
+          "refId": "D"
+        }
+      ],
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 8 }
+    }
+  ],
+  "title": "🎬 Movie Recommender Monitoring",
+  "schemaVersion": 36,
+  "version": 1
+}

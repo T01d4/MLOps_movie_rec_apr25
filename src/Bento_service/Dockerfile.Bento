@@ -23,7 +23,8 @@ RUN git config --global --add safe.directory /app \
 
 # Copy the rest of the app code
 COPY bento_service.py ./bento_service.py
-
+COPY metrics.py ./metrics.py
+#COPY bento_service /app/bento_service
 # Optional: Adjust PYTHONPATH if needed
 ENV PYTHONPATH="/app/src:/app:${PYTHONPATH}"
 

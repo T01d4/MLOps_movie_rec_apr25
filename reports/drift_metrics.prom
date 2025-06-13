@@ -1,0 +1,4 @@
+data_drift_share 1.0000
+target_drift_psi 0.0000
+drifted_columns_total 2
+drifted_columns_share 0.6667

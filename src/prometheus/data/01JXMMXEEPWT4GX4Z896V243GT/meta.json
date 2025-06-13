@@ -1,0 +1,17 @@
+{
+	"ulid": "01JXMMXEEPWT4GX4Z896V243GT",
+	"minTime": 1749807655681,
+	"maxTime": 1749808800000,
+	"stats": {
+		"numSamples": 1120,
+		"numSeries": 15,
+		"numChunks": 15
+	},
+	"compaction": {
+		"level": 1,
+		"sources": [
+			"01JXMMXEEPWT4GX4Z896V243GT"
+		]
+	},
+	"version": 1
+}
