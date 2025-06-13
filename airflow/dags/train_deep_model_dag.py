@@ -5,6 +5,7 @@ from airflow.utils.dates import days_ago
 from datetime import timedelta
 import logging
 import subprocess
+import os
 
 def run_and_log(command: list, cwd: str = "/opt/airflow"):
     try:
@@ -43,6 +44,9 @@ def run_train_model():
     run_and_log(["python", "/opt/airflow/src/models/train_model.py"])
 
 def run_train_deep_hybrid_model(**context):
+    print(context)
+    print(os.environ.get("DAGSHUB_USER"))
+    print(str(os.environ.get("DAGSHUB_TOKEN"))[:10])
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
     n_neighbors = conf.get("n_neighbors", 10)
     latent_dim = conf.get("latent_dim", 64)
