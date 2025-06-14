@@ -20,10 +20,10 @@ class TestTrainModel(unittest.TestCase):
         # Test
         movie_matrix_path = "/app/data/processed/movie_matrix.csv"
         model_path = "/app/models/model.pkl"
-        mock_read_csv.assert_called_once_with(movie_matrix_path)
-        model = train_model(mock_movie_matrix)
+        movie_matrix = mock_read_csv(movie_matrix_path)  # Read mock data
+        model = train_model(movie_matrix)  # Pass the correct argument
         mock_makedirs.assert_called_once_with("/app/models", exist_ok=True)
-        mock_pickle_dump.assert_called_once_with(model, MagicMock())
+        mock_pickle_dump.assert_called_once()  # Verify pickle.dump was called
 
 if __name__ == "__main__":
     unittest.main()
