@@ -34,7 +34,7 @@ class TestValidateModel(unittest.TestCase):
         mock_read_csv.assert_any_call("/opt/airflow/data/processed/hybrid_deep_embedding.csv")
         mock_pickle_load.assert_called_once()
 
-    @patch("src.models.validate_model.MlflowClient")
+    @patch("src.movie.models.validate_model.MlflowClient")
     def test_update_best_model_in_mlflow(self, mock_mlflow_client):
         # Mock client
         mock_client = MagicMock()

@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
-from src.models.predict_best_model import predict_best_model
+from src.movie.models.predict_best_model import predict_best_model
 
 class TestPredictBestModel(unittest.TestCase):
-    @patch("src.models.predict_best_model.load_artifact_df_from_best_model")
-    @patch("src.models.predict_best_model.mlflow.pyfunc.load_model")
+    @patch("src.movie.models.predict_best_model.load_artifact_df_from_best_model")
+    @patch("src.movie.models.predict_best_model.mlflow.pyfunc.load_model")
     def test_predict_best_model(self, mock_load_model, mock_load_artifact_df):
         # Mock data
         mock_embedding = pd.DataFrame({
