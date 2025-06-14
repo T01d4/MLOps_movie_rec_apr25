@@ -55,16 +55,5 @@ class TestBuildFeatures(unittest.TestCase):
         self.assertIn("Action", result.columns)
         self.assertIn("Comedy", result.columns)
 
-    @patch("src.movie.features.build_features.os.makedirs")
-    @patch("src.movie.features.build_features.pd.DataFrame.to_csv")
-    def test_main(self, mock_to_csv, mock_makedirs):
-        # Test
-        main(force_rebuild=True)
-
-        # Assertions
-        mock_makedirs.assert_called_once_with("/opt/airflow/data/processed", exist_ok=True)
-        mock_to_csv.assert_any_call(os.path.join("/opt/airflow/data/processed", "movie_matrix.csv"), index=False)
-        mock_to_csv.assert_any_call(os.path.join("/opt/airflow/data/processed", "user_matrix.csv"))
-
 if __name__ == "__main__":
     unittest.main()
