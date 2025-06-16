@@ -80,12 +80,12 @@ pytest tests/
 
 ```mermaid
 graph LR
-    A[Client] --> B[API Server (BentoML)]
-    B --> C[Model Service]
-    B --> D[Data Layer (DVC, Models)]
-    B --> E[Tests]
+    A(Client) --> B(API Server BentoML)
+    B --> C(Model Service)
+    B --> D(Data Layer DVC Models)
+    B --> E(Tests)
     subgraph Dev Environment
-      F[VS Code Devcontainer]
+      F(VS Code Devcontainer)
     end
 ```
 
