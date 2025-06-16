@@ -45,3 +45,6 @@ model_cache/
 # Airflow
 src/airflow/logs/*
 airflow/*
+
+# Archives
+*.zip

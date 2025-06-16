@@ -1,86 +1,130 @@
 MovieRecomm - MLOPS Project
-==============================
 
-⚠️ BREAKING CHANGE: Repo complete Rewrite (force-push, Rewrite, File-Struktur, .dvc & Data/Models)! 
-No `git pull` to lokal Repos  – use gitclone 
-`git clone <REPO_URL>` in a fresh new folder 
-otherwise Merge-conflicts, History-Problems or wrong DVC-States!
+# Project Name
 
-Project Setup
-==============================
+## Overview
+This project is a data science / ML service built with BentoML, featuring containerization via Docker and development environment setup via VS Code Devcontainer. It includes automated tests and data version control with DVC.
 
-As of 02.06.2025
+## Features
+- BentoML service for model serving
+- Docker Compose for container orchestration
+- VS Code Devcontainer for easy development setup
+- Data version control using DVC
+- Automated testing with pytest
+- Example data and pre-trained models included
 
-You need a single .env file in the project root (see example below).
+## Installation
 
-DagsHub Token is required for DVC and MLflow tracking.
+### Prerequisites
+- Docker & Docker Compose
+- VS Code with Remote - Containers extension (optional)
+- Python 3.8+ (if running locally without Docker)
 
-Required .env (root directory)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-==============================
+### Setup using Devcontainer (recommended) - only for development
+1. Open the project folder in VS Code.
+2. When prompted, reopen in container.
+3. This will build and start the devcontainer with all dependencies installed.
 
+### Setup using Docker Compose
+Run the start script which generates the .env and internally executes the Docker Compose command:
+```bash
+./start.sh
+```
 
-# Required .env (root directory) !!!!!
-Add your information to the dummy.env. The .env will be created during start.sh.
-You have to change:
-* DAGSHUB_USER=your_dagshub_username  # replace with your dagshub username
-* DAGSHUB_TOKEN=your_dagshub_token  # replace with your dagshub token
+### Setup local Python environment
 
-Optional:
-* TMDB_API_KEY=your API Key for Movie Pictures  # replace with your tmdb api, if you have one
-=======
+**Linux/macOS:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
+**Windows:**
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
 
-============================== 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+## Usage
 
-⚠️ Replace your_dagshub_username and your_dagshub_token with your own credentials!
-Never commit real tokens to git!
-
-DVC Configuration (.dvc/config.local or .dvc/config)
-
-==============================
-
-['remote "dagshub"']
-
-    auth = basic
-
-    user = your_dagshub_username
-
-    password = your_dagshub_token
-
-==============================
-
-⚠️ Do not commit your .dvc/config.local with credentials! (Add it to .gitignore)
-
-
-**| Start the App  - after you have build the .env  -> docker compose up --build |**
-
-
-Streamlit: http://localhost:8501/
-
-
-https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-
-**| USER: admin / PW: admin  |**
-
-
-
-Airflow Web UI: http://localhost:8080/
-
-
-**| USER: admin / PW: admin  |**
-
-
-Airflow API (for service-to-service): http://airflow-webserver:8080/api/v1
-
-
+### Provide the .env information
+In dummy.env add your personal information for dagshub (user and token). These information will be put
+into the .env file, providing the service with information regarding the location of the models.
 Notes
-All services read environment variables from the root .env (see env_file in docker-compose.yml).
+> Note: All services read environment variables from the root .env (see env_file in docker-compose.yml).
+> For team work: Every developer needs their own DagsHub token in their local .env.
+> Never share .env and .dvc/config.local with secrets in public repos.
 
-For team work: Every developer needs their own DagsHub token in their local .env.
+### Start the service
+Use the start script to launch the service locally (runs `docker-compose up --build`):
+```bash
+./start.sh
+```
 
-Never share .env and .dvc/config.local with secrets in public repos.
+### Access API
+After starting, the API will be accessible at `http://localhost:5000` (default port).
+<!-- Other ports that might be interesting are:
+* Airflow:      `http://localhost:8080`
+* Streamlit:    `http://localhost:8501`
+> Note: user and password for all services is "admin". -->
+
+### Run tests
+Run all tests with pytest:
+```bash
+pytest tests/
+```
+
+## Architecture Overview
+
+```mermaid
+graph LR
+    A[Client] --> B[API Server (BentoML)]
+    B --> C[Model Service]
+    B --> D[Data Layer (DVC, Models)]
+    B --> E[Tests]
+    subgraph Dev Environment
+      F[VS Code Devcontainer]
+    end
+```
+
+## Project Structure
+
+```mermaid
+graph TD
+    root["Project Root"]
+    src["src/ (Source code)"]
+    tests["tests/ (Test cases)"]
+    bento["bento_service/ (BentoML Service)"]
+    data["data/ (Sample data)"]
+    models["models/ (Trained models)"]
+    docker["docker-compose.yml (Docker Compose setup)"]
+    devcontainer[".devcontainer/ (VS Code Devcontainer)"]
+    startsh["start.sh (Start script)"]
+    github[".github/ (GitHub workflows)"]
+    venv[".venv/ (Python virtual environment, ignored)"]
+    license["LICENSE (License file)"]
+    dvc["dvc/ (Data version control)"]
+    readme["README.md (Project documentation)"]
+
+    root --> src
+    root --> tests
+    root --> bento
+    root --> data
+    root --> models
+    root --> docker
+    root --> devcontainer
+    root --> startsh
+    root --> github
+    root --> venv
+    root --> license
+    root --> dvc
+    root --> readme
+```
+
+---
+
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
@@ -210,7 +254,5 @@ python src/models/predict_model.py
 ```
 
 ---
-
-Let me know if you need help with any specific command or step!
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
