@@ -43,5 +43,5 @@ mlruns/
 model_cache/
 
 # Airflow
-airflow/logs/*
+src/airflow/logs/*
 airflow/*
