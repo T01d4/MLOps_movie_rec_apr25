@@ -7,8 +7,8 @@
     "lr": 0.001,
     "batch_size": 128,
     "metric": "cosine",
-    "content_weight": 0.05,
-    "collab_weight": 0.95,
+    "content_weight": 0.5,
+    "collab_weight": 0.5,
     "power_factor": 1.0,
-    "drop_threshold": 0.1
+    "drop_threshold": 0.0
 }

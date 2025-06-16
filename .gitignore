@@ -3,8 +3,8 @@ __pycache__/
 *.py[cod]
 
 # Data: Nur CSV ausschließen, Struktur und Platzhalter bleiben
-data/*.csv
-data/**/*.csv
+data/raw/*.csv
+data/processed/*.csv
 !data/README.txt
 !data/.gitkeep
 !data/processed/
@@ -43,3 +43,5 @@ model_cache/
 
 #logs
 src/airflow/logs
+src/prometheus/data
+src/grafana/data

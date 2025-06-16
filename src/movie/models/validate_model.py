@@ -15,6 +15,12 @@ import subprocess
 import getpass
 import json
 
+
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset
+from evidently.pipeline.column_mapping import ColumnMapping
+
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 load_dotenv()
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
@@ -191,6 +197,39 @@ def validate_deep_hybrid(test_user_count=100):
         return
 
     logging.info("🎉 Validation complete.")
+    # Nach logging.info("🎉 Validation complete.")
+    try:
+        PROM_FILE_PATH = os.getenv("REPORT_DIR", "/app/reports")
+        os.makedirs(PROM_FILE_PATH, exist_ok=True)
+        precision_file = os.path.join(PROM_FILE_PATH, "precision_metrics.prom")
+        with open(precision_file, "w") as f:
+            f.write(f'model_precision_at_10{{model="Deep Hybrid-KNN_best"}} {precision_10:.4f}\n')
+        logging.info(f"💾 Prometheus precision_10 metric written to: {precision_file}")
+    except Exception as e:
+        logging.warning(f"⚠️ Could not write precision_10 prom file: {e}")
+   # === Evidently Drift Detection + Prometheus Drift-Metriken ===
+    try:
+
+        current_df = pd.read_csv(EMBEDDING_PATH)
+        reference_df = pd.read_csv(BEST_EMBEDDING_PATH) if os.path.exists(BEST_EMBEDDING_PATH) else current_df.copy()
+
+        column_mapping = ColumnMapping()
+        report = Report(metrics=[DataDriftPreset()])
+        report.run(reference_data=reference_df, current_data=current_df, column_mapping=column_mapping)
+        drift_json = report.as_dict()
+
+        drift_alert = int(drift_json["metrics"][0]["result"]["dataset_drift"])
+        drift_share = drift_json["metrics"][0]["result"]["share_of_drifted_columns"]
+
+        # Prometheus-Metriken für Drift schreiben
+        drift_file = os.path.join(PROM_FILE_PATH, "training_metrics.prom")
+        with open(drift_file, "w") as f:
+            f.write(f'model_drift_alert{{model="Deep Hybrid-KNN_best"}} {drift_alert}\n')
+            f.write(f'data_drift_share{{model="Deep Hybrid-KNN_best"}} {drift_share:.4f}\n')
+        logging.info("📈 Drift-Metriken für Prometheus geschrieben.")
+
+    except Exception as e:
+        logging.warning(f"⚠️ Evidently drift analysis failed: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

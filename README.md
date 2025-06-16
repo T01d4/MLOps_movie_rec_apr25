@@ -3,12 +3,24 @@ MovieReco - MLOPS Project
 
 This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
 
-⚠️ BREAKING CHANGE: Repo complete Rewrite (force-push, Rewrite, File-Struktur, .dvc & Data/Models)! 
-No `git pull` to lokal Repos  – use gitclone 
-`git clone <REPO_URL>` in a fresh new folder 
+
 otherwise Merge-conflicts, History-Problems or wrong DVC-States!
 
 Project Setup
+
+- Modelltrain & -versioning **MLflow**
+
+- Taskmanager Workflows **Airflow**
+
+- Deep Learning + Collaborative Filtering
+
+- Monitoring  **Prometheus & Grafana**
+
+- API & UI via **FastAPI + Streamlit**
+
+- Container **Docker Compose**
+
+-  Unit Tests & Linting via **GitHub Actions**
 ==============================
 
 As of 02.06.2025
@@ -23,7 +35,7 @@ Required .env (root directory) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Required .env (root directory) !!!!!
 
-#--- Airflow ---
+# --- Airflow ---
 AIRFLOW__CORE__EXECUTOR=LocalExecutor
 
 AIRFLOW__CORE__FERNET_KEY=oLfPThKYdHr7hjymM4p97WLVlGzJByb9ULqat9MqObs=
@@ -47,17 +59,20 @@ AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
 # --- MLflow & DagsHub ---
 MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
 
-MLFLOW_TRACKING_USERNAME=your_dagshub_username
+PROM_URL=http://prometheus:9090
 
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+DAGSHUB_USER=your_dagshub_username
 
+DAGSHUB_TOKEN=your_dagshub_token
 
-
-# --- Streamlit & API ---
 
 API_URL=http://api_service:8000
 
-TMDB_API_KEY=your API Key for Movie Pictures
+GRAFANA_URL=http://localhost:3000/d/4f619286-f4fd-4040-821b-2189eb929e4c/movie-recommender?orgId=1&from=now-6h&to=now&timezone=browser
+
+#https://www.themoviedb.org/settings/api
+
+TMDB_API_KEY=48a501167bbb3fe39749d61d3fd3b0f6
 
 
 
@@ -116,13 +131,13 @@ Never share .env and .dvc/config.local with secrets in public repos.
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
+    ├── .devcontainer/             # VS Code Umgebung
+    ├── .github/                   # GitHub Actions Workflows
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── monitoring       <- Data from third party sources.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
-    ├── logs               <- Logs from training and predicting
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │
@@ -132,33 +147,121 @@ Never share .env and .dvc/config.local with secrets in public repos.
     │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    ├── reports            <- HTML-Reports, Metriken, Prometheus Dumps
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   ├── check_structure.py    
-    │   │   ├── import_raw_data.py 
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── visualize.py
-    │   └── config         <- Describe the parameters used in train_model.py and predict_model.py
-
+    ├── src/                       # Source-code-
+    │   ├── airflow/
+    │   │   ├── Dockerfile.airflow
+    │   │   ├── requirements.airflow.txt
+    │   │   ├── webserver_config.py
+    │   │   └── dags/
+    │   │       ├── bento_api_pipeline.py
+    │   │       ├── drift_monitoring_dag.py
+    │   │       └── train_deep_model_dag.py
+    │   ├── api_service/
+    │   │   ├── Dockerfile.API
+    │   │   ├── main.py
+    │   │   ├── metrics.py
+    │   │   ├── pw.py
+    │   │   ├── recommend.py
+    │   │   ├── trainer.py
+    │   │   ├── requirements.api.txt
+    │   │   └── users.json
+    │   ├── Bento_service/
+    │   │   ├── bento_service.py
+    │   │   ├── Dockerfile.Bento
+    │   │   ├── metrics.py
+    │   │   └── requirements.bento.txt
+    │   ├── monitoring/
+    │   │   ├── analyze_drift.py
+    │   │   ├── analyze_drift_requests.py
+    │   │   ├── generate_drift_report_extended.py
+    │   │   ├── generate_embedding.py
+    │   │   └── plot_precision_history.py
+    │   ├── movie/
+    │   │   ├── __init__.py
+    │   │   ├── data/
+    │   │   │   ├── __init__.py
+    │   │   │   ├── check_structure.py
+    │   │   │   ├── import_raw_data.py
+    │   │   │   └── make_dataset.py
+    │   │   ├── features/
+    │   │   │   ├── __init__.py
+    │   │   │   └── build_features.py
+    │   │   ├── models/
+    │   │   │   ├── __init__.py
+    │   │   │   ├── predict_best_model.py
+    │   │   │   ├── predict_model.py
+    │   │   │   ├── train_hybrid_deep_model.py
+    │   │   │   ├── train_model.py
+    │   │   │   └── validate_model.py
+    │   │   └── visualization/
+    │   │       ├── __init__.py
+    │   │       └── visualize.py
+    │   └── streamlit_app/
+    │       ├── app.py
+    │       ├── auth.py
+    │       ├── recommender.py
+    │       ├── training.py
+    │       ├── requirements.streamlit.txt
+    │       └── Dockerfile.streamlit
+    ├── tests/                     # Unit Tests
+    ├── docker-compose.yml         # Multi-Container Setup
+    ├── setup.py                   # Python Paket
+    ├── requirements.txt           # installers for dev container
+    ├── .env                       # Lokale Variablen (nicht tracken)
 --------
+
+## CI / CD Pipeline
+
+┌────────────────────────────────────────────────────────────┐
+│                   🟢 Streamlit Dashboard                   │
+│    ┌────────────┐                         ┌─────────────┐  │
+│    │   [User]   │                         │   [Admin]   │  │
+│    │ Movie Reco │                         │ Trigger DAG │  │
+│    │ via FastAPI│                         │ Show Reports│  │
+│    └─────┬──────┘                         └────┬────────┘  │
+└──────────┼────────────────────────────────────┼────────────┘
+           │                                    │
+           ▼                                    ▼
+ ┌────────────────────┐            ┌────────────────────────────┐
+ │  FastAPI /recommend│            │ Airflow: train_model DAG   │
+ │  - nutzt MLflow    │            │ - make_dataset             │
+ │  - loggt Latenz    │            │ - train_hybrid_model       │
+ │  - zählt Aufrufe   │            │ - validate_model           │
+ └────────┬───────────┘            │ - predict_model            │
+          │                        │ - log to MLflow (DagsHub)  │
+          ▼                        └────────────┬───────────────┘
+ ┌────────────────────┐                       │
+ │   MLflow Registry  │◄──────────────────────┘
+ │   - bestes Modell  │
+ │   - Precision@10   │
+ └────────┬───────────┘
+          │
+          ▼
+┌────────────────────────────────────────────────────────────┐
+│      Airflow: drift_monitoring DAG (automatisch danach)    │
+│  - analyze_drift.py                                        │
+│  - generate_drift_report_extended.py                       │
+│  - Export Prometheus Metriken (.prom)                      │
+└────────┬─────────────────────────────────────────┬─────────┘
+         │                                         │
+         ▼                                         ▼
+┌──────────────────────────┐          ┌──────────────────────────┐
+│ Evidently HTML Report    │          │ Prometheus Metrics       │
+│ - Drift Report           │          │ - Latenz / Nutzung       │
+└──────────────┬───────────┘          └──────────────┬───────────┘
+               ▼                                     ▼
+      ┌────────────────────────────┐     ┌────────────────────────────┐
+      │Streamlit Admin Dashboard   │     │Grafana Dashboards          │
+      │- Reports + Precision       │     │- Metriken visualisiert     │
+      └────────────────────────────┘     └────────────────────────────┘
+--------
+
 
 
 ## Steps to Execute the Project
@@ -186,7 +289,7 @@ Edit the `.env` file and add the required environment variables:
 ```plaintext
 # --- Airflow ---
 AIRFLOW__CORE__EXECUTOR=LocalExecutor
-AIRFLOW__CORE__FERNET_KEY=your_fernet_key_here
+AIRFLOW__CORE__FERNET_KEY=oLfPThKYdHr7hjymM4p97WLVlGzJByb9ULqat9MqObs=
 AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
 AIRFLOW__CORE__LOAD_EXAMPLES=False
 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -198,16 +301,19 @@ AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
 
 # --- MLflow & DagsHub ---
 MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-MLFLOW_TRACKING_USERNAME=your_dagshub_username
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+
+PROM_URL=http://prometheus:9090
+
 DAGSHUB_USER=your_dagshub_username
 DAGSHUB_TOKEN=your_dagshub_token
 
-# --- Streamlit & API ---
-MODEL_PATH=/app/models/model.pkl
-JWT_SECRET=supersecretkey
-API_URL=http://airflow-webserver:8080
-TMDB_API_KEY=your_api_key_for_movie_pictures
+
+API_URL=http://api_service:8000
+
+GRAFANA_URL=http://localhost:3000/d/4f619286-f4fd-4040-821b-2189eb929e4c/movie-recommender?orgId=1&from=now-6h&to=now&timezone=browser
+
+#https://www.themoviedb.org/settings/api
+TMDB_API_KEY=48a501167bbb3fe39749d61d3fd3b0f6
 ```
 
 Replace placeholders like `your_fernet_key_here`, `your_dagshub_username`, etc., with your actual values.
@@ -236,12 +342,18 @@ Once the containers are running, access the services:
   URL: [http://localhost:8080](http://localhost:8080)  
   Login: `admin / admin`
 
----
+- **Grafna UI:**  see full link with for .ENV
+  URL: http://localhost:3000/    
+  Login: `admin / admin`
+
+- **MLFlow Web UI:**  
+  https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+
 
 ### 5. Verify Airflow DAGs
 
 1. Open the Airflow Web UI.
-2. Check if the DAGs (e.g., `movie_recommendation_pipeline`) are listed.
+2. Check if the DAGs (e.g., `deep_models_pipeline_pipeline`) are listed.
 3. Trigger the DAG manually if needed.
 
 ---

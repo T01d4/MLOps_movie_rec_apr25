@@ -10,7 +10,7 @@ python-jose[cryptography]
 passlib[bcrypt]
 plotly
 requests
-scikit-learn
+scikit-learn==1.6.1
 numpy
 python-multipart
 typing_extensions

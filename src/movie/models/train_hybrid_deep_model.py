@@ -10,6 +10,9 @@ import json
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score
+
 from dotenv import load_dotenv
 import mlflow
 from mlflow.models.signature import infer_signature
@@ -18,13 +21,24 @@ import argparse
 from mlflow.tracking import MlflowClient
 import logging
 
+# === Prometheus Monitoring (Loss pro Epoche + Drift Detection) ===
+from prometheus_client import Gauge, CollectorRegistry, write_to_textfile
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset
+from evidently.pipeline.column_mapping import ColumnMapping
+
+registry = CollectorRegistry()
+LOSS_GAUGE = Gauge("training_loss", "Training loss per epoch", ["epoch"], registry=registry)
+EPOCH_GAUGE = Gauge("current_epoch", "Current epoch", registry=registry)
 
 
 
 DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
 MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")
+REPORT_DIR= os.getenv("REPORT_DIR", "/opt/airflow/reports")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+
 
 class HybridAutoEncoder(nn.Module):
     def __init__(self, input_dim, hidden_dim=256, latent_dim=64):
@@ -138,9 +152,15 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     criterion = nn.MSELoss()
     loader = torch.utils.data.DataLoader(torch.from_numpy(X), batch_size=batch_size, shuffle=True)
 
+    losses = []
+    early_stop_patience = 8
+    best_loss = float("inf")
+    no_improve_epochs = 0
+
     for epoch in range(epochs):
         model.train()
-        losses = []
+        epoch_losses = []
+
         for batch in loader:
             batch = batch.to(device)
             optimizer.zero_grad()
@@ -148,8 +168,25 @@ def train_hybrid_deep_model(save_matrix_csv=True):
             loss = criterion(output, batch)
             loss.backward()
             optimizer.step()
-            losses.append(loss.item())
-        logger.info(f"Epoch {epoch+1}/{epochs}: Loss = {np.mean(losses):.4f}")
+            epoch_losses.append(loss.item())
+
+        mean_loss = np.mean(epoch_losses)
+        losses.append(mean_loss)
+        logger.info(f"Epoch {epoch + 1}/{epochs}: Loss = {mean_loss:.4f}")
+
+        if mean_loss < best_loss - 1e-4:
+            best_loss = mean_loss
+            no_improve_epochs = 0
+        else:
+            no_improve_epochs += 1
+            if no_improve_epochs >= early_stop_patience:
+                logger.info(f"⛔️ EarlyStopping nach {epoch+1} Epochen (kein Fortschritt seit {early_stop_patience})")
+                break
+
+    # ✅ Prometheus nach dem Training beschreiben
+    for epoch_idx, epoch_loss in enumerate(losses):
+        LOSS_GAUGE.labels(epoch=str(epoch_idx + 1)).set(epoch_loss)
+        EPOCH_GAUGE.set(epoch_idx + 1)
 
     model.eval()
     with torch.no_grad():
@@ -244,6 +281,73 @@ def train_hybrid_deep_model(save_matrix_csv=True):
             logger.warning("⚠️ Could not determine model version for tagging.")
 
     logger.info("🏁 Deep hybrid model training completed and logged.")
+
+    # === Drift Detection & Prometheus Monitoring ===
+    try:
+        ref_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
+        if os.path.exists(ref_path):
+            reference_df = pd.read_csv(ref_path)
+            current_df = embedding_df.reset_index()
+
+            # 👉 Gemeinsame Spalten auswählen & sortieren
+            common_cols = sorted(set(reference_df.columns) & set(current_df.columns))
+            if not common_cols:
+                raise ValueError("⚠️ Keine gemeinsamen Spalten für Drift-Analyse gefunden.")
+
+            reference_df = reference_df[common_cols]
+            current_df = current_df[common_cols]
+
+            # 🧠 ColumnMapping dynamisch erstellen
+            column_mapping = ColumnMapping(numerical_features=common_cols)
+
+            # 🧪 Report ausführen
+            drift_report = Report(metrics=[DataDriftPreset()])
+            drift_report.run(reference_data=reference_df, current_data=current_df, column_mapping=column_mapping)
+            drift_result = drift_report.as_dict()
+
+            # 🎯 Driftwert extrahieren (robust)
+            drift_score = None
+            for m in drift_result.get("metrics", []):
+                if m.get("metric") == "DatasetDriftMetric":
+                    drift_score = m.get("result", {}).get("drift_share", None)
+                    break
+
+            drift_alert = int(drift_score > 0.2) if drift_score is not None else 0
+
+            # 🔧 Prometheus Metriken setzen
+            DRIFT_GAUGE = Gauge("model_drift_alert", "Drift detected after training", registry=registry)
+            DRIFT_GAUGE.set(drift_alert)
+
+            DRIFT_ALERT = Gauge("drift_alert", "Drift alert flag", ["model"], registry=registry)
+            DRIFT_ALERT.labels(model="hybrid_deep_model").set(drift_alert)
+
+            # 📄 Logging
+            if drift_score is not None:
+                logger.info(f"🔍 Drift detected in {drift_score:.2%} of features (Alert={drift_alert})")
+            else:
+                logger.warning("⚠️ Drift share could not be computed – value is None")
+                logger.info(f"Ref shape: {reference_df.shape}, Cur shape: {current_df.shape}")
+
+            # 💾 JSON speichern
+            json_path = os.path.join(REPORT_DIR, "drift_metrics.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(drift_result, f, indent=2)
+            logger.info(f"📄 Drift metrics saved to {json_path}")
+
+        else:
+            logger.warning(f"⚠️ Reference embedding for drift analysis not found at {ref_path}")
+    except Exception as e:
+        logger.warning(f"⚠️ Failed to compute drift: {e}")
+
+    # Prometheus-Datei schreiben
+    try:
+        prom_path = os.getenv("REPORT_DIR", "/app/reports")
+        os.makedirs(prom_path, exist_ok=True)
+        write_to_textfile(os.path.join(prom_path, "training_metrics.prom"), registry)
+        logger.info("💾 Prometheus training metrics written to file.")
+    except Exception as e:
+        logger.warning(f"⚠️ Failed to write Prometheus training metrics: {e}")
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

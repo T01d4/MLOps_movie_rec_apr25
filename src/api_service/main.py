@@ -24,11 +24,13 @@ from pathlib import Path
 
 load_dotenv(".env")
 app = FastAPI()
-app.include_router(trainer_router)
-app.include_router(recommend_router) 
-app.include_router(metrics_router)
-# Middleware register
+# Prometheus-Middleware registrieren
 app.middleware("http")(prometheus_middleware)
+
+# Router einbinden
+app.include_router(trainer_router)
+app.include_router(recommend_router)
+app.include_router(metrics_router)
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")

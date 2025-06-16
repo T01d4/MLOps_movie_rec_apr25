@@ -6,9 +6,10 @@ scrape_configs:
     static_configs:
       - targets: ['bentoml:4000']
 
-  - job_name: 'fastapi-api'
+  - job_name: "api_service"
+    metrics_path: /metrics
     static_configs:
-      - targets: ['api_service:8000']
+      - targets: ["api_service:8000"]
 
   - job_name: 'drift_metrics_api'
     metrics_path: /metrics/drift
@@ -21,6 +22,12 @@ scrape_configs:
     metrics_path: /metrics
     scrape_interval: 15s
 
+
+  - job_name: 'precision_metrics'
+    metrics_path: /metrics/training
+    static_configs:
+    - targets: ['api_service:8000']
+    
   - job_name: 'textfile-metrics'
     static_configs:
       - targets: ['node_exporter:9100']

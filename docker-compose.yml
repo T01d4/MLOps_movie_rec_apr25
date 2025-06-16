@@ -16,7 +16,7 @@ services:
       - ./models:/app/models
       - ./reports:/app/reports
       - ./src/monitoring:/app/src/monitoring
-      - ./src/movie:/app/src
+      - ./src/movie:/app/src/movie
     env_file: .env
     environment:
       - DATA_DIR=/app/data
@@ -24,8 +24,10 @@ services:
       - REPORT_DIR=/app/reports
     networks:
       - airflow_net
-
-  api:
+    depends_on:
+      - api_service
+      
+  api_service:
     build:
       context: ./src/api_service
       dockerfile: Dockerfile.API
@@ -38,7 +40,7 @@ services:
       - ./models:/app/models
       - ./reports:/app/reports
       - ./src/monitoring:/app/src/monitoring
-      - ./src/movie:/app/src
+      - ./src/movie:/app/src/movie
     env_file: .env
     environment:
       - DATA_DIR=/app/data
@@ -82,7 +84,7 @@ services:
       - ./src/airflow/dags:/opt/airflow/dags
       - ./src/airflow/plugins:/opt/airflow/plugins
       - ./src/airflow/logs:/opt/airflow/logs
-      - ./src/movie:/opt/airflow/src
+      - ./src/movie:/opt/airflow/src/movie
       - ./src/monitoring:/opt/airflow/src/monitoring
       - ./reports:/opt/airflow/reports
       - ./data:/opt/airflow/data
@@ -116,7 +118,7 @@ services:
       - ./src/airflow/dags:/opt/airflow/dags
       - ./src/airflow/plugins:/opt/airflow/plugins
       - ./src/airflow/logs:/opt/airflow/logs
-      - ./src/movie:/opt/airflow/src
+      - ./src/movie:/opt/airflow/src/movie
       - ./src/monitoring:/opt/airflow/src/monitoring
       - ./reports:/opt/airflow/reports
       - ./data:/opt/airflow/data
@@ -134,7 +136,7 @@ services:
       - "4000:4000"
     volumes:
       - ./src/Bento_service:/app/src/Bento_service
-      - ./src/movie:/app/src
+      - ./src/movie:/app/src/movie
       - ./reports:/app/reports
       - ./src/monitoring:/app/src/monitoring
       - ./models:/app/models
@@ -169,6 +171,10 @@ services:
       - "3000:3000"
     volumes:
       - ./src/grafana/data:/var/lib/grafana
+      - ./src/grafana/grafana.ini:/etc/grafana/grafana.ini
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
     networks:

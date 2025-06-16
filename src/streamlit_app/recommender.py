@@ -18,13 +18,13 @@ from mlflow.tracking import MlflowClient
 load_dotenv()
 
 API_URL = os.getenv("API_URL", "http://api_service:8000") 
-
+#response = requests.post("http://api_service:8000/recommend", ...)
 def get_recommendations_via_api(selected_movies):
     api_url = os.getenv("API_URL", "http://api_service:8000")
     endpoint = f"{api_url}/recommend"
     payload = {"selected_movies": selected_movies}
     try:
-        resp = requests.post(endpoint, json=payload, timeout=20)
+        resp = requests.post(endpoint, json=payload, timeout=200)
         resp.raise_for_status()
         return resp.json()  # Dict containing all model outputs
     except Exception as e:
@@ -90,6 +90,10 @@ def show_best_model_info():
     except Exception as e:
         st.warning(f"No best_model alias found or error occurred: {e}")
 
+
+
+
+
 def show_recommender_ui(user_role="guest"):
     st.header("🎬 Movie Recommendations")
 
@@ -138,3 +142,6 @@ def show_recommender_ui(user_role="guest"):
                         else:
                             st.write("—")
                         st.caption(short_title)
+            
+
+

@@ -96,7 +96,7 @@ def train_deep_hybrid_model():
         
 
         cmd = [
-            "python", "models/train_hybrid_deep_model.py"
+            "python", "movie/models/train_hybrid_deep_model.py"
         ]
 
         log_data = run_and_log(cmd, cwd="/app/src")
@@ -117,7 +117,7 @@ def train_deep_hybrid_model():
 def validate_model(body):
     touch_last_request()
     cmd = [
-        "python", "models/validate_model.py",
+        "python", "movie/models/validate_model.py",
         f"--test_user_count={body.get('test_user_count', 100)}"
     ]
     log_data = run_and_log(cmd, cwd="/app/src")
@@ -133,7 +133,7 @@ def validate_model(body):
 @svc.api(input=JSON(), output=JSON())
 def predict_best_model(body):
     touch_last_request()
-    cmd = ["python", "models/predict_best_model.py"]
+    cmd = ["python", "movie/models/predict_best_model.py"]
     log_data = run_and_log(cmd, cwd="/app/src")
     return {
         "status": "finished",

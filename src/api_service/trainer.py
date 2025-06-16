@@ -25,14 +25,28 @@ DAGS = {
         "label": "Deep Hybrid Training",
         "task_order": [
             "import_raw_data", "make_dataset", "build_features",
-            "train_deep_hybrid_model", "validate_models", "predict_best_model"
+            "train_deep_hybrid_model", "validate_models", "predict_best_model",
+            "trigger_drift_monitoring_dag"
         ]
     },
     "bento_api_pipeline": {
         "label": "BentoML-Pipeline",
         "task_order": ["bento_train", "bento_validate", "bento_predict"]
+    },
+    "drift_monitoring_dag": {
+        "label": "Drift Monitoring",
+        "task_order": [
+            "generate_embedding_snapshot",
+            "analyze_snapshot_drift",
+            "analyze_request_drift",
+            "generate_drift_report_extended"
+        ]
     }
 }
+
+@router.get("/airflow/dag-metadata")
+def get_dag_metadata():
+    return DAGS
 
 @router.get("/airflow/dag-status")
 def get_dag_status(dag_id: str):
@@ -96,6 +110,17 @@ def fetch_airflow_logs(dag_id: str, dag_run_id: str):
         logs[task_id] = resp.text if resp.ok else f"Error while fetching logs: {resp.status_code}\n{resp.text}"
     return logs
 
+@router.post("/airflow/abort-runs")
+def abort_running_dag_runs(dag_id: str):
+    url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns?state=running"
+    resp = requests.get(url, auth=AUTH)
+    if not resp.ok:
+        return {"error": "Could not fetch DAG runs"}
+    for run in resp.json().get("dag_runs", []):
+        patch_url = f"{AIRFLOW_API_URL}/dags/{dag_id}/dagRuns/{run['dag_run_id']}"
+        requests.patch(patch_url, json={"state": "failed"}, auth=AUTH)
+    return {"aborted": True}
+
 @router.get("/airflow/progress")
 def show_dag_progress(dag_id: str):
     task_order = DAGS[dag_id]["task_order"]
@@ -128,6 +153,12 @@ def show_dag_progress(dag_id: str):
         "logs": logs,
         "finished": finished == total
     }
+    # 🆕 Neuer Trigger: Drift-DAG wurde erfolgreich ausgelöst
+    drift_triggered = (
+        dag_id == "deep_models_pipeline"
+        and task_states.get("trigger_drift_monitoring_dag") == "success"
+    )
+    step["triggered_dag_success"] = drift_triggered
     return {"progress": [step]}
 
 def formatalias(alias_str):

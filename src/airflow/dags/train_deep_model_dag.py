@@ -6,6 +6,7 @@ from datetime import timedelta
 import os
 import logging
 import subprocess
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 def run_and_log(command: list, cwd: str = "/opt/airflow"):
     import subprocess
@@ -33,33 +34,34 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
         raise
 
 def run_import_raw_data():
-    run_and_log(["python", "/opt/airflow/src/data/import_raw_data.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/data/import_raw_data.py"])
 
 def run_make_dataset():
-    run_and_log(["python", "/opt/airflow/src/data/make_dataset.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/data/make_dataset.py"])  #
 
 def run_build_features():
-    run_and_log(["python", "/opt/airflow/src/features/build_features.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/features/build_features.py"])
 
 def run_train_model():
-    run_and_log(["python", "/opt/airflow/src/models/train_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/train_model.py"])
 
 def run_train_deep_hybrid_model():
-    run_and_log(["python", "/opt/airflow/src/models/train_hybrid_deep_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/train_hybrid_deep_model.py"])
 
 def run_validate_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
     test_user_count = conf.get("test_user_count", 100)
     run_and_log([
-        "python", "/opt/airflow/src/models/validate_model.py",
+        "python", "/opt/airflow/src/movie/models/validate_model.py",
         f"--test_user_count={test_user_count}"
     ])
 
 def run_predict_best_model():
-    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/predict_best_model.py"])
 
-def run_drift_detection():
-    run_and_log(["python", "/opt/airflow/src/monitoring/analyze_drift.py"])
+
+
+
 
 default_args = {
     'owner': 'airflow',
@@ -106,10 +108,12 @@ with DAG(
         task_id="predict_best_model",
         python_callable=run_predict_best_model
     )
-    drift_detection = PythonOperator(
-        task_id="analyze_drift",
-        python_callable=run_drift_detection
+    trigger_monitoring = TriggerDagRunOperator(
+        task_id="trigger_drift_monitoring_dag",
+        trigger_dag_id="drift_monitoring_dag",  # muss mit dem anderen DAG-Namen übereinstimmen
+        wait_for_completion=True  # True, wenn du auf das Ergebnis warten willst
     )
+
     # DAG flow (analogous to a classic pipeline)
     import_raw_data >> make_dataset >> build_features
-    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict >> drift_detection
+    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict >> trigger_monitoring 
