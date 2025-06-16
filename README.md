@@ -91,14 +91,77 @@ graph LR
 ```
 
 ```mermaid
-graph LR
-    A((Streamlit App)) --> B(API Server BentoML)
-    B --> C(Model Service)
-    B --> D(Data Layer DVC Models)
-    B --> E(Tests)
-    subgraph Dev Environment
-      F(VS Code Devcontainer)
+graph TD
+
+    %% User-Facing
+    subgraph Interface
+        A1[Streamlit App]
+        A2[API-Service: FastAPI]
     end
+
+    %% Orchestration
+    subgraph Airflow
+        B1[Webserver]
+        B2[Scheduler]
+    end
+
+    %% Infrastruktur
+    subgraph Infrastruktur
+        C1[PostgreSQL DB]
+        C2[(Volumes: /data, /models, /src)]
+        C3[Docker Socket]
+    end
+
+    %% Monitoring
+    subgraph Monitoring
+        E1[Prometheus]
+        E2[Grafana]
+    end
+
+    %% Modell & Daten
+    subgraph DagsHub
+        subgraph MLflow
+            D1[ML Model]
+            D3[MLflow Tracking]
+        end
+        D4[Model Registry]
+    end
+
+    D2[Netflix-Daten]
+
+    %% Beziehungen
+    A1 --> A2
+    A1 --> B1
+    A1 --> D3
+    A1 --> C3
+
+    A2 --> D1
+    A2 --> C2
+
+    B1 --> B2
+    B1 --> D1
+    B2 --> D1
+    B1 --> C1
+    B2 --> C1
+    B1 --> D2
+    B2 --> D2
+
+    B1 --> D3
+    D1 --> D3
+    D1 --> D4
+    D2 --> D1
+
+    C2 --> A1
+    C2 --> A2
+    C2 --> B1
+    C2 --> B2
+
+    E1 --> B1
+    E1 --> B2
+    E1 --> A1
+    E1 --> A2
+    E2 --> E1
+
 ```
 ```mermaid
 graph LR

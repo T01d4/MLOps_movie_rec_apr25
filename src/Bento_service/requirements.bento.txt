@@ -1,4 +1,4 @@
-bentoml==1.4.*
+bentoml==1.4.1
 mlflow==2.22.0           # Nur, wenn du direkt MLflow-Modelle nutzt (Optional, aber meist nützlich)
 dagshub>=0.3
 dvc
