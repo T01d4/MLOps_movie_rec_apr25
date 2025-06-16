@@ -72,7 +72,7 @@ services:
       - postgres
     ports:
       - "8080:8080"
-    working_dir: /opt/
+    working_dir: /opt/airflow
     env_file: .env
     environment:
       - PYTHONPATH=/opt/airflow

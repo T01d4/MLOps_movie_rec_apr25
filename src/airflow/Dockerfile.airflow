@@ -18,6 +18,7 @@ COPY requirements.airflow.txt /requirements.txt
 
 # Switch back to airflow user for pip and airflow commands
 USER airflow
+#WORKDIR /opt/airflow
 # Now install the requirements (after copying them)
 RUN pip install --no-cache-dir -r /requirements.txt
 # Configure git for the airflow user (must be done AFTER switching to USER airflow)

@@ -14,7 +14,7 @@ import shutil
 import subprocess
 import getpass
 import json
-
+from prometheus_client import Gauge
 
 from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
@@ -28,7 +28,7 @@ mlflow.set_experiment("model_validate")
 
 DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
 MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")
-
+REPORT_DIR = os.getenv("REPORT_DIR", "/opt/airflow/reports")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
@@ -37,7 +37,7 @@ EMBEDDING_PATH = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
 RATINGS_PATH = os.path.join(RAW_DIR, "ratings.csv")
 BEST_EMBEDDING_PATH = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
 VALIDATION_SCORES_PATH = os.path.join(PROCESSED_DIR, "validation_scores_hybrid_deep.csv")
-DVC_FILE = f"{BEST_EMBEDDING_PATH}.dvc"
+#DVC_FILE = f"{BEST_EMBEDDING_PATH}.dvc"
 
 
 def update_best_model_in_mlflow(precision, client, model_name, model_version):
@@ -199,9 +199,9 @@ def validate_deep_hybrid(test_user_count=100):
     logging.info("🎉 Validation complete.")
     # Nach logging.info("🎉 Validation complete.")
     try:
-        PROM_FILE_PATH = os.getenv("REPORT_DIR", "/app/reports")
-        os.makedirs(PROM_FILE_PATH, exist_ok=True)
-        precision_file = os.path.join(PROM_FILE_PATH, "precision_metrics.prom")
+
+        os.makedirs(REPORT_DIR, exist_ok=True)
+        precision_file = os.path.join(REPORT_DIR, "precision_metrics.prom")
         with open(precision_file, "w") as f:
             f.write(f'model_precision_at_10{{model="Deep Hybrid-KNN_best"}} {precision_10:.4f}\n')
         logging.info(f"💾 Prometheus precision_10 metric written to: {precision_file}")
@@ -222,7 +222,7 @@ def validate_deep_hybrid(test_user_count=100):
         drift_share = drift_json["metrics"][0]["result"]["share_of_drifted_columns"]
 
         # Prometheus-Metriken für Drift schreiben
-        drift_file = os.path.join(PROM_FILE_PATH, "training_metrics.prom")
+        drift_file = os.path.join(REPORT_DIR, "training_metrics.prom")
         with open(drift_file, "w") as f:
             f.write(f'model_drift_alert{{model="Deep Hybrid-KNN_best"}} {drift_alert}\n')
             f.write(f'data_drift_share{{model="Deep Hybrid-KNN_best"}} {drift_share:.4f}\n')
