@@ -48,3 +48,7 @@ airflow/*
 
 # Archives
 *.zip
+
+# prometheus
+*.prometheus
+src/prometheus/data/*

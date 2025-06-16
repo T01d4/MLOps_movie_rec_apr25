@@ -20,6 +20,15 @@ This project is a data science / ML service built with BentoML, featuring contai
 - VS Code with Remote - Containers extension (optional)
 - Python 3.8+ (if running locally without Docker)
 
+### Provide the .env information
+In dummy.env add your personal information for dagshub (user and token). These information will be put
+into the .env file, providing the service with information regarding the location of the models.
+Notes
+> Note: All services read environment variables from the root .env.
+> * For team work: Every developer needs their own DagsHub token in their local .env.
+> * Never share .env and .dvc/config.local with secrets in public repos.
+> * You can also add you tmdb api key to get the covers of recommanded movies.
+
 ### Setup using Devcontainer (recommended) - only for development
 1. Open the project folder in VS Code.
 2. When prompted, reopen in container.
@@ -48,14 +57,6 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-
-### Provide the .env information
-In dummy.env add your personal information for dagshub (user and token). These information will be put
-into the .env file, providing the service with information regarding the location of the models.
-Notes
-> Note: All services read environment variables from the root .env (see env_file in docker-compose.yml).
-> For team work: Every developer needs their own DagsHub token in their local .env.
-> Never share .env and .dvc/config.local with secrets in public repos.
 
 ### Start the service
 Use the start script to launch the service locally (runs `docker-compose up --build`):
@@ -89,40 +90,37 @@ graph LR
     end
 ```
 
-## Project Structure
-
 ```mermaid
-graph TD
-    root["Project Root"]
-    src["src/ (Source code)"]
-    tests["tests/ (Test cases)"]
-    bento["bento_service/ (BentoML Service)"]
-    data["data/ (Sample data)"]
-    models["models/ (Trained models)"]
-    docker["docker-compose.yml (Docker Compose setup)"]
-    devcontainer[".devcontainer/ (VS Code Devcontainer)"]
-    startsh["start.sh (Start script)"]
-    github[".github/ (GitHub workflows)"]
-    venv[".venv/ (Python virtual environment, ignored)"]
-    license["LICENSE (License file)"]
-    dvc["dvc/ (Data version control)"]
-    readme["README.md (Project documentation)"]
-
-    root --> src
-    root --> tests
-    root --> bento
-    root --> data
-    root --> models
-    root --> docker
-    root --> devcontainer
-    root --> startsh
-    root --> github
-    root --> venv
-    root --> license
-    root --> dvc
-    root --> readme
+graph LR
+    A((Streamlit App)) --> B(API Server BentoML)
+    B --> C(Model Service)
+    B --> D(Data Layer DVC Models)
+    B --> E(Tests)
+    subgraph Dev Environment
+      F(VS Code Devcontainer)
+    end
 ```
+```mermaid
+graph LR
+  subgraph dagshub
+    M[(models)]
+  end
+  subgraph local maschine
+    D[(data)]
+  end
+  subgraph Docker Host
+    direction TB
+    A[Streamlit App Container]
+    B[API Container]
+    C[Database Container]
+    V[(Volume: DB_Data)]
+  end
 
+  
+
+  A -->|HTTP| B
+  B -->|DB Connection| C
+```
 ---
 
 
