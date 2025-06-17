@@ -163,82 +163,82 @@ graph TD
 ---
 
 
-├── LICENSE
-├── README.md          <- The top-level README for developers using this project.
-├── .devcontainer/             # VS Code Umgebung
-├── .github/                   # GitHub Actions Workflows
-├── data
-│   ├── monitoring     <- Data from third party sources.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
-│
-│
-├── models             <- Trained and serialized models, model predictions, or model summaries (local)
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── reports            <- HTML-Reports, Metriken, Prometheus Dumps
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-├── src/                       # Source-code-
-│   ├── airflow/
-│   │   ├── Dockerfile.airflow
-│   │   ├── requirements.airflow.txt
-│   │   ├── webserver_config.py
-│   │   └── dags/
-│   │       ├── bento_api_pipeline.py
-│   │       ├── drift_monitoring_dag.py
-│   │       └── train_deep_model_dag.py
-│   ├── api_service/
-│   │   ├── Dockerfile.API
-│   │   ├── main.py
-│   │   ├── metrics.py
-│   │   ├── pw.py
-│   │   ├── recommend.py
-│   │   ├── trainer.py
-│   │   ├── requirements.api.txt
-│   │   └── users.json
-│   ├── Bento_service/
-│   │   ├── bento_service.py
-│   │   ├── Dockerfile.Bento
-│   │   ├── metrics.py
-│   │   └── requirements.bento.txt
-│   ├── monitoring/
-│   │   ├── analyze_drift.py
-│   │   ├── analyze_drift_requests.py
-│   │   ├── generate_drift_report_extended.py
-│   │   ├── generate_embedding.py
-│   │   └── plot_precision_history.py
-│   ├── movie/
-│   │   ├── data/
-│   │   │   ├── check_structure.py
-│   │   │   ├── import_raw_data.py
-│   │   │   └── make_dataset.py
-│   │   ├── features/
-│   │   │   └── build_features.py
-│   │   ├── models/
-│   │   │   ├── predict_best_model.py
-│   │   │   ├── predict_model.py
-│   │   │   ├── train_hybrid_deep_model.py
-│   │   │   ├── train_model.py
-│   │   │   └── validate_model.py
-│   │   └── visualization/
-│   │       └── visualize.py
-│   └── streamlit_app/
-│       ├── app.py
-│       ├── auth.py
-│       ├── recommender.py
-│       ├── training.py
-│       ├── requirements.streamlit.txt
-│       └── Dockerfile.streamlit
-├── tests/                     # Unit Tests
-├── docker-compose.yml         # Multi-Container Setup
-├── setup.py                   # Python Paket
-├── requirements.txt           # installers for dev container
-├── .env                       # Lokale Variablen (nicht tracken)
+    ├── LICENSE
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── .devcontainer/             # VS Code Umgebung
+    ├── .github/                   # GitHub Actions Workflows
+    ├── data
+    │   ├── monitoring     <- Data from third party sources.
+    │   ├── processed      <- The final, canonical data sets for modeling.
+    │   └── raw            <- The original, immutable data dump.
+    │
+    │
+    ├── models             <- Trained and serialized models, model predictions, or model summaries (local)
+    │
+    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    │
+    ├── reports            <- HTML-Reports, Metriken, Prometheus Dumps
+    │   └── figures        <- Generated graphics and figures to be used in reporting
+    │
+    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    │                         generated with `pip freeze > requirements.txt`
+    │
+    ├── src/                       # Source-code-
+    │   ├── airflow/
+    │   │   ├── Dockerfile.airflow
+    │   │   ├── requirements.airflow.txt
+    │   │   ├── webserver_config.py
+    │   │   └── dags/
+    │   │       ├── bento_api_pipeline.py
+    │   │       ├── drift_monitoring_dag.py
+    │   │       └── train_deep_model_dag.py
+    │   ├── api_service/
+    │   │   ├── Dockerfile.API
+    │   │   ├── main.py
+    │   │   ├── metrics.py
+    │   │   ├── pw.py
+    │   │   ├── recommend.py
+    │   │   ├── trainer.py
+    │   │   ├── requirements.api.txt
+    │   │   └── users.json
+    │   ├── Bento_service/
+    │   │   ├── bento_service.py
+    │   │   ├── Dockerfile.Bento
+    │   │   ├── metrics.py
+    │   │   └── requirements.bento.txt
+    │   ├── monitoring/
+    │   │   ├── analyze_drift.py
+    │   │   ├── analyze_drift_requests.py
+    │   │   ├── generate_drift_report_extended.py
+    │   │   ├── generate_embedding.py
+    │   │   └── plot_precision_history.py
+    │   ├── movie/
+    │   │   ├── data/
+    │   │   │   ├── check_structure.py
+    │   │   │   ├── import_raw_data.py
+    │   │   │   └── make_dataset.py
+    │   │   ├── features/
+    │   │   │   └── build_features.py
+    │   │   ├── models/
+    │   │   │   ├── predict_best_model.py
+    │   │   │   ├── predict_model.py
+    │   │   │   ├── train_hybrid_deep_model.py
+    │   │   │   ├── train_model.py
+    │   │   │   └── validate_model.py
+    │   │   └── visualization/
+    │   │       └── visualize.py
+    │   └── streamlit_app/
+    │       ├── app.py
+    │       ├── auth.py
+    │       ├── recommender.py
+    │       ├── training.py
+    │       ├── requirements.streamlit.txt
+    │       └── Dockerfile.streamlit
+    ├── tests/                     # Unit Tests
+    ├── docker-compose.yml         # Multi-Container Setup
+    ├── setup.py                   # Python Paket
+    ├── requirements.txt           # installers for dev container
+    ├── .env                       # Lokale Variablen (nicht tracken)
 
 --------
 
