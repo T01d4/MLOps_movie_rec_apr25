@@ -3,15 +3,16 @@ MovieRecomm - MLOPS Project
 # Project Name
 
 ## Overview
-This project is a data science / ML service built with BentoML, featuring containerization via Docker and development environment setup via VS Code Devcontainer. It includes automated tests and data version control with DVC.
+This project is a data science / ML service, featuring containerization via Docker and development environment setup via VS Code Devcontainer. It includes automated tests and data version control with DVC.
 
 ## Features
-- BentoML service for model serving
 - Docker Compose for container orchestration
 - VS Code Devcontainer for easy development setup
 - Data version control using DVC
 - Automated testing with pytest
 - Example data and pre-trained models included
+- Airflow run ning the pipelines
+- Streamlit for user access and visualisation
 
 ## Installation
 
@@ -56,6 +57,12 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+#### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
 ### Start the service
@@ -66,10 +73,10 @@ Use the start script to launch the service locally (runs `docker-compose up --bu
 
 ### Access API
 After starting, the API will be accessible at `http://localhost:5000` (default port).
-<!-- Other ports that might be interesting are:
+Other ports that might be interesting are:
 * Airflow:      `http://localhost:8080`
 * Streamlit:    `http://localhost:8501`
-> Note: user and password for all services is "admin". -->
+> Note: user and password for all services is "admin".
 
 ### Run tests
 Run all tests with pytest:
@@ -78,17 +85,6 @@ pytest tests/
 ```
 
 ## Architecture Overview
-
-```mermaid
-graph LR
-    A(Client) --> B(API Server BentoML)
-    B --> C(Model Service)
-    B --> D(Data Layer DVC Models)
-    B --> E(Tests)
-    subgraph Dev Environment
-      F(VS Code Devcontainer)
-    end
-```
 
 ```mermaid
 graph TD
@@ -163,81 +159,86 @@ graph TD
     E2 --> E1
 
 ```
-```mermaid
-graph LR
-  subgraph dagshub
-    M[(models)]
-  end
-  subgraph local maschine
-    D[(data)]
-  end
-  subgraph Docker Host
-    direction TB
-    A[Streamlit App Container]
-    B[API Container]
-    C[Database Container]
-    V[(Volume: DB_Data)]
-  end
 
-  
-
-  A -->|HTTP| B
-  B -->|DB Connection| C
-```
 ---
 
 
-    ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── .devcontainer/             # VS Code Umgebung
-    ├── .github/                   # GitHub Actions Workflows
-    ├── data
-    │   ├── best_model_path<- path inside the container to the best performing model
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── airflow
-    │   ├── dags                        <- path inside the container to the best performing model
-    │   ├── logs                        <- The final, canonical data sets for modeling.
-    │   ├── plugins                     <- The final, canonical data sets for modeling.
-    │   ├── airflow.cfg                 <- The final, canonical data sets for modeling.
-    │   ├── airflow.db                  <- The final, canonical data sets for modeling.
-    │   ├── Dockerfile.airflow          <- The final, canonical data sets for modeling.
-    │   ├── requirements.airflow.txt    <- The final, canonical data sets for modeling.
-    │   └── webserver_config.py
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- HTML-Reports, Metriken, Prometheus Dumps
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment
-    │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   ├── check_structure.py    
-    │   │   ├── import_raw_data.py 
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── visualize.py
-    │   └── config         <- Describe the parameters used in train_model.py and predict_model.py
+├── LICENSE
+├── README.md          <- The top-level README for developers using this project.
+├── .devcontainer/             # VS Code Umgebung
+├── .github/                   # GitHub Actions Workflows
+├── data
+│   ├── monitoring     <- Data from third party sources.
+│   ├── processed      <- The final, canonical data sets for modeling.
+│   └── raw            <- The original, immutable data dump.
+│
+│
+├── models             <- Trained and serialized models, model predictions, or model summaries (local)
+│
+├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+│
+├── reports            <- HTML-Reports, Metriken, Prometheus Dumps
+│   └── figures        <- Generated graphics and figures to be used in reporting
+│
+├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+│                         generated with `pip freeze > requirements.txt`
+│
+├── src/                       # Source-code-
+│   ├── airflow/
+│   │   ├── Dockerfile.airflow
+│   │   ├── requirements.airflow.txt
+│   │   ├── webserver_config.py
+│   │   └── dags/
+│   │       ├── bento_api_pipeline.py
+│   │       ├── drift_monitoring_dag.py
+│   │       └── train_deep_model_dag.py
+│   ├── api_service/
+│   │   ├── Dockerfile.API
+│   │   ├── main.py
+│   │   ├── metrics.py
+│   │   ├── pw.py
+│   │   ├── recommend.py
+│   │   ├── trainer.py
+│   │   ├── requirements.api.txt
+│   │   └── users.json
+│   ├── Bento_service/
+│   │   ├── bento_service.py
+│   │   ├── Dockerfile.Bento
+│   │   ├── metrics.py
+│   │   └── requirements.bento.txt
+│   ├── monitoring/
+│   │   ├── analyze_drift.py
+│   │   ├── analyze_drift_requests.py
+│   │   ├── generate_drift_report_extended.py
+│   │   ├── generate_embedding.py
+│   │   └── plot_precision_history.py
+│   ├── movie/
+│   │   ├── data/
+│   │   │   ├── check_structure.py
+│   │   │   ├── import_raw_data.py
+│   │   │   └── make_dataset.py
+│   │   ├── features/
+│   │   │   └── build_features.py
+│   │   ├── models/
+│   │   │   ├── predict_best_model.py
+│   │   │   ├── predict_model.py
+│   │   │   ├── train_hybrid_deep_model.py
+│   │   │   ├── train_model.py
+│   │   │   └── validate_model.py
+│   │   └── visualization/
+│   │       └── visualize.py
+│   └── streamlit_app/
+│       ├── app.py
+│       ├── auth.py
+│       ├── recommender.py
+│       ├── training.py
+│       ├── requirements.streamlit.txt
+│       └── Dockerfile.streamlit
+├── tests/                     # Unit Tests
+├── docker-compose.yml         # Multi-Container Setup
+├── setup.py                   # Python Paket
+├── requirements.txt           # installers for dev container
+├── .env                       # Lokale Variablen (nicht tracken)
 
 --------
 
@@ -252,15 +253,6 @@ graph LR
 
 ### 2- Proceed to the relating web resources:
 
-    Streamlit: http://localhost:8501/
-    Airflow Web UI: http://localhost:8080/
-
-The rest is self-explaining.
-
----
-
-### 4. Access the Services
-
 Once the containers are running, access the services:
 
 - **Streamlit App:**  
@@ -273,7 +265,7 @@ Once the containers are running, access the services:
 
 ---
 
-### 5. Verify Airflow DAGs
+### 3- Verify Airflow DAGs
 
 1. Open the Airflow Web UI.
 2. Check if the DAGs (e.g., `movie_recommendation_pipeline`) are listed.
@@ -284,25 +276,6 @@ Once the containers are running, access the services:
 ### Optional: Run Python Scripts Locally
 
 If you want to test the Python scripts manually (without Airflow), follow these steps:
-
-#### Create Virtual Environment
-
-```bash
-python -m venv my_env
-```
-
-Activate the virtual environment:
-
-```bash
-source my_env/bin/activate  # For Linux/MacOS
-./my_env/Scripts/activate   # For Windows
-```
-
-#### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
 
 #### Run Scripts
 
