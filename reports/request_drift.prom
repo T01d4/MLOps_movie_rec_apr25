@@ -1,3 +1,0 @@
-api_request_drift_alert 1
-api_request_drift_share 1.0000
-drift_score_sliding_window{model="Deep Hybrid-KNN_best"} 1.000000
