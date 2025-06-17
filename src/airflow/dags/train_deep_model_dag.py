@@ -12,6 +12,10 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
     import subprocess
     try:
         logging.info(f"🟦 Running command: {' '.join(map(str, command))}")
+        logging.info(f"🟦 Working directory: {cwd}")
+        logging.info(f"MLflow Tracking URI: {os.getenv('MLFLOW_TRACKING_URI')}")
+        logging.info(f"User: {os.getenv('MLFLOW_TRACKING_USERNAME')}")
+        logging.info(f"Password: {str(os.getenv('MLFLOW_TRACKING_PASSWORD'))[:10]}")
         result = subprocess.run(
             command,
             cwd=cwd,

@@ -54,8 +54,10 @@ airflow/*
 # prometheus
 *.prometheus
 src/prometheus/data/*
+data/monitoring/*
 
 #logs
 src/airflow/logs
 src/prometheus/data
 src/grafana/data
+reports/*

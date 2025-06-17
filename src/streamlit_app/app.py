@@ -16,9 +16,14 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 load_dotenv(".env")
 set_mlflow_from_env()
 
+# required_env_vars = [
+#     "MLFLOW_TRACKING_URI", "DAGSHUB_USER",
+#     "DAGSHUB_TOKEN", "API_URL"
+# ]
+
 required_env_vars = [
-    "MLFLOW_TRACKING_URI", "DAGSHUB_USER",
-    "DAGSHUB_TOKEN", "API_URL"
+    "MLFLOW_TRACKING_URI", "MLFLOW_TRACKING_USERNAME",
+    "MLFLOW_TRACKING_PASSWORD", "API_URL"
 ]
 
 missing = [v for v in required_env_vars if os.getenv(v) is None]
