@@ -4,7 +4,7 @@ import pickle
 import os
 from dotenv import load_dotenv, find_dotenv
 
-# === ENV laden ===
+# === ENV load ===
 load_dotenv(find_dotenv())
 DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
 MODEL_DIR = os.getenv("MODEL_DIR", "/opt/airflow/models")

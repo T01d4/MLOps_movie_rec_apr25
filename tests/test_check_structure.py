@@ -1,6 +1,6 @@
 import os
 import unittest
-from src.data.check_structure import check_existing_file, check_existing_folder
+from src.movie.data.check_structure import check_existing_file, check_existing_folder
 
 class TestCheckStructure(unittest.TestCase):
     # ...existing code...

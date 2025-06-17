@@ -3,14 +3,13 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
+import os
 import logging
 import subprocess
-import os
-# import load_dotenv
-# # === ENV laden ===
-# load_dotenv.load_dotenv(load_dotenv.find_dotenv())
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 def run_and_log(command: list, cwd: str = "/opt/airflow"):
+    import subprocess
     try:
         logging.info(f"🟦 Running command: {' '.join(map(str, command))}")
         result = subprocess.run(
@@ -25,56 +24,41 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
         if result.returncode == 1:
             output = (result.stdout or "") + (result.stderr or "")
             if ("nothing to commit" in output.lower() or "no changes added to commit" in output.lower()):
-                logging.info("✅ Kein Commit nötig (nichts zu committen).")
+                logging.info("✅ No commit necessary (nothing to commit).")
                 return
         if result.returncode != 0:
-            logging.error(f"❌ Subprozess-Fehler (exit code {result.returncode}): {' '.join(map(str, command))}")
+            logging.error(f"❌ Subprocess error (exit code {result.returncode}): {' '.join(map(str, command))}")
             raise subprocess.CalledProcessError(result.returncode, command)
     except Exception as e:
-        logging.error(f"❌ Subprozess-Ausnahme: {e}")
+        logging.error(f"❌ Subprocess exception: {e}")
         raise
 
 def run_import_raw_data():
-    run_and_log(["python", "/opt/airflow/src/data/import_raw_data.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/data/import_raw_data.py"])
 
 def run_make_dataset():
-    run_and_log(["python", "/opt/airflow/src/data/make_dataset.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/data/make_dataset.py"])  #
 
 def run_build_features():
-    run_and_log(["python", "/opt/airflow/src/features/build_features.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/features/build_features.py"])
 
 def run_train_model():
-    run_and_log(["python", "/opt/airflow/src/models/train_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/train_model.py"])
 
-def run_train_deep_hybrid_model(**context):
-    print(context)
-    print(os.environ.get("MLFLOW_TRACKING_URI"))
-    print(os.environ.get("DAGSHUB_USER"))
-    print(str(os.environ.get("DAGSHUB_TOKEN"))[:10])
-    conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
-    n_neighbors = conf.get("n_neighbors", 10)
-    latent_dim = conf.get("latent_dim", 64)
-    epochs = conf.get("epochs", 30)
-    tfidf_features = conf.get("tfidf_features", 300)
-
-    run_and_log([
-        "python", "/opt/airflow/src/models/train_hybrid_deep_model.py",
-        f"--n_neighbors={n_neighbors}",
-        f"--latent_dim={latent_dim}",
-        f"--epochs={epochs}",
-        f"--tfidf_features={tfidf_features}"
-    ])
+def run_train_deep_hybrid_model():
+    run_and_log(["python", "/opt/airflow/src/movie/models/train_hybrid_deep_model.py"])
 
 def run_validate_model(**context):
     conf = context["dag_run"].conf if "dag_run" in context and context["dag_run"] else {}
     test_user_count = conf.get("test_user_count", 100)
     run_and_log([
-        "python", "/opt/airflow/src/models/validate_model.py",
+        "python", "/opt/airflow/src/movie/models/validate_model.py",
         f"--test_user_count={test_user_count}"
     ])
 
 def run_predict_best_model():
-    run_and_log(["python", "/opt/airflow/src/models/predict_best_model.py"])
+    run_and_log(["python", "/opt/airflow/src/movie/models/predict_best_model.py"])
+
 
 default_args = {
     'owner': 'airflow',
@@ -121,6 +105,12 @@ with DAG(
         task_id="predict_best_model",
         python_callable=run_predict_best_model
     )
+    trigger_monitoring = TriggerDagRunOperator(
+        task_id="trigger_drift_monitoring_dag",
+        trigger_dag_id="drift_monitoring_dag",  # muss mit dem anderen DAG-Namen übereinstimmen
+        wait_for_completion=True  # True, wenn du auf das Ergebnis warten willst
+    )
 
+    # DAG flow (analogous to a classic pipeline)
     import_raw_data >> make_dataset >> build_features
-    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict
+    build_features >> [train_model, train_deep_hybrid_model] >> validate >> predict >> trigger_monitoring 

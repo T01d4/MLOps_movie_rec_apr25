@@ -1,0 +1,14 @@
+{
+    "n_neighbors": 79,
+    "latent_dim": 32,
+    "hidden_dim": 256,
+    "tfidf_features": 2368,
+    "epochs": 50,
+    "lr": 0.001,
+    "batch_size": 128,
+    "metric": "cosine",
+    "content_weight": 0.5,
+    "collab_weight": 0.5,
+    "power_factor": 1.0,
+    "drop_threshold": 0.0
+}

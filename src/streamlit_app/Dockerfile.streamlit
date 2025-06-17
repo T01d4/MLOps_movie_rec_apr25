@@ -3,23 +3,23 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Wenn du docker CLI & compose brauchst, installiere sie richtig über das offizielle Paket (nicht docker.io!)
+# If you need docker CLI & compose inside the container, install it properly from the official source (not docker.io!)
 RUN apt-get update && \
     apt-get install -y curl git bash ca-certificates && \
     curl -fsSL https://get.docker.com -o get-docker.sh && \
     sh get-docker.sh && \
     rm get-docker.sh
 
-# CLI Plugins manuell hinzufügen
+# Manually add CLI plugins
 RUN mkdir -p /usr/local/lib/docker/cli-plugins/ && \
     curl -SL https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose && \
     chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
-# Requirements installieren
+# Install Python dependencies
 COPY requirements.streamlit.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# App-Dateien kopieren
+# Copy app files
 COPY app.py ./app.py
 COPY auth.py ./auth.py
 COPY recommender.py ./recommender.py

@@ -23,7 +23,7 @@ required_env_vars = [
 
 missing = [v for v in required_env_vars if os.getenv(v) is None]
 if missing:
-    st.error(f"❌ Missing .env entry: {missing}")
+    st.error(f"❌ Missing .env entries: {missing}")
     st.stop()
 
 
@@ -34,7 +34,7 @@ if not user:
     st.stop()
 
 role = get_user_role(user)
-st.success(f"Signed in as: {role.upper()}")
+st.success(f"Logged in as: {role.upper()}")
 
 if role == "admin":
     show_admin_panel()
@@ -43,5 +43,5 @@ if role == "admin":
 elif role in ["user", "guest"]:
     show_recommender_ui(user_role=role)
 else:
-    st.warning("unknown role. Please log in again.")
+    st.warning("Unknown role. Please log in again.")
     st.stop()

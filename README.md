@@ -189,6 +189,8 @@ graph LR
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
+    ├── .devcontainer/             # VS Code Umgebung
+    ├── .github/                   # GitHub Actions Workflows
     ├── data
     │   ├── best_model_path<- path inside the container to the best performing model
     │   ├── processed      <- The final, canonical data sets for modeling.
@@ -212,7 +214,7 @@ graph LR
     │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    ├── reports            <- HTML-Reports, Metriken, Prometheus Dumps
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment

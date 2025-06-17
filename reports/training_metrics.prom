@@ -1,0 +1,2 @@
+model_drift_alert{model="Deep Hybrid-KNN_best"} 0
+data_drift_share{model="Deep Hybrid-KNN_best"} 0.0000

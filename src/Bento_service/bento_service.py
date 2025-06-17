@@ -1,3 +1,4 @@
+#bento_service/bento_service.py
 import bentoml
 from bentoml.io import JSON
 import subprocess
@@ -6,12 +7,26 @@ import threading
 import os
 import signal
 import time
+from fastapi import FastAPI
+from src.Bento_service.metrics import prometheus_middleware, prometheus_metrics
+
+app = FastAPI()
+
+app.middleware("http")(prometheus_middleware)
+
+@app.get("/metrics")
+def metrics():
+    return prometheus_metrics()
+
+@app.get("/healthz")
+def health():
+    return {"status": "ok"}
 
 svc = bentoml.Service("hybrid_deep_model_service")
 
 
 LAST_REQUEST_FILE = "/tmp/bento_last_request.txt"
-AUTO_SHUTDOWN_MINUTES = 60  # Minuten Inaktivität bis Shutdown
+AUTO_SHUTDOWN_MINUTES = 60  # Minutes inactivity Shutdown
 
 def touch_last_request():
     with open(LAST_REQUEST_FILE, "w") as f:
@@ -32,14 +47,14 @@ def auto_shutdown_watcher():
             if inactive_minutes > AUTO_SHUTDOWN_MINUTES:
                 print(f"[AutoShutdown] Keine Requests seit {inactive_minutes:.1f} min – beende Service.")
                 os.kill(os.getpid(), signal.SIGTERM)
-        time.sleep(60)  # jede Minute prüfen
+        time.sleep(60)  # every minute
 
-# Starte Auto-Shutdown-Thread (am Anfang des Scripts)
+# Start Auto-Shutdown-Thread (beginning Script)
 t = threading.Thread(target=auto_shutdown_watcher, daemon=True)
 t.start()
 
 
-# Lock für Training
+# Lock Training
 training_lock = threading.Lock()
 
 def run_and_log(command, cwd="/app/src"):
@@ -70,39 +85,31 @@ def run_and_log(command, cwd="/app/src"):
             "returncode": 1
         }
 
-@svc.api(input=JSON(), output=JSON())
-def train_deep_hybrid_model(body):
+
+def train_deep_hybrid_model():
     touch_last_request()
+
     if not training_lock.acquire(blocking=False):
         return {"status": "busy", "msg": "Training already running, try again later."}
+
     try:
-        n_neighbors = body.get("n_neighbors", 10)
-        latent_dim = body.get("latent_dim", 64)
-        epochs = body.get("epochs", 30)
-        tfidf_features = body.get("tfidf_features", 300)
+        
+
         cmd = [
-            "python", "models/train_hybrid_deep_model.py",
-            f"--n_neighbors={n_neighbors}",
-            f"--latent_dim={latent_dim}",
-            f"--epochs={epochs}",
-            f"--tfidf_features={tfidf_features}"
+            "python", "movie/models/train_hybrid_deep_model.py"
         ]
+
         log_data = run_and_log(cmd, cwd="/app/src")
-        result = {
+
+        return {
             "status": "finished",
             "stdout": log_data["stdout"],
-            "stdout_lines": log_data["stdout_lines"],
             "stderr": log_data["stderr"],
+            "stdout_lines": log_data["stdout_lines"],
             "stderr_lines": log_data["stderr_lines"],
-            "returncode": log_data["returncode"],
-            "params_used": {
-                "n_neighbors": n_neighbors,
-                "latent_dim": latent_dim,
-                "epochs": epochs,
-                "tfidf_features": tfidf_features
-            }
+            "returncode": log_data["returncode"]
         }
-        return result
+
     finally:
         training_lock.release()
 
@@ -110,7 +117,7 @@ def train_deep_hybrid_model(body):
 def validate_model(body):
     touch_last_request()
     cmd = [
-        "python", "models/validate_model.py",
+        "python", "movie/models/validate_model.py",
         f"--test_user_count={body.get('test_user_count', 100)}"
     ]
     log_data = run_and_log(cmd, cwd="/app/src")
@@ -126,7 +133,7 @@ def validate_model(body):
 @svc.api(input=JSON(), output=JSON())
 def predict_best_model(body):
     touch_last_request()
-    cmd = ["python", "models/predict_best_model.py"]
+    cmd = ["python", "movie/models/predict_best_model.py"]
     log_data = run_and_log(cmd, cwd="/app/src")
     return {
         "status": "finished",
