@@ -13,6 +13,9 @@ data/**/*.json
 !data/.gitkeep
 !data/processed/
 !data/raw/
+#logs
+src/airflow/logs
+src/prometheus/data
 
 # Models: Nur PKL ausschließen, Struktur und Platzhalter bleiben
 models/*.pkl

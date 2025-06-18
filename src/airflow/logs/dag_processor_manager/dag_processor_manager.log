@@ -2700,3 +2700,131 @@ File Path                                    PID  Runtime      # DAGs    # Error
 /opt/airflow/dags/train_deep_model_dag.py   5288  0.01s             1           0  0.09s           2025-06-18T14:15:52
 ================================================================================
 [2025-06-18T14:16:32.181+0000] {manager.py:451} INFO - Exiting gracefully upon receiving signal 15
+[2025-06-18T15:00:35.663+0000] {manager.py:469} INFO - Processing files using up to 2 processes at a time 
+[2025-06-18T15:00:35.664+0000] {manager.py:470} INFO - Process each file at most once every 30 seconds
+[2025-06-18T15:00:35.665+0000] {manager.py:471} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2025-06-18T15:00:35.666+0000] {manager.py:738} INFO - Searching for files in /opt/airflow/dags
+[2025-06-18T15:00:35.699+0000] {manager.py:741} INFO - There are 3 files in /opt/airflow/dags
+[2025-06-18T15:00:35.845+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  ----------
+/opt/airflow/dags/bento_api_pipeline.py                             0           0
+/opt/airflow/dags/drift_monitoring_dag.py    187  0.09s             0           0
+/opt/airflow/dags/train_deep_model_dag.py    190  0.05s             0           0
+================================================================================
+[2025-06-18T15:01:06.193+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.10s           2025-06-18T15:00:36
+/opt/airflow/dags/drift_monitoring_dag.py    438  0.02s             1           0  0.15s           2025-06-18T15:00:35
+/opt/airflow/dags/train_deep_model_dag.py    441  0.01s             1           0  0.14s           2025-06-18T15:00:35
+================================================================================
+[2025-06-18T15:01:36.657+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.19s           2025-06-18T15:01:06
+/opt/airflow/dags/drift_monitoring_dag.py    453  0.02s             1           0  0.25s           2025-06-18T15:01:06
+/opt/airflow/dags/train_deep_model_dag.py    456  0.01s             1           0  0.22s           2025-06-18T15:01:06
+================================================================================
+[2025-06-18T15:02:07.018+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.10s           2025-06-18T15:01:36
+/opt/airflow/dags/drift_monitoring_dag.py    468  0.03s             1           0  0.14s           2025-06-18T15:01:36
+/opt/airflow/dags/train_deep_model_dag.py    471  0.01s             1           0  0.11s           2025-06-18T15:01:36
+================================================================================
+[2025-06-18T15:02:37.381+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.10s           2025-06-18T15:02:07
+/opt/airflow/dags/drift_monitoring_dag.py    483  0.02s             1           0  0.15s           2025-06-18T15:02:07
+/opt/airflow/dags/train_deep_model_dag.py    486  0.01s             1           0  0.12s           2025-06-18T15:02:07
+================================================================================
+[2025-06-18T15:03:07.726+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.09s           2025-06-18T15:02:37
+/opt/airflow/dags/drift_monitoring_dag.py    498  0.02s             1           0  0.11s           2025-06-18T15:02:37
+/opt/airflow/dags/train_deep_model_dag.py    501  0.01s             1           0  0.10s           2025-06-18T15:02:37
+================================================================================
+[2025-06-18T15:03:38.051+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.09s           2025-06-18T15:03:07
+/opt/airflow/dags/drift_monitoring_dag.py    513  0.02s             1           0  0.12s           2025-06-18T15:03:07
+/opt/airflow/dags/train_deep_model_dag.py    516  0.01s             1           0  0.09s           2025-06-18T15:03:07
+================================================================================
+[2025-06-18T15:04:08.385+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.09s           2025-06-18T15:03:38
+/opt/airflow/dags/drift_monitoring_dag.py    528  0.02s             1           0  0.11s           2025-06-18T15:03:38
+/opt/airflow/dags/train_deep_model_dag.py    531  0.01s             1           0  0.11s           2025-06-18T15:03:38
+================================================================================
+[2025-06-18T15:04:38.733+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.10s           2025-06-18T15:04:08
+/opt/airflow/dags/drift_monitoring_dag.py    543  0.02s             1           0  0.11s           2025-06-18T15:04:08
+/opt/airflow/dags/train_deep_model_dag.py    546  0.01s             1           0  0.09s           2025-06-18T15:04:08
+================================================================================
+[2025-06-18T15:05:09.080+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.09s           2025-06-18T15:04:38
+/opt/airflow/dags/drift_monitoring_dag.py    558  0.02s             1           0  0.11s           2025-06-18T15:04:38
+/opt/airflow/dags/train_deep_model_dag.py    561  0.01s             1           0  0.10s           2025-06-18T15:04:38
+================================================================================
+[2025-06-18T15:05:36.362+0000] {manager.py:738} INFO - Searching for files in /opt/airflow/dags
+[2025-06-18T15:05:36.399+0000] {manager.py:741} INFO - There are 3 files in /opt/airflow/dags
+[2025-06-18T15:05:39.459+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.09s           2025-06-18T15:05:09
+/opt/airflow/dags/drift_monitoring_dag.py    573  0.02s             1           0  0.12s           2025-06-18T15:05:09
+/opt/airflow/dags/train_deep_model_dag.py    576  0.00s             1           0  0.09s           2025-06-18T15:05:09
+================================================================================
+[2025-06-18T15:06:09.790+0000] {manager.py:879} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/bento_api_pipeline.py                             1           0  0.09s           2025-06-18T15:05:39
+/opt/airflow/dags/drift_monitoring_dag.py    588  0.02s             1           0  0.11s           2025-06-18T15:05:39
+/opt/airflow/dags/train_deep_model_dag.py    591  0.01s             1           0  0.09s           2025-06-18T15:05:39
+================================================================================
+[2025-06-18T15:06:13.197+0000] {manager.py:451} INFO - Exiting gracefully upon receiving signal 15
