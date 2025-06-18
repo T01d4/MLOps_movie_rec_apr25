@@ -1,0 +1,37 @@
+[2025-06-18T12:07:50.986+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-18T12:07:49.229648+00:00 [queued]>
+[2025-06-18T12:07:50.992+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-18T12:07:49.229648+00:00 [queued]>
+[2025-06-18T12:07:50.993+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-18T12:07:51.003+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): import_raw_data> on 2025-06-18 12:07:49.229648+00:00
+[2025-06-18T12:07:51.009+0000] {standard_task_runner.py:60} INFO - Started process 234 to run task
+[2025-06-18T12:07:51.012+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'import_raw_data', 'manual__2025-06-18T12:07:49.229648+00:00', '--job-id', '569', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp4ajzchmo']
+[2025-06-18T12:07:51.014+0000] {standard_task_runner.py:88} INFO - Job 569: Subtask import_raw_data
+[2025-06-18T12:07:51.066+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.import_raw_data manual__2025-06-18T12:07:49.229648+00:00 [running]> on host 6699b5c3cbca
+[2025-06-18T12:07:51.149+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='import_raw_data' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T12:07:49.229648+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-18T12:07:49.229648+00:00'
+[2025-06-18T12:07:51.150+0000] {train_deep_model_dag.py:14} INFO - 🟦 Running command: python /opt/***/src/movie/data/import_raw_data.py
+[2025-06-18T12:07:51.151+0000] {train_deep_model_dag.py:15} INFO - 🟦 Working directory: /opt/***
+[2025-06-18T12:07:51.151+0000] {train_deep_model_dag.py:16} INFO - MLflow Tracking URI: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+[2025-06-18T12:07:51.151+0000] {train_deep_model_dag.py:17} INFO - User: Klemp.Thomas
+[2025-06-18T12:07:51.152+0000] {train_deep_model_dag.py:18} INFO - Password: 24a59c66cf
+[2025-06-18T12:09:18.882+0000] {train_deep_model_dag.py:25} INFO - 🟩 [stdout]:
+
+[2025-06-18T12:09:18.883+0000] {train_deep_model_dag.py:27} WARNING - 🟨 [stderr]:
+2025-06-18 12:07:51,354 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/genome-scores.csv
+2025-06-18 12:08:19,211 - root - INFO - ✅ Data saved to : /opt/***/data/raw/genome-scores.csv
+2025-06-18 12:08:19,212 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/genome-tags.csv
+2025-06-18 12:08:19,406 - root - INFO - ✅ Data saved to : /opt/***/data/raw/genome-tags.csv
+2025-06-18 12:08:19,406 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/links.csv
+2025-06-18 12:08:19,798 - root - INFO - ✅ Data saved to : /opt/***/data/raw/links.csv
+2025-06-18 12:08:19,799 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/movies.csv
+2025-06-18 12:08:20,278 - root - INFO - ✅ Data saved to : /opt/***/data/raw/movies.csv
+2025-06-18 12:08:20,278 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/ratings.csv
+2025-06-18 12:09:16,885 - root - INFO - ✅ Data saved to : /opt/***/data/raw/ratings.csv
+2025-06-18 12:09:16,886 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/README.txt
+2025-06-18 12:09:17,112 - root - INFO - ✅ Data saved to : /opt/***/data/raw/README.txt
+2025-06-18 12:09:17,113 - root - INFO - ⬇️  Download: https://mlops-project-db.s3.eu-west-1.amazonaws.com/movie_recommandation/tags.csv
+2025-06-18 12:09:18,861 - root - INFO - ✅ Data saved to : /opt/***/data/raw/tags.csv
+2025-06-18 12:09:18,862 - root - INFO - ✅ Raw Data created.
+
+[2025-06-18T12:09:18.884+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T12:09:18.893+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=import_raw_data, execution_date=20250618T120749, start_date=20250618T120750, end_date=20250618T120918
+[2025-06-18T12:09:18.922+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T12:09:18.944+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

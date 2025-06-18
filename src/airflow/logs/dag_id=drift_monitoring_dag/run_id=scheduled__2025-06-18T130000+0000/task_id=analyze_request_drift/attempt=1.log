@@ -1,0 +1,29 @@
+[2025-06-18T14:00:12.298+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: drift_monitoring_dag.analyze_request_drift scheduled__2025-06-18T13:00:00+00:00 [queued]>
+[2025-06-18T14:00:12.305+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: drift_monitoring_dag.analyze_request_drift scheduled__2025-06-18T13:00:00+00:00 [queued]>
+[2025-06-18T14:00:12.305+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-06-18T14:00:12.316+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): analyze_request_drift> on 2025-06-18 13:00:00+00:00
+[2025-06-18T14:00:12.323+0000] {standard_task_runner.py:60} INFO - Started process 4689 to run task
+[2025-06-18T14:00:12.325+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'drift_monitoring_dag', 'analyze_request_drift', 'scheduled__2025-06-18T13:00:00+00:00', '--job-id', '639', '--raw', '--subdir', 'DAGS_FOLDER/drift_monitoring_dag.py', '--cfg-path', '/tmp/tmpup2r06zc']
+[2025-06-18T14:00:12.327+0000] {standard_task_runner.py:88} INFO - Job 639: Subtask analyze_request_drift
+[2025-06-18T14:00:12.361+0000] {task_command.py:423} INFO - Running <TaskInstance: drift_monitoring_dag.analyze_request_drift scheduled__2025-06-18T13:00:00+00:00 [running]> on host 3cef70cd7501
+[2025-06-18T14:00:12.423+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='drift_monitoring_dag' AIRFLOW_CTX_TASK_ID='analyze_request_drift' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T13:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-18T13:00:00+00:00'
+[2025-06-18T14:00:12.425+0000] {drift_monitoring_dag.py:33} INFO - 📥 Start Request-Drift-Analyse...
+[2025-06-18T14:00:15.522+0000] {drift_monitoring_dag.py:40} INFO - ✅ Drift-script runs with code 0
+[2025-06-18T14:00:15.523+0000] {drift_monitoring_dag.py:44} WARNING - ⚠️ stderr:
+[2025-06-18 14:00:14,578] INFO - ✅ Reference data loaded: /opt/***/data/processed/hybrid_deep_embedding_best.csv
+[2025-06-18 14:00:14,583] INFO - ✅ User request data loaded, rows: 28
+[2025-06-18 14:00:14,981] INFO - 📊 Evidently drift report saved: /opt/***/reports/request_drift.json
+INFO:***.task:📊 Evidently drift report saved: /opt/***/reports/request_drift.json
+[2025-06-18 14:00:14,990] INFO - ✅ Prometheus metrics saved:
+    api_request_drift_alert 1
+    api_request_drift_share 1.0000
+    drift_score_sliding_window{model="Deep Hybrid-KNN_best"} 1.000000
+INFO:***.task:✅ Prometheus metrics saved:
+    api_request_drift_alert 1
+    api_request_drift_share 1.0000
+    drift_score_sliding_window{model="Deep Hybrid-KNN_best"} 1.000000
+
+[2025-06-18T14:00:15.524+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T14:00:15.532+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=drift_monitoring_dag, task_id=analyze_request_drift, execution_date=20250618T130000, start_date=20250618T140012, end_date=20250618T140015
+[2025-06-18T14:00:15.550+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T14:00:15.566+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

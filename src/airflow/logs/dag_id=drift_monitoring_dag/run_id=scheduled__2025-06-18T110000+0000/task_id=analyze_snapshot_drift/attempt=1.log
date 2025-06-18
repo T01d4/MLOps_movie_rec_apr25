@@ -1,0 +1,47 @@
+[2025-06-18T12:00:01.485+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: drift_monitoring_dag.analyze_snapshot_drift scheduled__2025-06-18T11:00:00+00:00 [queued]>
+[2025-06-18T12:00:01.492+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: drift_monitoring_dag.analyze_snapshot_drift scheduled__2025-06-18T11:00:00+00:00 [queued]>
+[2025-06-18T12:00:01.492+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-06-18T12:00:01.503+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): analyze_snapshot_drift> on 2025-06-18 11:00:00+00:00
+[2025-06-18T12:00:01.511+0000] {standard_task_runner.py:60} INFO - Started process 513 to run task
+[2025-06-18T12:00:01.513+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'drift_monitoring_dag', 'analyze_snapshot_drift', 'scheduled__2025-06-18T11:00:00+00:00', '--job-id', '566', '--raw', '--subdir', 'DAGS_FOLDER/drift_monitoring_dag.py', '--cfg-path', '/tmp/tmpfcrad9r2']
+[2025-06-18T12:00:01.514+0000] {standard_task_runner.py:88} INFO - Job 566: Subtask analyze_snapshot_drift
+[2025-06-18T12:00:01.553+0000] {task_command.py:423} INFO - Running <TaskInstance: drift_monitoring_dag.analyze_snapshot_drift scheduled__2025-06-18T11:00:00+00:00 [running]> on host b50ef10c1330
+[2025-06-18T12:00:01.628+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='drift_monitoring_dag' AIRFLOW_CTX_TASK_ID='analyze_snapshot_drift' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T11:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-18T11:00:00+00:00'
+[2025-06-18T12:00:01.629+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2025-06-18T12:00:01.630+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'python /opt/***/src/monitoring/analyze_drift.py']
+[2025-06-18T12:00:01.646+0000] {subprocess.py:86} INFO - Output:
+[2025-06-18T12:00:06.328+0000] {subprocess.py:93} INFO - 2025/06/18 12:00:06 INFO mlflow.tracking.fluent: Experiment with name 'hybrid_deep_model' does not exist. Creating a new experiment.
+[2025-06-18T12:00:06.330+0000] {subprocess.py:93} INFO - [2025-06-18 12:00:06,329] WARNING - ⚠️ Failed to load configuration – using default – Default: [Errno 2] No such file or directory: '/opt/***/data/monitoring/monitoring_conf.json'
+[2025-06-18T12:00:06.397+0000] {subprocess.py:93} INFO - [2025-06-18 12:00:06,397] INFO - ✅ Training and test data loaded
+[2025-06-18T12:00:10.047+0000] {subprocess.py:93} INFO - [2025-06-18 12:00:10,047] INFO - 📊 Evidently report saved: /opt/***/reports/drift_report.html
+[2025-06-18T12:00:10.048+0000] {subprocess.py:93} INFO - INFO:***.task:📊 Evidently report saved: /opt/***/reports/drift_report.html
+[2025-06-18T12:00:10.067+0000] {subprocess.py:93} INFO - [2025-06-18 12:00:10,066] INFO - ✅ Prometheus metrics saved: /opt/***/reports/drift_metrics.prom
+[2025-06-18T12:00:10.068+0000] {subprocess.py:93} INFO - INFO:***.task:✅ Prometheus metrics saved: /opt/***/reports/drift_metrics.prom
+[2025-06-18T12:00:10.068+0000] {subprocess.py:93} INFO - [2025-06-18 12:00:10,068] ERROR - ❌ Error loading embedding files: [Errno 2] No such file or directory: '/opt/***/data/processed/hybrid_deep_embedding_best.csv'
+[2025-06-18T12:00:10.069+0000] {subprocess.py:93} INFO - ERROR:***.task:❌ Error loading embedding files: [Errno 2] No such file or directory: '/opt/***/data/processed/hybrid_deep_embedding_best.csv'
+[2025-06-18T12:00:10.069+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2025-06-18T12:00:10.070+0000] {subprocess.py:93} INFO -   File "/opt/***/src/monitoring/analyze_drift.py", line 166, in <module>
+[2025-06-18T12:00:10.071+0000] {subprocess.py:93} INFO -     reference_df = pd.read_csv(BEST_EMBEDDING_PATH)
+[2025-06-18T12:00:10.072+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+[2025-06-18T12:00:10.072+0000] {subprocess.py:93} INFO -     return _read(filepath_or_buffer, kwds)
+[2025-06-18T12:00:10.073+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+[2025-06-18T12:00:10.073+0000] {subprocess.py:93} INFO -     parser = TextFileReader(filepath_or_buffer, **kwds)
+[2025-06-18T12:00:10.074+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+[2025-06-18T12:00:10.074+0000] {subprocess.py:93} INFO -     self._engine = self._make_engine(f, self.engine)
+[2025-06-18T12:00:10.075+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+[2025-06-18T12:00:10.075+0000] {subprocess.py:93} INFO -     self.handles = get_handle(
+[2025-06-18T12:00:10.076+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.10/site-packages/pandas/io/common.py", line 873, in get_handle
+[2025-06-18T12:00:10.076+0000] {subprocess.py:93} INFO -     handle = open(
+[2025-06-18T12:00:10.076+0000] {subprocess.py:93} INFO - FileNotFoundError: [Errno 2] No such file or directory: '/opt/***/data/processed/hybrid_deep_embedding_best.csv'
+[2025-06-18T12:00:11.355+0000] {subprocess.py:97} INFO - Command exited with return code 1
+[2025-06-18T12:00:11.366+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.10/site-packages/airflow/operators/bash.py", line 212, in execute
+    raise AirflowException(
+airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
+[2025-06-18T12:00:11.370+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=drift_monitoring_dag, task_id=analyze_snapshot_drift, execution_date=20250618T110000, start_date=20250618T120001, end_date=20250618T120011
+[2025-06-18T12:00:11.381+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 566 for task analyze_snapshot_drift (Bash command failed. The command returned a non-zero exit code 1.; 513)
+[2025-06-18T12:00:11.415+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2025-06-18T12:00:11.436+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
