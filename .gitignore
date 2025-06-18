@@ -7,6 +7,8 @@ data/*.csv
 data/**/*.csv
 data/raw/*.csv
 data/processed/*.csv
+data/*.json
+data/**/*.json
 !data/README.txt
 !data/.gitkeep
 !data/processed/
