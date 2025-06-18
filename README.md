@@ -1,9 +1,27 @@
-MovieRecomm - MLOPS Project
-
-# Project Name
+# MovieRecomm - MLOPS Project
 
 ## Overview
-This project is a data science / ML service, featuring containerization via Docker and development environment setup via VS Code Devcontainer. It includes automated tests and data version control with DVC.
+MovieRecomm is a full-stack machine learning project for movie recommendation, taking a practical approach from Jupyter notebook prototyping all the way to containerized, production-grade MLOps.
+The project’s core: Build reliable, personalized movie recommendations, automate ML pipelines, and make the system easily reproducible for any team member.
+
+The project began with fast experimentation and model-building in Jupyter notebooks, focusing on understanding the data, user behavior, and the most effective recommendation strategies. Special care was taken to construct train/test splits for each individual user—a non-trivial problem in real-world recommendation systems. We also integrated genre-based modeling to combine collaborative and content-based filtering.
+
+Once initial models delivered convincing results, the system was refactored into a modern, modular architecture:
+
+* All services (API, Streamlit app, Airflow, database, monitoring) run in Docker containers managed by Docker Compose.
+
+* Orchestration is handled by Apache Airflow, automating data pipelines from ingestion to retraining.
+
+* Data and model artifacts are versioned using DVC to guarantee full reproducibility.
+
+* A VS Code Devcontainer is provided for easy, consistent onboarding and development.
+
+* Automated tests and continuous integration are in place for reliability and fast iteration.
+
+* Monitoring with Prometheus and Grafana ensures insight into both system health and model performance.
+
+### In short:
+MovieRecomm demonstrates how to take a data-driven prototype and turn it into a robust, maintainable machine learning product—ready for real-world usage and further scaling.
 
 ## Features
 - Docker Compose for container orchestration
@@ -13,6 +31,61 @@ This project is a data science / ML service, featuring containerization via Dock
 - Example data and pre-trained models included
 - Airflow run ning the pipelines
 - Streamlit for user access and visualisation
+
+## Methodology
+This project followed a typical data science and MLOps workflow, starting with rapid prototyping in Jupyter Notebooks and evolving into a production-ready, containerized system.
+
+### Prototyping and Exploratory Data Analysis
+
+* The project started with exploratory analysis and modeling in Jupyter Notebooks.
+
+* Data wrangling, visualization, feature engineering, and initial model selection were performed interactively to quickly iterate on ideas and gain insights.
+
+### Custom Train/Test Split per User
+
+* Unlike standard ML projects, splitting the data required special handling.
+
+* For every user in the dataset, a dedicated train and test set was created to ensure fair evaluation and avoid data leakage between train/test phases.
+
+* This approach guarantees that each user’s recommendations are tested on unseen movies, leading to a more realistic and robust model evaluation.
+
+### Genre-Based Modeling
+
+* In addition to user-based recommendations, the system also generates predictions based on movie genres.
+
+* This dual-approach allows for hybrid recommendations, combining collaborative filtering with content-based filtering.
+
+### Transition to Production Architecture
+
+* Once the notebook-based models reached satisfactory results, the project moved to a modular, containerized architecture.
+
+* All components (API, Streamlit app, Airflow pipelines, database, monitoring stack) were migrated into Docker containers for consistency and reproducibility.
+
+### Pipeline Orchestration and Automation
+
+* Apache Airflow orchestrates the training, evaluation, and retraining pipelines.
+
+* Each step (data processing, model training, validation, reporting) is automated, ensuring a reproducible workflow from raw data to final predictions.
+
+### Data and Model Versioning
+
+* All datasets, model artifacts, and experiment results are versioned using DVC (Data Version Control), supporting experiment tracking and rollbacks.
+
+* Environment variables and secrets are kept out of version control to protect sensitive data.
+
+### Testing, CI/CD and Development Workflow
+
+* Automated tests (pytest) and GitHub Actions CI/CD ensure code quality and fast feedback on pull requests.
+
+* The project supports fast onboarding with a VS Code Devcontainer and a unified Docker Compose setup.
+
+### Monitoring and Visualization
+
+* Model performance and system health are continuously monitored using Prometheus and visualized with Grafana dashboards.
+
+* Drift detection, metrics, and system reports are integrated into the monitoring stack.
+
+By combining rapid notebook-based experimentation with robust MLOps practices, this project delivers a scalable, maintainable, and production-ready movie recommendation system.
 
 ## Installation
 
