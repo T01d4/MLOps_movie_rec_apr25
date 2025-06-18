@@ -32,9 +32,7 @@ API_USAGE = Counter("recommendation_api_usage_total", "API-Interaktionen", ["mod
 DRIFT_ALERT = Gauge("drift_alert", "Drift Alert Status (1=drift, 0=ok)", ["model"])
 REQUEST_LOG_PATH = os.path.join(os.getenv("DATA_DIR", "data"), "monitoring", "api_requests.csv")
 DRIFT_LOG_PATH = os.getenv("DRIFT_LOG_PATH", "/app/data/drift_request_log.csv")
-CONFIDENCE_HISTOGRAM = Histogram(
-    "prediction_confidence", "Approximated prediction confidence", buckets=[i/10 for i in range(11)]
-)
+CONFIDENCE_HISTOGRAM = Histogram("prediction_confidence", "Approximated prediction confidence", buckets=[i/10 for i in range(11)])
 os.makedirs(os.path.dirname(REQUEST_LOG_PATH), exist_ok=True)
 
 
@@ -56,7 +54,7 @@ def ensure_best_embedding_exists():
         except Exception as e:
             raise RuntimeError(f"MLflow artifact download failed: {e}")
     else:
-        # Falls lokal vorhanden, lade Version trotzdem
+        # If already available locally, still load version
         try:
             client = MlflowClient()
             mv = client.get_model_version_by_alias("hybrid_deep_model", "best_model")
@@ -113,7 +111,7 @@ def track_click(item_id: int):
 
 @router.post("/recommend")
 def recommend_movies(payload: dict = Body(...)):
-    start_time = time.time()
+    start_overall = time.time()
     REQUEST_COUNT.inc()
 
         # read Drift-Alert from Evidently 
@@ -121,10 +119,11 @@ def recommend_movies(payload: dict = Body(...)):
         with open("reports/drift_metrics.json", "r", encoding="utf-8") as f:
             drift_data = json.load(f)
         drift_score = drift_data["metrics"][0]["result"].get("dataset_drift", 0.0)
-        DRIFT_ALERT.labels("Deep Hybrid-KNN_best").set(int(drift_score > 0.3))
-        DRIFT_ALERT.labels("Deep Hybrid-KNN_local").set(int(drift_score > 0.3))
+        DRIFT_ALERT.labels("Deep Hybrid-KNN_best_Model").set(int(drift_score > 0.3))
+        DRIFT_ALERT.labels("Deep Hybrid-KNN_Last_Trained").set(int(drift_score > 0.3))
     except Exception:
-        DRIFT_ALERT.set(0)  # Fallback
+        DRIFT_ALERT.labels(model="hybrid_deep_model_best").set(0)
+        DRIFT_ALERT.labels(model="hybrid_deep_model_last").set(0)
 
 
     selected_movies = payload.get("selected_movies", [])
@@ -134,7 +133,7 @@ def recommend_movies(payload: dict = Body(...)):
 
     result = {}
 
-    # 1. Deep Hybrid-KNN_best
+    # 1. Deep Hybrid-KNN_best_Model
     try:
         matrix_path = ensure_best_embedding_exists()
         embedding_df = pd.read_csv(matrix_path, index_col=0)
@@ -149,8 +148,8 @@ def recommend_movies(payload: dict = Body(...)):
         rec = []
         
         if not selected_indices:
-            print("⚠️ Keine gültigen Movie-IDs in embedding_df gefunden.")
-            result["Deep Hybrid-KNN_best"] = []
+            print("⚠️ No valid movie IDs found in embedding_df.")
+            result["Deep Hybrid-KNN_best_Model"] = []
             return result
 
         if selected_indices:
@@ -168,10 +167,10 @@ def recommend_movies(payload: dict = Body(...)):
                     user_df.to_csv(REQUEST_LOG_PATH, index=False)
                 else:
                     user_df.to_csv(REQUEST_LOG_PATH, mode="a", header=False, index=False)
-                print(f"📥 Nutzer-Embedding geloggt: {user_df.shape}")
+                print(f"📥 User embedding logged: {user_df.shape}")
                 
             except Exception as e:
-                print(f"⚠️ Logging fehlgeschlagen: {e}")
+                print(f"⚠️ Logging failed: {e}")
             
 
 
@@ -183,14 +182,15 @@ def recommend_movies(payload: dict = Body(...)):
             recommended = movies_df[movies_df["movieId"].isin(rec_movie_ids)].copy()
             recommended = recommended.drop_duplicates("movieId")
             rec = [{"movieId": int(row["movieId"]), "title": row["title"], "poster_url": get_tmdb_poster_url(row["movieId"], links_df, api_key)} for _, row in recommended.head(10).iterrows()]     
-        result["Deep Hybrid-KNN_best"] = rec
-        API_USAGE.labels(model="Deep Hybrid-KNN_best").inc()
-        REQUEST_LATENCY.labels(model="hybrid_deep_model").observe(time.time() - start_time)
+        result["Deep Hybrid-KNN_best_Model"] = rec
+        API_USAGE.labels(model="hybrid_deep_model_best").inc()
+        REQUEST_LATENCY.labels(model="hybrid_deep_model_best").observe(time.time() - start_overall)
     except Exception as e:
-        result["Deep Hybrid-KNN_best"] = []
+        result["Deep Hybrid-KNN_best_Model"] = []
 
-    # 2. Deep Hybrid-KNN_local
+    # 2. Deep Hybrid-KNN_Last_Trained
     try:
+        start_last_trained = time.time()
         matrix_path = "data/processed/hybrid_deep_embedding.csv"
         model_path = "models/hybrid_deep_knn.pkl"
         config_path = "data/processed/pipeline_conf.json"
@@ -229,12 +229,12 @@ def recommend_movies(payload: dict = Body(...)):
                 "poster_url": get_tmdb_poster_url(row["movieId"], links_df, api_key)
             } for _, row in recommended.head(10).iterrows()]
 
-        result["Deep Hybrid-KNN_local"] = rec
-        API_USAGE.labels(model="Deep Hybrid-KNN_local").inc()
-        REQUEST_LATENCY.labels(model="Deep Hybrid-KNN_local").observe(time.time() - start_time)
+        result["Deep Hybrid-KNN_Last_Trained"] = rec
+        API_USAGE.labels(model="hybrid_deep_model_last").inc()
+        REQUEST_LATENCY.labels(model="hybrid_deep_model_last").observe(time.time() - start_last_trained)
     except Exception as e:
         print(f"❌ Error during local prediction: {e}")
-        result["Deep Hybrid-KNN_local"] = []
+        result["Deep Hybrid-KNN_Last_Trained"] = []
 
     # 3. Basis Modell
     try:
@@ -305,14 +305,16 @@ def recommend_movies(payload: dict = Body(...)):
             result["TMDb-Similar"] = []
     except Exception:
         result["TMDb-Similar"] = []
-    conf_score = 1 - np.mean(distances)  # Annahme: kleinere Distanz = höhere Sicherheit
+    conf_score = 1 - np.mean(distances)  # Assumption: smaller distance = higher confidence
     CONFIDENCE_HISTOGRAM.observe(conf_score)
     RECOMMENDATIONS.inc()
     try:
-        conversion_rate = CONVERSIONS._value.get() / RECOMMENDATIONS._value.get() if RECOMMENDATIONS._value.get() > 0 else 0
-        #CONVERSION_RATE.labels(model="Deep Hybrid-KNN_best").set(conversion_rate)
-        CONVERSION_RATE.set(conversion_rate)
+        shown = RECOMMENDATIONS._value.get()
+        clicked = CONVERSIONS._value.get()
+        conversion_rate = clicked / shown if shown > 0 else 0
+        CONVERSION_RATE.labels(model="hybrid_deep_model_best").set(conversion_rate)
+        CONVERSION_RATE.labels(model="hybrid_deep_model_last").set(conversion_rate)
     except Exception as e:
-        print(f"⚠️ Conversion Rate konnte nicht berechnet werden: {e}")
-        # Nur wenn der erste (beste) Modell-Pfad verwendet wurde
+        print(f"⚠️ Conversion rate could not be calculated {e}")
+
     return result

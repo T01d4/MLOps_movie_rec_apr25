@@ -111,8 +111,8 @@ with DAG(
     )
     trigger_monitoring = TriggerDagRunOperator(
         task_id="trigger_drift_monitoring_dag",
-        trigger_dag_id="drift_monitoring_dag",  # muss mit dem anderen DAG-Namen übereinstimmen
-        wait_for_completion=True  # True, wenn du auf das Ergebnis warten willst
+        trigger_dag_id="drift_monitoring_dag",  
+        wait_for_completion=True  # True waiting for result
     )
 
     # DAG flow (analogous to a classic pipeline)

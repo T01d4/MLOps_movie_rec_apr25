@@ -67,7 +67,7 @@ def show_dag_progress(dag_id):
     log_placeholder = st.empty()
     active = True
     last_percent = -1
-    drift_triggered = False  # 👉 Flag zum späteren Anzeigen
+    drift_triggered = False  # Flag for showing monitoring later
 
     while active:
         try:
@@ -106,7 +106,7 @@ def show_dag_progress(dag_id):
             st.error(f"Polling error: {e}")
             break
 
-    # Nach der Hauptschleife – Monitoring-Logs nur einmal sauber anzeigen
+    # After the main loop – show monitoring logs once
     if drift_triggered:
         st.markdown("---")
         st.subheader("🧪 Logs: Drift Monitoring Pipeline")
@@ -197,7 +197,7 @@ def show_drift_score():
 
     drift_path = os.path.join(REPORT_DIR, "drift_metrics.json")
     if not os.path.exists(drift_path):
-        st.warning("⚠️ Kein drift_metrics.json gefunden.")
+        st.warning("⚠️ No drift_metrics.json found.")
         return
 
     with open(drift_path, "r") as f:
@@ -213,20 +213,20 @@ def show_drift_score():
         color = "green" if drift_score < 0.3 else "orange" if drift_score < 0.6 else "red"
         st.markdown(f"### Gesamtdrift: <span style='color:{color}'><b>{drift_score:.2f}</b></span>", unsafe_allow_html=True)
         if drift_score < 0.3:
-            st.success("✅ Kein signifikanter Drift erkannt.")
+            st.success("✅ No significant drift detected.")
         elif drift_score < 0.6:
-            st.warning("⚠️ Leichter Drift erkannt.")
+            st.warning("⚠️ Slight drift detected.")
         else:
-            st.error("🚨 Starker Drift! Re-Training empfohlen.")
+            st.error("🚨 Strong drift! Re-training recommended.")
     else:
-        st.info("ℹ️ Kein Drift-Wert gefunden.")
+        st.info("ℹ️ No drift score found.")
 
 def show_grafana_dashboard():
     grafana_url = os.getenv("GRAFANA_URL", "")
     if grafana_url:
         components.iframe(grafana_url, height=800, scrolling=True)
     else:
-        st.info("ℹ️ Kein Grafana-URL gesetzt.")
+        st.info("ℹ️ No Grafana URL set.")
 
 def show_monitoring_downloads():
     files_found = False
@@ -236,23 +236,23 @@ def show_monitoring_downloads():
                 st.download_button(f"⬇️ {file}", f, file_name=file)
                 files_found = True
     if not files_found:
-        st.info("ℹ️ Keine Monitoring-Dateien gefunden.")
+        st.info("ℹ️ No monitoring files found.")
 
 def show_model_comparison_charts():
     data_dir = os.getenv("DATA_DIR", "/app/data")
     csv_path = os.path.join(data_dir, "monitoring", "metrics_from_mlflow.csv")
 
     if not os.path.exists(csv_path):
-        st.warning("⚠️ metrics_from_mlflow.csv nicht gefunden.")
+        st.warning("⚠️ metrics_from_mlflow.csv not found.")
         return
 
     df = pd.read_csv(csv_path)
 
     if df.empty or "precision_10" not in df.columns:
-        st.warning("⚠️ Keine gültigen Metriken gefunden.")
+        st.warning("⚠️ No valid metrics found")
         return
 
-    # Leere Werte mit 0 füllen für Radar Chart
+    # Empty Values set to zero - futur work - ongoing
     metrics = ["precision_10", "latency", "drift_score"]
     for col in metrics:
         if col not in df.columns:
@@ -276,18 +276,18 @@ def show_model_comparison_charts():
         ))
     fig_radar.update_layout(
         polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
-        title="📉 Modellvergleich: Precision, Latenz, Drift (normalisiert)"
+        title="📉 Model Comparison: Precision, Latency, Drift (normalized)"
     )
     st.plotly_chart(fig_radar, use_container_width=True)
 
-    # Bar Chart – Top 5 nach Precision
+    # Bar Chart – Top 5 for Precision
     df_bar = df.sort_values("precision_10", ascending=False).head(5)
     fig_bar = px.bar(
         df_bar,
         x="version",
         y="precision_10",
         color="drift_score",
-        title="📊 Top 5 Modelle nach Precision@10",
+        title="📊 Top 5 Models by Precision@10",
         labels={"precision_10": "Precision@10", "drift_score": "Drift"},
         barmode="group"
     )
@@ -296,7 +296,7 @@ def show_model_comparison_charts():
 
 def query_prometheus_metric(metric_name):
     try:
-        prometheus_url = os.getenv("PROM_URL", "http://localhost:9090")  # oder http://prometheus:9090 im Docker
+        prometheus_url = os.getenv("PROM_URL", "http://localhost:9090")  # or http://prometheus:9090 in Docker
         response = requests.get(f"{prometheus_url}/api/v1/query", params={"query": metric_name})
         if response.status_code == 200:
             result = response.json()["data"]["result"]
@@ -339,28 +339,28 @@ def show_prometheus_metrics():
 
         with col1:
             if latency_best is not None:
-                st.metric("🕒 Latenz (Best)", f"{latency_best:.2f}s")
+                st.metric("🕒 Latency (Best)", f"{latency_best:.2f}s")
             if count_best is not None:
-                st.metric("📬 Anfragen (Best)", int(count_best))
+                st.metric("📬 Requests (Best)", int(count_best))
             if error_405 is not None:
-                st.metric("❗ Fehler (405)", int(error_405))
+                st.metric("❗ Errors  (405)", int(error_405))
             if precision is not None:
                 st.metric("🎯 Precision@10", f"{precision:.4f}")
 
         with col2:
             if latency_local is not None:
-                st.metric("🕒 Latenz (Local)", f"{latency_local:.2f}s")
+                st.metric("🕒 Latency (Local)", f"{latency_local:.2f}s")
             if count_local is not None:
-                st.metric("📬 Anfragen (Local)", int(count_local))
+                st.metric("📬 Requests (Local)", int(count_local))
             if error_500 is not None:
-                st.metric("❗ Fehler (500)", int(error_500))
+                st.metric("❗ Errors  (500)", int(error_500))
             if unique_users is not None:
-                st.metric("👥 Interaktionen", int(unique_users))
+                st.metric("👥 Interactions", int(unique_users))
 
         if health is not None:
             st.metric("❤️ Health Status", "✅ OK" if int(health) == 1 else "❌ Down")
 
-    # Separater Drift-Block
+    # Separate Drift-Block
 
 def generate_drift_report():
     try:
@@ -370,10 +370,10 @@ def generate_drift_report():
             capture_output=True,
             text=True
         )
-        st.success("📄 Drift Report erfolgreich erzeugt.")
+        st.success("📄 Drift report successfully generated.")
         st.code(result.stdout)
     except subprocess.CalledProcessError as e:
-        st.error("❌ Fehler beim Erzeugen des Drift-Reports.")
+        st.error("❌ Error generating the drift report.")
         st.code(e.stderr)
 
 
@@ -412,7 +412,7 @@ def show_admin_panel():
     with col2:
         power_factor = st.slider("Power Factor", 0.1, 5.0, 1.0, step=0.1)
         drop_threshold = st.slider("Drop Threshold", 0.0, 1.0, 0.0, step=0.05)
-    # Speichern
+    # Save
     st.session_state["pipeline_conf"] = {"test_user_count": test_user_count}
     config_dict = {
         "n_neighbors": n_neighbors,
@@ -465,9 +465,9 @@ def show_admin_panel():
                 requests.post(f"{API_URL}/airflow/abort-runs?dag_id={dag_id}")
                 abort_resp = requests.post(f"{API_URL}/airflow/abort-runs?dag_id={dag_id}")
                 if abort_resp.ok:
-                    st.info("⏹️ Alte DAG-Runs wurden abgebrochen.")
+                    st.info("⏹️ Old DAG runs have been stopped.")
                 else:
-                    st.warning(f"⚠️ Abbruch nicht erfolgreich: {abort_resp.text}")
+                    st.warning(f"⚠️ Aborting was not successful: {abort_resp.text}")
                 resp = trigger_dag(dag_id, st.session_state["pipeline_conf"])
                 if resp.status_code in (200, 201):
                     st.success(f"{label} gestartet!")
@@ -487,12 +487,12 @@ def show_admin_panel():
         with col1:
             if st.button("▶️ BentoML Service START", key="bento_start"):
                 os.system("docker compose up -d bentoml_service")
-                st.success("BentoML-Service gestartet!")
+                st.success("BentoML-Service started")
                 st.experimental_rerun()
         with col2:
             if st.button("🛑 BentoML Service STOP", key="bento_stop"):
                 os.system("docker compose stop bentoml_service")
-                st.warning("BentoML-Service gestoppt!")
+                st.warning("BentoML-Service stoppted")
                 st.experimental_rerun()
 
         def is_bento_running():
@@ -532,7 +532,7 @@ def show_admin_panel():
         except Exception as e:
             st.error(f"Error loading registry metrics: {e}")
     
-    with st.expander("🧪 Monitoring Ergebnisse", expanded=False):
+    with st.expander("🧪 Monitoring Results", expanded=False):
         show_drift_score()
 
     with st.expander("📡 Grafana Dashboard", expanded=False):
@@ -548,7 +548,7 @@ def show_admin_panel():
                 html = f.read()
             st.components.v1.html(html, height=1000, scrolling=True)
         else:
-            st.warning("⚠️ Kein Evidently Drift Report gefunden.")
+            st.warning("⚠️ No Evidently Drift Report found.")
 
     with st.expander("📊 Model Drift Monitoring - Extended Current VS Best Model", expanded=False):
         if os.path.exists(drift_html_pathext):
@@ -556,13 +556,13 @@ def show_admin_panel():
                 html = f.read()
             st.components.v1.html(html, height=1000, scrolling=True)
         else:
-            st.warning("⚠️ Kein Evidently Drift Report gefunden.")
+            st.warning("⚠️ No Evidently Drift Report found.")
     
     with st.expander("📊 MLFLOW Drift Latency", expanded=False):
         # === Lade Metriken ===
         if os.path.exists(METRICS_PATH):
             metrics = pd.read_csv(METRICS_PATH)
-            st.subheader("📈 Modellmetriken aus MLflow")
+            st.subheader("📈 Model metrics from MLflow")
             st.dataframe(metrics.tail(10))
 
             # === Plot: Precision@10 ===
@@ -580,16 +580,16 @@ def show_admin_panel():
                 fig = px.line(metrics, x="start_time", y="latency", title="Inference Latency")
                 st.plotly_chart(fig)
         else:
-            st.warning("⚠️ Keine Metriken gefunden unter metrics_from_mlflow.csv")           
+            st.warning("⚠️ No metrics found under metrics_from_mlflow.csv")           
     
 
-    with st.expander("🔄 Precision & Metriken aus MLflow aktualisieren", expanded=False):
+    with st.expander("🔄 Refresh Precision & Metrics from MLflow", expanded=False):
         try:    
             df = load_precision_history()
             plot_and_save_precision(df)
             save_metrics_csv()
-            show_model_comparison_charts()  # 👈 HIER hinzufügen
-            st.success("📊 Metriken wurden aus MLflow aktualisiert, gespeichert und visualisiert.")
+            show_model_comparison_charts()  
+            st.success("📊 Metrics were refreshed, saved, and visualized from MLflow.")
         except Exception as e:
             st.error(f"Error Precision metrics: {e}")
     
@@ -612,9 +612,9 @@ def show_admin_panel():
                 st.metric("⚠️ Drift Alert", "🚨 YES" if metrics.get("drift_alert", 0) == 1 else "✅ NO")
 
             else:
-                st.warning("Drift-Metriken konnten nicht geladen werden.")
+                st.warning("Drift metrics could not be loaded.")
         except Exception as e:
-            st.error(f"Fehler beim Abrufen der Drift-Metriken: {e}")
+            st.error(f"Error retrieving drift metrics: {e}")
     
     with st.expander("📊 Prometheus Monitoring", expanded=False):
         show_prometheus_metrics()

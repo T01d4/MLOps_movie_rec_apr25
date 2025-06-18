@@ -20,7 +20,7 @@ def main(input_filepath=RAW_DIR, output_filepath=PROCESSED_DIR):
 
     movie_matrix_path = os.path.join(output_filepath, "movies_matrix.csv")
 
-    # Falls Datei existiert: Verarbeitung überspringen
+    # skip if data exists
     if os.path.exists(movie_matrix_path):
         logger.info("✅ movies_matrix.csv already exists – skipping processing.")
         return

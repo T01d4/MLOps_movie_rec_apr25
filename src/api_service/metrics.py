@@ -5,51 +5,51 @@ from prometheus_client import (
 import time
 import os
 
-# === Prometheus Metriken definieren ===
+# === Define Prometheus Metrics ===
 
-# Gesamtanzahl aller Requests
+# Total number of all requests
 REQUEST_COUNT = Counter(
     "request_count", "Total number of requests",
     ["method", "endpoint", "status_code"]
 )
 
-# Latenzzeit in Sekunden
+# Latency in seconds
 REQUEST_LATENCY = Histogram(
     "request_latency_seconds", "Latency in seconds",
     ["endpoint"]
 )
 
-# Fehleranzahl nach Status-Code
+# Total number of errors by status code
 ERROR_COUNT = Counter(
     "error_count", "Total error responses",
     ["endpoint", "status_code"]
 )
 
-# Gesundheitsstatus (1=OK, 0=Fehler)
+# Health status: 1 = OK, 0 = Error
 HEALTH_STATUS = Gauge(
     "health_status", "1 = healthy, 0 = error"
 )
 
-# Optional: Simulierter Nutzerzähler (manuell inkrementieren)
+# Optional: simulated unique user/session counter
 UNIQUE_USERS = Gauge(
     "recommendation_unique_users_total", "Number of unique sessions/users"
 )
 
-# ML-Metriken wie Precision@10 aus dem Training (über Airflow nachtragbar)
+# ML metrics like precision@10 (can be updated via Airflow)
 PRECISION_AT_10 = Gauge(
     "model_precision_at_10", "Precision@10 score of best model",
     ["model"]
 )
 
-# === Router definieren ===
+# === Initialize router ===
 router = APIRouter()
 
-# === /metrics Endpoint für Prometheus ===
+# === /metrics endpoint for Prometheus scraping ===
 @router.get("/metrics")
 def metrics_endpoint():
     return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
-# === /metrics/drift lädt drift_metrics.prom aus Airflow ===
+# === /metrics/drift serves drift_metrics.prom created by Airflow ===
 REPORT_DIR = os.environ.get("REPORT_DIR", "/app/reports")
 DRIFT_METRICS_PATH = os.path.join(REPORT_DIR, "drift_metrics.prom")
 
@@ -65,7 +65,7 @@ def drift_metrics_endpoint():
             status_code=404
         )
 
-# === Healthcheck Endpoint (setzt auch Health Metric) ===
+# === /healthz endpoint for service readiness check ===
 @router.get("/healthz")
 def health_check():
     try:
@@ -75,7 +75,7 @@ def health_check():
         HEALTH_STATUS.set(0)
         return {"status": "error"}
 
-# === Middleware zur Laufzeit-Überwachung ===
+# === Monitoring middleware to track request metrics ===
 async def prometheus_middleware(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
@@ -84,17 +84,17 @@ async def prometheus_middleware(request: Request, call_next):
     endpoint = request.url.path
     status_code = response.status_code
 
-    # Request zählen
+    # Count requests
     REQUEST_COUNT.labels(
         method=request.method,
         endpoint=endpoint,
         status_code=str(status_code)
     ).inc()
 
-    # Latenz messen
+     # Observe latency
     REQUEST_LATENCY.labels(endpoint).observe(latency)
 
-    # Fehler zählen
+    # Count errors
     if status_code >= 400:
         ERROR_COUNT.labels(endpoint, str(status_code)).inc()
 

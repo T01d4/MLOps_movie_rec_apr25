@@ -4,7 +4,7 @@ from fastapi import FastAPI, UploadFile, HTTPException, Response, Depends, File,
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from trainer import router as trainer_router
-from recommend import router as recommend_router  # <--  router with /recommend!
+from recommend import router as recommend_router  # <--  router 
 from metrics import router as metrics_router
 from metrics import prometheus_middleware, metrics_endpoint, drift_metrics_endpoint
 import pandas as pd
@@ -24,10 +24,10 @@ from pathlib import Path
 
 load_dotenv(".env")
 app = FastAPI()
-# Prometheus-Middleware registrieren
+# Prometheus-Middleware register
 app.middleware("http")(prometheus_middleware)
 
-# Router einbinden
+# Router config
 app.include_router(trainer_router)
 app.include_router(recommend_router)
 app.include_router(metrics_router)

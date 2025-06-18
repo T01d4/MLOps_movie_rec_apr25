@@ -1,0 +1,6 @@
+# HELP drift_alert Drift alert flag
+# TYPE drift_alert gauge
+drift_alert{model="hybrid_deep_model"} 1.0
+# HELP drift_score_sliding_window Drift score over recent requests
+# TYPE drift_score_sliding_window gauge
+drift_score_sliding_window{model="hybrid_deep_model"} 0.5
