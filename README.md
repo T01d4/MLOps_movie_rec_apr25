@@ -61,10 +61,11 @@ MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
 
 PROM_URL=http://prometheus:9090
 
-DAGSHUB_USER=your_dagshub_username
 
-DAGSHUB_TOKEN=your_dagshub_token
 
+MLFLOW_TRACKING_USERNAME=your_dagshub_username
+
+MLFLOW_TRACKING_PASSWORD=your_dagshub_token
 
 API_URL=http://api_service:8000
 
@@ -309,9 +310,8 @@ MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
 
 PROM_URL=http://prometheus:9090
 
-DAGSHUB_USER=your_dagshub_username
-DAGSHUB_TOKEN=your_dagshub_token
-
+MLFLOW_TRACKING_USERNAME=your_dagshub_username
+MLFLOW_TRACKING_PASSWORD=your_dagshub_token
 
 API_URL=http://api_service:8000
 
