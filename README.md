@@ -150,7 +150,7 @@ Other ports that might be interesting are:
 * Airflow:      `http://localhost:8080`
 * Streamlit:    `http://localhost:8501`
 > Note: user and password for all services is "admin".
-
+> import reports/movie_recommender_grafana_dashboard.json into grafana dashboard !!!
 ### Run tests
 Run all tests with pytest:
 ```bash
