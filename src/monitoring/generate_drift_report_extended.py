@@ -17,53 +17,50 @@ if not logger.handlers:
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
 
-# === Umgebungsvariablen ===
+# === Environment variables ===
 DATA_DIR = os.getenv("DATA_DIR", "/app/data")
 REPORT_DIR = os.getenv("REPORT_DIR", "/app/reports")
 MONITOR_DIR = os.path.join(DATA_DIR, "monitoring")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
-# === Dateipfade ===
+# === File paths ===
 reference_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
 current_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
 metrics_path = os.path.join(MONITOR_DIR, "metrics_from_mlflow.csv")
 loss_path = os.path.join(REPORT_DIR, "training_loss_per_epoch.json")
 output_path = os.path.join(REPORT_DIR, "drift_report_extended.html")
 
-# === Ordner prüfen/erstellen ===
-
-
-# === Daten laden ===
+# === Load data ===
 try:
-    logger.info(f"✨ Lade Referenzdaten von {reference_path}")
+    logger.info(f"✨ Loading reference data from {reference_path}")
     reference = pd.read_csv(reference_path, index_col=0).astype("float32")
-    logger.info(f"✨ Lade aktuelle Daten von {current_path}")
+    logger.info(f"✨ Loading current data from {current_path}")
     current = pd.read_csv(current_path, index_col=0).astype("float32")
 
-    # Sicherstellen, dass Spalten übereinstimmen
+    # Ensure column alignment
     common_cols = list(set(reference.columns) & set(current.columns))
     reference = reference[common_cols]
     current = current[common_cols]
 
 except Exception as e:
-    logger.error(f"❌ Fehler beim Laden der Daten: {e}")
+    logger.error(f"❌ Error loading data: {e}")
     reference = pd.DataFrame()
     current = pd.DataFrame()
 
-# === Metriken laden ===
+# === Load metrics ===
 try:
-    logger.info(f"✨ Lade Metriken von {metrics_path}")
+    logger.info(f"✨ Loading metrics from {metrics_path}")
     metrics = pd.read_csv(metrics_path).sort_values("start_time", ascending=True)
 except Exception as e:
-    logger.warning(f"⚠️ Konnte Metriken nicht laden: {e}")
+    logger.warning(f"⚠️ Failed to load metrics: {e}")
     metrics = pd.DataFrame()
 
-# === Evidently Report erstellen ===
+# === Generate Evidently Report ===
 try:
     if reference.empty or current.empty:
-        raise ValueError("Einer der DataFrames ist leer, kein Report möglich.")
+        raise ValueError("One of the DataFrames is empty, report generation aborted.")
 
-    logger.info("📊 Generiere Evidently Report")
+    logger.info("📊 Generating Evidently report")
     column_mapping = ColumnMapping(numerical_features=common_cols)
     report = Report(metrics=[DataDriftPreset()])
     report.run(reference_data=reference, current_data=current, column_mapping=column_mapping)
@@ -71,9 +68,9 @@ try:
     temp_output_path = output_path + ".tmp"
     report.save_html(temp_output_path)
     os.replace(temp_output_path, output_path)
-    logger.info(f"✅ Drift Report gespeichert unter: {output_path}")
+    logger.info(f"✅ Drift report saved to: {output_path}")
 except Exception as e:
-    logger.error(f"❌ Fehler beim Erzeugen des Reports: {e}")
+    logger.error(f"❌ Error generating report: {e}")
 
 
 def atomic_savefig(fig, final_path):
@@ -88,21 +85,21 @@ try:
         metrics.plot(x="start_time", y="precision_10", ax=ax, title="Precision@10 Verlauf", marker="o")
         ax.set_ylabel("Precision@10")
         atomic_savefig(fig, os.path.join(REPORT_DIR, "precision_10.png"))
-        logger.info("📈 Precision@10 geplottet")
+        logger.info("📈 Precision@10 plottet")
 
     if "drift_score" in metrics.columns:
         fig, ax = plt.subplots()
         metrics.plot(x="start_time", y="drift_score", ax=ax, title="Drift Score Verlauf", marker="o")
         ax.set_ylabel("Drift Score")
         atomic_savefig(fig, os.path.join(REPORT_DIR, "drift_score.png"))
-        logger.info("📈 Drift Score geplottet")
+        logger.info("📈 Drift Score lottet")
 
     if "latency" in metrics.columns:
         fig, ax = plt.subplots()
         metrics.plot(x="start_time", y="latency", ax=ax, title="Inference Latency", marker="x")
         ax.set_ylabel("Latenz (s)")
         atomic_savefig(fig, os.path.join(REPORT_DIR, "latency.png"))
-        logger.info("📈 Latenz geplottet")
+        logger.info("📈 Latency plottet")
 
     if os.path.exists(loss_path):
         with open(loss_path, "r") as f:
@@ -112,6 +109,6 @@ try:
         df_loss.plot(x="epoch", y="loss", ax=ax, title="Training Loss per Epoch", marker="*")
         ax.set_ylabel("Loss")
         atomic_savefig(fig, os.path.join(REPORT_DIR, "training_loss.png"))
-        logger.info("📈 Training Loss geplottet")
+        logger.info("📈 Training Loss plottet")
 except Exception as e:
-    logger.warning(f"⚠️ Fehler bei der Visualisierung: {e}")
+    logger.warning(f"⚠️ Error during visualization: {e}")

@@ -9,12 +9,12 @@ import logging
 
 logger = logging.getLogger("airflow.task")
 
-# === Konfigurationspfade ===
+# === Configuration path ===
 DATA_DIR = os.environ.get("DATA_DIR", "/opt/airflow/data")
 REPORT_DIR = os.environ.get("REPORT_DIR", "/opt/airflow/reports")
 MONITORING_CONF_PATH = os.path.join(DATA_DIR, "monitoring", "monitoring_conf.json")
 
-# === Lade Config falls benötigt ===
+# ===Load Config ===
 if os.path.exists(MONITORING_CONF_PATH):
     with open(MONITORING_CONF_PATH, "r") as f:
         conf = json.load(f)
@@ -30,14 +30,14 @@ default_args = {
 
 # === Python Callables ===
 def analyze_request_drift():
-    logger.info("📥 Starte Request-Drift-Analyse...")
+    logger.info("📥 Start Request-Drift-Analyse...")
     result = subprocess.run(
         ["python", "/opt/airflow/src/monitoring/analyze_drift_requests.py"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
     )
-    logger.info("✅ Drift-Skript ausgeführt mit exit code %s", result.returncode)
+    logger.info("✅ Drift-script runs with code %s", result.returncode)
     if result.stdout:
         logger.info("📄 stdout:\n%s", result.stdout)
     if result.stderr:
@@ -45,14 +45,14 @@ def analyze_request_drift():
 
 
 def generate_embedding_snapshot():
-    logger.info("🧬 Generiere neues Snapshot-Embedding...")
+    logger.info("🧬 Generate Snapshot-Embedding...")
     result = subprocess.run(
         ["python", "/opt/airflow/src/monitoring/generate_embedding.py"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
     )
-    logger.info("✅ Embedding-Snapshot fertig mit Code %s", result.returncode)
+    logger.info("✅ Embedding-Snapshot with code %s", result.returncode)
     if result.stdout:
         logger.info(result.stdout)
     if result.stderr:
@@ -60,14 +60,14 @@ def generate_embedding_snapshot():
 
 
 def generate_extended_report():
-    logger.info("📊 Erzeuge erweiterten Drift-Report...")
+    logger.info("📊 generate ext. Drift-Report...")
     result = subprocess.run(
         ["python", "/opt/airflow/src/monitoring/generate_drift_report_extended.py"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
     )
-    logger.info("✅ Extended Report fertig mit Code %s", result.returncode)
+    logger.info("✅ Extended Report ready with code %s", result.returncode)
     if result.stdout:
         logger.info(result.stdout)
     if result.stderr:

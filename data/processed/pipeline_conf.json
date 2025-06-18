@@ -1,9 +1,9 @@
 {
-    "n_neighbors": 79,
+    "n_neighbors": 12,
     "latent_dim": 32,
     "hidden_dim": 256,
-    "tfidf_features": 2368,
-    "epochs": 50,
+    "tfidf_features": 300,
+    "epochs": 30,
     "lr": 0.001,
     "batch_size": 128,
     "metric": "cosine",

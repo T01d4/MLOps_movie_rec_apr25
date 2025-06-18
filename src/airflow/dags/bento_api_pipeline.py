@@ -23,9 +23,9 @@ def log_bento_response(response, logger, task_name=""):
         log_multiline(response.get("stderr"), "warning")
         if response.get("msg"):
             log_multiline(response["msg"], "info")
-        # ALLES loggen (zur Not JSON-dump)
+         # Log entire raw dictionary (as fallback)
         logger.info(f"BentoML [{task_name}] raw dict: {response}")
-        # Auch ENV loggen bei Fehler
+        # Log environment if error occurred
         if response.get("returncode", 0) != 0 or response.get("status") == "error":
             logger.error(f"BentoML [{task_name}] Fehler (Exitcode {response.get('returncode')})")
             logger.error(f"ENV: {os.environ}")
@@ -46,11 +46,11 @@ def trigger_bento_training(**context):
             logging.error(f"Response nicht als JSON lesbar: {e}\nResponse-Text: {resp.text}")
             raise
 
-        # Sicherungs-Log als Datei (Debug-Info)
+        # Save backup log to file
         with open("/tmp/bento_airflow_response.json", "w") as f:
             json.dump(resp_json, f, indent=2)
 
-        # Alles loggen (inkl. ENV bei Fehler)
+        # log (incl. ENV Error)
         log_bento_response(resp_json, logging, "TRAIN")
         if resp.status_code != 200 or resp_json.get("status") == "error" or resp_json.get("returncode", 0) != 0:
             logging.error(f"Umgebungsvariablen bei Fehler: {os.environ}")

@@ -153,7 +153,7 @@ def show_dag_progress(dag_id: str):
         "logs": logs,
         "finished": finished == total
     }
-    # 🆕 Neuer Trigger: Drift-DAG wurde erfolgreich ausgelöst
+    #  Drift-DAG successfull
     drift_triggered = (
         dag_id == "deep_models_pipeline"
         and task_states.get("trigger_drift_monitoring_dag") == "success"

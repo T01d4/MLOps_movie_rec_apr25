@@ -11,14 +11,7 @@ import argparse
 from mlflow.tracking import MlflowClient
 from datetime import datetime
 import shutil
-import subprocess
-import getpass
-import json
-from prometheus_client import Gauge
-
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
-from evidently.pipeline.column_mapping import ColumnMapping
+import time
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -34,8 +27,8 @@ PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
 
 MODEL_PATH = os.path.join(MODEL_DIR, "hybrid_deep_knn.pkl")
 EMBEDDING_PATH = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding.csv")
-RATINGS_PATH = os.path.join(RAW_DIR, "ratings.csv")
 BEST_EMBEDDING_PATH = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
+RATINGS_PATH = os.path.join(RAW_DIR, "ratings.csv")
 VALIDATION_SCORES_PATH = os.path.join(PROCESSED_DIR, "validation_scores_hybrid_deep.csv")
 #DVC_FILE = f"{BEST_EMBEDDING_PATH}.dvc"
 
@@ -105,7 +98,7 @@ def update_best_model_in_mlflow(precision, client, model_name, model_version):
     client.set_model_version_tag(model_name, model_version, "precision_10", str(precision))
 
 def get_latest_model_version(client, model_name):
-    """Hole die Modellversion mit dem höchsten creation timestamp (=neuester Run)."""
+    """Get latest model by creation timestamp (=last Run)."""
     versions = client.search_model_versions(f"name='{model_name}'")
     if not versions:
         logging.error("❌ No model versions found!")
@@ -133,12 +126,20 @@ def validate_deep_hybrid(test_user_count=100):
     test_users = embedding_df.index[:test_user_count]
     hybrid_scores, valid_users = [], []
 
+    total_inference_time = 0.0
+
     for uid in test_users:
         try:
             uvec = embedding_df.loc[uid].values.reshape(1, -1)
             if uvec.shape[1] != knn_model.n_features_in_:
                 raise ValueError(f"Modell erwartet {knn_model.n_features_in_} Features, hat aber {uvec.shape[1]}")
+
+            # 🕒 Inference time pro user measure
+            start_infer = time.time()
             _, idxs = knn_model.kneighbors(uvec)
+            inference_duration = time.time() - start_infer
+            total_inference_time += inference_duration
+
             rec_movie_ids = embedding_df.index[idxs[0]]
             hit = ratings[(ratings["userId"] == int(uid)) & (ratings["movieId"].isin(rec_movie_ids))]
             hybrid_scores.append(1 if not hit.empty else 0)
@@ -147,15 +148,20 @@ def validate_deep_hybrid(test_user_count=100):
             logging.warning(f"⚠️ Error with user {uid}: {e}")
             continue
 
-    if not valid_users:
-        logging.error("❌ No valid users for evaluation!")
-        return
-
     precision_10 = float(np.mean(hybrid_scores))
     logging.info(f"📊 precision_10_hybrid_deep: {precision_10:.2f}")
-
+    avg_latency = total_inference_time / len(valid_users)
+    #mlflow.log_metric("validation_inference_latency", avg_latency)
+    latency_prom_file = os.path.join(REPORT_DIR, "inference_latency.prom")
+    with open(latency_prom_file, "w") as f:
+        f.write(f'inference_latency_seconds{{model="Deep Hybrid-KNN_best"}} {inference_duration:.4f}\n')
+    logging.info(f"📈 Inference latency written to {latency_prom_file}")
+    logging.info(f"🕒 AVG validation_inference_latency (s): {avg_latency:.5f}")
     # --- MLflow Logging & Registry Best Model Update ---
     try:
+        if mlflow.active_run() is not None:
+            logging.warning("⚠️ MLflow run is still active – closing previous run.")
+            mlflow.end_run()
         with mlflow.start_run(run_name=f"{experiment_name}_deep_hybrid") as run:
             mlflow.set_tag("experiment_name", experiment_name)
             mlflow.set_tag("validation_date", validation_date)
@@ -166,7 +172,7 @@ def validate_deep_hybrid(test_user_count=100):
             mlflow.set_tag("test_user_count", test_user_count)
             mlflow.log_param("n_test_users", len(valid_users))
             mlflow.log_metric("precision_10", precision_10)
-
+            mlflow.log_metric("validation_inference_latency", avg_latency)
             score_df = pd.DataFrame({
                 "user_id": valid_users,
                 "hybrid_score": hybrid_scores,
@@ -186,9 +192,10 @@ def validate_deep_hybrid(test_user_count=100):
 
                 # Set precision_10 metric on training run
                 client.log_metric(run_id=train_run_id, key="precision_10", value=precision_10)
-
+                client.log_metric(run_id=train_run_id, key="validation_inference_latency", value=avg_latency)
                 # Update alias if it's a new best
                 update_best_model_in_mlflow(precision_10, client, model_name, current_version)
+                client.set_model_version_tag(model_name, current_version, "validation_inference_latency", str(avg_latency))
             else:
                 logging.warning("Could not determine current model version for comparison.")
 
@@ -207,30 +214,7 @@ def validate_deep_hybrid(test_user_count=100):
         logging.info(f"💾 Prometheus precision_10 metric written to: {precision_file}")
     except Exception as e:
         logging.warning(f"⚠️ Could not write precision_10 prom file: {e}")
-   # === Evidently Drift Detection + Prometheus Drift-Metriken ===
-    try:
-
-        current_df = pd.read_csv(EMBEDDING_PATH)
-        reference_df = pd.read_csv(BEST_EMBEDDING_PATH) if os.path.exists(BEST_EMBEDDING_PATH) else current_df.copy()
-
-        column_mapping = ColumnMapping()
-        report = Report(metrics=[DataDriftPreset()])
-        report.run(reference_data=reference_df, current_data=current_df, column_mapping=column_mapping)
-        drift_json = report.as_dict()
-
-        drift_alert = int(drift_json["metrics"][0]["result"]["dataset_drift"])
-        drift_share = drift_json["metrics"][0]["result"]["share_of_drifted_columns"]
-
-        # Prometheus-Metriken für Drift schreiben
-        drift_file = os.path.join(REPORT_DIR, "training_metrics.prom")
-        with open(drift_file, "w") as f:
-            f.write(f'model_drift_alert{{model="Deep Hybrid-KNN_best"}} {drift_alert}\n')
-            f.write(f'data_drift_share{{model="Deep Hybrid-KNN_best"}} {drift_share:.4f}\n')
-        logging.info("📈 Drift-Metriken für Prometheus geschrieben.")
-
-    except Exception as e:
-        logging.warning(f"⚠️ Evidently drift analysis failed: {e}")
-
+ 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--test_user_count", type=int, default=100)

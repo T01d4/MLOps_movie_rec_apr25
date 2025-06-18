@@ -93,7 +93,7 @@ def predict_best_model(n_users=10):
     logging.info("✅ Prediction successful – result is kept in RAM, not saved to disk.")
 
     # You can return, pass or further process result_df if needed
-    print(result_df.head())  # For test purposes only
+    logging.info(f"📊 Prediction results:\n{result_df.head().to_string(index=False)}")  # For test purposes only
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

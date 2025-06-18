@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score
-
+import time
 from dotenv import load_dotenv
 import mlflow
 from mlflow.models.signature import infer_signature
@@ -21,10 +21,8 @@ import argparse
 from mlflow.tracking import MlflowClient
 import logging
 
-# === Prometheus Monitoring (Loss pro Epoche + Drift Detection) ===
+# === Prometheus Monitoring (loss per epoch + drift detection) ===
 from prometheus_client import Gauge, CollectorRegistry, write_to_textfile
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
 from evidently.pipeline.column_mapping import ColumnMapping
 
 registry = CollectorRegistry()
@@ -76,6 +74,7 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     CONFIG_PATH = os.path.join(PROCESSED_DIR, "pipeline_conf.json")
     with open(CONFIG_PATH, "r") as f:
         config = json.load(f)
+     # Load model parameters from config
     n_neighbors = config["n_neighbors"]
     latent_dim = config["latent_dim"]
     hidden_dim = config["hidden_dim"]
@@ -180,10 +179,10 @@ def train_hybrid_deep_model(save_matrix_csv=True):
         else:
             no_improve_epochs += 1
             if no_improve_epochs >= early_stop_patience:
-                logger.info(f"⛔️ EarlyStopping nach {epoch+1} Epochen (kein Fortschritt seit {early_stop_patience})")
+                logger.info(f"⛔️ EarlyStopping after {epoch+1} epochs (no improvement for {early_stop_patience})")
                 break
 
-    # ✅ Prometheus nach dem Training beschreiben
+    # Report training losses to Prometheus
     for epoch_idx, epoch_loss in enumerate(losses):
         LOSS_GAUGE.labels(epoch=str(epoch_idx + 1)).set(epoch_loss)
         EPOCH_GAUGE.set(epoch_idx + 1)
@@ -207,139 +206,108 @@ def train_hybrid_deep_model(save_matrix_csv=True):
     logger.info(f"✅ Deep KNN model saved at {knn_path}")
 
     with mlflow.start_run(run_name="train_hybrid_deep_model") as run:
-        mlflow.set_tag("source", "airflow")
-        mlflow.set_tag("task", "train_hybrid_deep_model")
-        mlflow.set_tag("model_group", "deep_learning")
+        try:
+            mlflow.set_tag("source", "airflow")
+            mlflow.set_tag("task", "train_hybrid_deep_model")
+            mlflow.set_tag("model_group", "deep_learning")
 
-        mlflow.log_param("model_type", "hybrid_deep_knn")
-        mlflow.log_param("latent_dim", latent_dim)
-        mlflow.log_param("hidden_dim", hidden_dim)
-        mlflow.log_param("n_neighbors", n_neighbors)
-        mlflow.log_param("tfidf_features", tfidf_features)
-        mlflow.log_param("epochs", epochs)
-        mlflow.log_param("lr", lr)
-        mlflow.log_param("batch_size", batch_size)
-        mlflow.log_param("metric", metric)
-        mlflow.log_param("content_weight", content_weight)
-        mlflow.log_param("collab_weight", collab_weight)
-        mlflow.log_param("power_factor", power_factor)
-        if drop_threshold is not None:
-            mlflow.log_param("drop_threshold", drop_threshold)
-
-        mlflow.log_metric("n_movies", len(embedding_df))
-        mlflow.log_artifact(embedding_path, artifact_path="features")
-        mlflow.log_artifact(knn_path, artifact_path="backup_model")
-        mlflow.log_artifact(CONFIG_PATH, artifact_path="config")
-        
-        signature = infer_signature(
-            pd.DataFrame(embeddings, columns=embedding_feature_names),
-            knn.kneighbors(embeddings[:5])[1]
-        )
-        mlflow.pyfunc.log_model(
-            artifact_path="hybrid_deep_knn_pyfunc",
-            python_model=KNNPyFuncWrapper(),
-            artifacts={"knn_model": knn_path},
-            signature=signature,
-            input_example=pd.DataFrame(embeddings[:5], columns=embedding_feature_names),
-            registered_model_name="hybrid_deep_model"
-        )
-
-        client = MlflowClient()
-        model_name = "hybrid_deep_model"
-        run_id = run.info.run_id
-        model_version = None
-        versions = client.search_model_versions(f"name='{model_name}'")
-        for v in versions:
-            if v.run_id == run_id:
-                model_version = v.version
-                break
-
-        if model_version:
-            client.set_model_version_tag(model_name, model_version, "n_neighbors", str(n_neighbors))
-            client.set_model_version_tag(model_name, model_version, "latent_dim", str(latent_dim))
-            client.set_model_version_tag(model_name, model_version, "hidden_dim", str(hidden_dim))
-            client.set_model_version_tag(model_name, model_version, "tfidf_features", str(tfidf_features))
-            client.set_model_version_tag(model_name, model_version, "epochs", str(epochs))
-            client.set_model_version_tag(model_name, model_version, "lr", str(lr))
-            client.set_model_version_tag(model_name, model_version, "batch_size", str(batch_size))
-            client.set_model_version_tag(model_name, model_version, "metric", metric)
-            client.set_model_version_tag(model_name, model_version, "content_weight", str(content_weight))
-            client.set_model_version_tag(model_name, model_version, "collab_weight", str(collab_weight))
-            client.set_model_version_tag(model_name, model_version, "power_factor", str(power_factor))
+            mlflow.log_param("model_type", "hybrid_deep_knn")
+            mlflow.log_param("latent_dim", latent_dim)
+            mlflow.log_param("hidden_dim", hidden_dim)
+            mlflow.log_param("n_neighbors", n_neighbors)
+            mlflow.log_param("tfidf_features", tfidf_features)
+            mlflow.log_param("epochs", epochs)
+            mlflow.log_param("lr", lr)
+            mlflow.log_param("batch_size", batch_size)
+            mlflow.log_param("metric", metric)
+            mlflow.log_param("content_weight", content_weight)
+            mlflow.log_param("collab_weight", collab_weight)
+            mlflow.log_param("power_factor", power_factor)
             if drop_threshold is not None:
-                client.set_model_version_tag(model_name, model_version, "drop_threshold", str(drop_threshold))
-            client.set_model_version_tag(model_name, model_version, "precision_10", 0.0)
+                mlflow.log_param("drop_threshold", drop_threshold)
 
-            logger.info(
-                f"📝 Tags set for model version {model_version}: "
-                f"n_neighbors={n_neighbors}, latent_dim={latent_dim}, hidden_dim={hidden_dim}, "
-                f"tfidf_features={tfidf_features}, epochs={epochs}, lr={lr}, batch_size={batch_size}, "
-                f"metric={metric}, content_weight={content_weight}, collab_weight={collab_weight}, "
-                f"power_factor={power_factor}, precision_10=0.0"
-            )
-        else:
-            logger.warning("⚠️ Could not determine model version for tagging.")
+            mlflow.log_metric("n_movies", len(embedding_df))
+            mlflow.log_artifact(embedding_path, artifact_path="features")
+            mlflow.log_artifact(knn_path, artifact_path="backup_model")
+            mlflow.log_artifact(CONFIG_PATH, artifact_path="config")
+        except Exception as e:
+            logger.warning(f"⚠️ FError logging parameters or artifacts: {e}", exc_info=True)
+
+        # Measure inference latency
+        try:
+            start_inference = time.time()
+            knn_predictions_sample = knn.kneighbors(embeddings[:5])[1]
+            inference_latency = time.time() - start_inference
+            mlflow.log_metric("inference_latency_seconds", inference_latency)
+        except Exception as e:
+            logger.warning(f"⚠️ Error calculating or logging inference latency: {e}", exc_info=True)
+            knn_predictions_sample = None  # 
+
+        # Register PyFunc model
+        try:
+            if knn_predictions_sample is not None:
+                signature = infer_signature(
+                    pd.DataFrame(embeddings[:5], columns=embedding_feature_names),
+                    knn_predictions_sample
+                )
+                mlflow.pyfunc.log_model(
+                    artifact_path="hybrid_deep_knn_pyfunc",
+                    python_model=KNNPyFuncWrapper(),
+                    artifacts={"knn_model": knn_path},
+                    signature=signature,
+                    input_example=pd.DataFrame(embeddings[:5], columns=embedding_feature_names),
+                    registered_model_name="hybrid_deep_model"
+                )
+        except Exception as e:
+            logger.error(f"❌ Error registering PyFunc model: {e}", exc_info=True)
+
+        # Tag model version
+        try:
+            client = MlflowClient()
+            model_name = "hybrid_deep_model"
+            run_id = run.info.run_id
+            model_version = None
+            versions = client.search_model_versions(f"name='{model_name}'")
+            for v in versions:
+                if v.run_id == run_id:
+                    model_version = v.version
+                    break
+
+            if model_version:
+                client.set_model_version_tag(model_name, model_version, "n_neighbors", str(n_neighbors))
+                client.set_model_version_tag(model_name, model_version, "latent_dim", str(latent_dim))
+                client.set_model_version_tag(model_name, model_version, "hidden_dim", str(hidden_dim))
+                client.set_model_version_tag(model_name, model_version, "tfidf_features", str(tfidf_features))
+                client.set_model_version_tag(model_name, model_version, "epochs", str(epochs))
+                client.set_model_version_tag(model_name, model_version, "lr", str(lr))
+                client.set_model_version_tag(model_name, model_version, "batch_size", str(batch_size))
+                client.set_model_version_tag(model_name, model_version, "metric", metric)
+                client.set_model_version_tag(model_name, model_version, "content_weight", str(content_weight))
+                client.set_model_version_tag(model_name, model_version, "collab_weight", str(collab_weight))
+                client.set_model_version_tag(model_name, model_version, "power_factor", str(power_factor))
+                if drop_threshold is not None:
+                    client.set_model_version_tag(model_name, model_version, "drop_threshold", str(drop_threshold))
+                client.set_model_version_tag(model_name, model_version, "precision_10", 0.0)
+                client.set_model_version_tag(model_name, model_version, "validation_inference_latency", 0.0)
+                logger.info(
+                    f"📝 Tags set for model version {model_version}: "
+                    f"n_neighbors={n_neighbors}, latent_dim={latent_dim}, hidden_dim={hidden_dim}, "
+                    f"tfidf_features={tfidf_features}, epochs={epochs}, lr={lr}, batch_size={batch_size}, "
+                    f"metric={metric}, content_weight={content_weight}, collab_weight={collab_weight}, "
+                    f"power_factor={power_factor}, precision_10=0.0, validation_inference_latency=0.0"
+                )
+       #     else:
+                logger.info(f"📝 Tags set for model version {model_version}: {tags}")
+            else:
+                logger.warning("⚠️ Could not determine model version for tagging.")
+        except Exception as e:
+            logger.error(f"❌ Error setting model version tags: {e}", exc_info=True)
 
     logger.info("🏁 Deep hybrid model training completed and logged.")
 
-    # === Drift Detection & Prometheus Monitoring ===
-    try:
-        ref_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
-        if os.path.exists(ref_path):
-            reference_df = pd.read_csv(ref_path)
-            current_df = embedding_df.reset_index()
 
-            # 👉 Gemeinsame Spalten auswählen & sortieren
-            common_cols = sorted(set(reference_df.columns) & set(current_df.columns))
-            if not common_cols:
-                raise ValueError("⚠️ Keine gemeinsamen Spalten für Drift-Analyse gefunden.")
 
-            reference_df = reference_df[common_cols]
-            current_df = current_df[common_cols]
-
-            # 🧠 ColumnMapping dynamisch erstellen
-            column_mapping = ColumnMapping(numerical_features=common_cols)
-
-            # 🧪 Report ausführen
-            drift_report = Report(metrics=[DataDriftPreset()])
-            drift_report.run(reference_data=reference_df, current_data=current_df, column_mapping=column_mapping)
-            drift_result = drift_report.as_dict()
-
-            # 🎯 Driftwert extrahieren (robust)
-            drift_score = None
-            for m in drift_result.get("metrics", []):
-                if m.get("metric") == "DatasetDriftMetric":
-                    drift_score = m.get("result", {}).get("drift_share", None)
-                    break
-
-            drift_alert = int(drift_score > 0.2) if drift_score is not None else 0
-
-            # 🔧 Prometheus Metriken setzen
-            DRIFT_GAUGE = Gauge("model_drift_alert", "Drift detected after training", registry=registry)
-            DRIFT_GAUGE.set(drift_alert)
-
-            DRIFT_ALERT = Gauge("drift_alert", "Drift alert flag", ["model"], registry=registry)
-            DRIFT_ALERT.labels(model="hybrid_deep_model").set(drift_alert)
-
-            # 📄 Logging
-            if drift_score is not None:
-                logger.info(f"🔍 Drift detected in {drift_score:.2%} of features (Alert={drift_alert})")
-            else:
-                logger.warning("⚠️ Drift share could not be computed – value is None")
-                logger.info(f"Ref shape: {reference_df.shape}, Cur shape: {current_df.shape}")
-
-            # 💾 JSON speichern
-            json_path = os.path.join(REPORT_DIR, "drift_metrics.json")
-            with open(json_path, "w", encoding="utf-8") as f:
-                json.dump(drift_result, f, indent=2)
-            logger.info(f"📄 Drift metrics saved to {json_path}")
-
-        else:
-            logger.warning(f"⚠️ Reference embedding for drift analysis not found at {ref_path}")
-    except Exception as e:
-        logger.warning(f"⚠️ Failed to compute drift: {e}")
-
-    # Prometheus-Datei schreiben
+    # Write Prometheus metrics file
     try:
         prom_path = os.getenv("REPORT_DIR", "/app/reports")
         os.makedirs(prom_path, exist_ok=True)
