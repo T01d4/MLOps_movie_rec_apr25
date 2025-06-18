@@ -8,7 +8,7 @@ import shutil
 import getpass
 from dotenv import load_dotenv, find_dotenv
 
-# === ENV laden ===
+# === ENV load ===
 load_dotenv(find_dotenv())
 DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
@@ -19,18 +19,18 @@ def import_raw_data(raw_data_path, filenames, bucket_folder_url):
     for filename in filenames:
         output_file = os.path.join(raw_data_path, filename)
         if os.path.exists(output_file):
-            logging.info(f"✅ Datei bereits vorhanden, überspringe: {filename}")
+            logging.info(f"✅ Data already exists, skip: {filename}")
             continue
         url = os.path.join(bucket_folder_url, filename)
-        logging.info(f"⬇️  Lade herunter: {url}")
+        logging.info(f"⬇️  Download: {url}")
         try:
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             with open(output_file, "wb") as f:
                 f.write(response.content)
-            logging.info(f"✅ Gespeichert unter: {output_file}")
+            logging.info(f"✅ Data saved to : {output_file}")
         except requests.exceptions.RequestException as e:
-            logging.error(f"❌ Fehler beim Download von {url}: {e}")
+            logging.error(f"❌ Download Error from {url}: {e}")
 
 def main(raw_data_path=RAW_DIR,
          filenames=None,
@@ -43,7 +43,7 @@ def main(raw_data_path=RAW_DIR,
         ]
 
     import_raw_data(raw_data_path, filenames, bucket_folder_url)
-    logging.info("✅ Rohdatenprüfung abgeschlossen.")
+    logging.info("✅ Raw Data created.")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO,

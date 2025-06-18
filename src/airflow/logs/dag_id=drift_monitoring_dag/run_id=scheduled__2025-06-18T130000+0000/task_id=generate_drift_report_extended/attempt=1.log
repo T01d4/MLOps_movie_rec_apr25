@@ -1,0 +1,28 @@
+[2025-06-18T14:00:16.600+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: drift_monitoring_dag.generate_drift_report_extended scheduled__2025-06-18T13:00:00+00:00 [queued]>
+[2025-06-18T14:00:16.607+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: drift_monitoring_dag.generate_drift_report_extended scheduled__2025-06-18T13:00:00+00:00 [queued]>
+[2025-06-18T14:00:16.607+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-06-18T14:00:16.617+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): generate_drift_report_extended> on 2025-06-18 13:00:00+00:00
+[2025-06-18T14:00:16.624+0000] {standard_task_runner.py:60} INFO - Started process 4755 to run task
+[2025-06-18T14:00:16.626+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'drift_monitoring_dag', 'generate_drift_report_extended', 'scheduled__2025-06-18T13:00:00+00:00', '--job-id', '640', '--raw', '--subdir', 'DAGS_FOLDER/drift_monitoring_dag.py', '--cfg-path', '/tmp/tmp3vzuf7ml']
+[2025-06-18T14:00:16.628+0000] {standard_task_runner.py:88} INFO - Job 640: Subtask generate_drift_report_extended
+[2025-06-18T14:00:16.662+0000] {task_command.py:423} INFO - Running <TaskInstance: drift_monitoring_dag.generate_drift_report_extended scheduled__2025-06-18T13:00:00+00:00 [running]> on host 3cef70cd7501
+[2025-06-18T14:00:16.723+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='drift_monitoring_dag' AIRFLOW_CTX_TASK_ID='generate_drift_report_extended' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T13:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-18T13:00:00+00:00'
+[2025-06-18T14:00:16.725+0000] {drift_monitoring_dag.py:63} INFO - 📊 generate ext. Drift-Report...
+[2025-06-18T14:00:21.739+0000] {drift_monitoring_dag.py:70} INFO - ✅ Extended Report ready with code 0
+[2025-06-18T14:00:21.739+0000] {drift_monitoring_dag.py:74} WARNING - [2025-06-18 14:00:19,120] INFO - ✨ Loading reference data from /opt/***/data/processed/hybrid_deep_embedding_best.csv
+[2025-06-18 14:00:19,171] INFO - ✨ Loading current data from /opt/***/data/processed/hybrid_deep_embedding.csv
+[2025-06-18 14:00:19,214] INFO - ✨ Loading metrics from /opt/***/data/monitoring/metrics_from_mlflow.csv
+[2025-06-18 14:00:19,218] INFO - 📊 Generating Evidently report
+[2025-06-18 14:00:20,858] INFO - ✅ Drift report saved to: /opt/***/reports/drift_report_extended.html
+INFO:drift_report_extended:✅ Drift report saved to: /opt/***/reports/drift_report_extended.html
+[2025-06-18 14:00:20,941] INFO - 📈 Precision@10 plottet
+INFO:drift_report_extended:📈 Precision@10 plottet
+[2025-06-18 14:00:21,002] INFO - 📈 Drift Score lottet
+INFO:drift_report_extended:📈 Drift Score lottet
+[2025-06-18 14:00:21,070] INFO - 📈 Latency plottet
+INFO:drift_report_extended:📈 Latency plottet
+
+[2025-06-18T14:00:21.740+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T14:00:21.748+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=drift_monitoring_dag, task_id=generate_drift_report_extended, execution_date=20250618T130000, start_date=20250618T140016, end_date=20250618T140021
+[2025-06-18T14:00:21.783+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T14:00:21.798+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

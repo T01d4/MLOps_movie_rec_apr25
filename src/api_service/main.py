@@ -1,10 +1,12 @@
 # === api_service/main.py ===
 
-from fastapi import FastAPI, UploadFile, HTTPException, Depends, File, Query, Body
+from fastapi import FastAPI, UploadFile, HTTPException, Response, Depends, File, Query, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from trainer import router as trainer_router
-from recommend import router as recommend_router  # <-- Das ist dein Router mit /recommend!
+from recommend import router as recommend_router  # <--  router 
+from metrics import router as metrics_router
+from metrics import prometheus_middleware, metrics_endpoint, drift_metrics_endpoint
 import pandas as pd
 import numpy as np
 import mlflow
@@ -19,16 +21,22 @@ import os
 import json
 from pathlib import Path
 
+
 load_dotenv(".env")
 app = FastAPI()
+# Prometheus-Middleware register
+app.middleware("http")(prometheus_middleware)
+
+# Router config
 app.include_router(trainer_router)
-app.include_router(recommend_router) 
+app.include_router(recommend_router)
+app.include_router(metrics_router)
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-MLFLOW_EXPERIMENT = "hybrid_deep_model"  # oder wie im Training
+MLFLOW_EXPERIMENT = "hybrid_deep_model"  # or the name used during training
 
 
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecret123")
@@ -77,30 +85,33 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
 
 
+# Health Endpoint
+@app.get("/healthz")
+def health():
+    return {"status": "ok"}
+
+
 @app.post("/train")
-def train_model(n_neighbors: int = 10, latent_dim: int = 64, epochs: int = 30, tfidf_features: int = 300):
-    # Starte Airflow DAG über REST (wie gehabt)
+def train_model():
+    
     airflow_url = os.getenv("AIRFLOW_API_URL", "http://airflow-webserver:8080") + "/api/v1/dags/deep_models_pipeline/dagRuns"
-    conf = {
-        "n_neighbors": n_neighbors,
-        "latent_dim": latent_dim,
-        "epochs": epochs,
-        "tfidf_features": tfidf_features,
-    }
+
     response = requests.post(
         airflow_url,
         auth=("admin", "admin"),
-        json={"conf": conf}
+        json={"conf": {}}   # empty, everything is read internally
     )
+
     if response.status_code in (200, 201):
         data = response.json()
         run_id = data.get("dag_run_id") or data.get("run_id")
-        # <- Das in st.session_state speichern!
-        return {"status": "Train DAG triggered", "dag_run_id": run_id, "conf": conf}
+        return {"status": "Train DAG triggered", "dag_run_id": run_id}
+    else:
+        return {"status": "Error", "code": response.status_code, "response": response.text}
 
 @app.post("/validate")
 def validate_model(run_id: str = Body(...)):
-    # Startet Validierung per Airflow (kann als conf die run_id weitergeben!)
+    # Starts validation via Airflow (can pass run_id as config!)
     airflow_url = os.getenv("AIRFLOW_API_URL", "http://airflow-webserver:8080") + "/api/v1/dags/deep_models_pipeline/dagRuns"
     response = requests.post(
         airflow_url,
@@ -113,10 +124,10 @@ def validate_model(run_id: str = Body(...)):
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...), run_id: str = Query(None), model_version: int = Query(None), model_alias: str = Query("best_model")):
-    # Laden je nach übergebenem run_id, version oder alias
+    # Load based on passed run_id, version or alias
     model_uri = None
     if run_id:
-        # Suche Modellversion zu Run-ID (geht über mlflow)
+        # Look up model version for run_id (via MLflow)
         client = mlflow.tracking.MlflowClient()
         versions = client.search_model_versions(f"name='{MLFLOW_EXPERIMENT}'")
         mv = [v for v in versions if v.run_id == run_id]
@@ -129,11 +140,11 @@ async def predict(file: UploadFile = File(...), run_id: str = Query(None), model
 
     if not model_uri:
         return JSONResponse(status_code=400, content={"error": "Kein Modell angegeben"})
-    # Dann wie gehabt: Datei lesen, Modell laden, predicten
+    # Continue as usual: read file, load model, predict
 
 @app.get("/metrics")
 def get_metrics(run_id: str = Query(None), model_alias: str = Query("best_model")):
-    # Metrik-Output für einen bestimmten Run oder das best_model
+    # Metric output for a specific run or the best_model
     client = mlflow.tracking.MlflowClient()
     if run_id:
         run = mlflow.get_run(run_id)

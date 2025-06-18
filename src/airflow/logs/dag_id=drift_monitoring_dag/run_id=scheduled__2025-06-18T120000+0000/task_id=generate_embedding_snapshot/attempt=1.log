@@ -1,0 +1,19 @@
+[2025-06-18T13:00:00.313+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: drift_monitoring_dag.generate_embedding_snapshot scheduled__2025-06-18T12:00:00+00:00 [queued]>
+[2025-06-18T13:00:00.319+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: drift_monitoring_dag.generate_embedding_snapshot scheduled__2025-06-18T12:00:00+00:00 [queued]>
+[2025-06-18T13:00:00.319+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-06-18T13:00:00.328+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): generate_embedding_snapshot> on 2025-06-18 12:00:00+00:00
+[2025-06-18T13:00:00.336+0000] {standard_task_runner.py:60} INFO - Started process 1164 to run task
+[2025-06-18T13:00:00.338+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'drift_monitoring_dag', 'generate_embedding_snapshot', 'scheduled__2025-06-18T12:00:00+00:00', '--job-id', '609', '--raw', '--subdir', 'DAGS_FOLDER/drift_monitoring_dag.py', '--cfg-path', '/tmp/tmp_b8oupzs']
+[2025-06-18T13:00:00.339+0000] {standard_task_runner.py:88} INFO - Job 609: Subtask generate_embedding_snapshot
+[2025-06-18T13:00:00.372+0000] {task_command.py:423} INFO - Running <TaskInstance: drift_monitoring_dag.generate_embedding_snapshot scheduled__2025-06-18T12:00:00+00:00 [running]> on host 3cef70cd7501
+[2025-06-18T13:00:00.432+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='drift_monitoring_dag' AIRFLOW_CTX_TASK_ID='generate_embedding_snapshot' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T12:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-06-18T12:00:00+00:00'
+[2025-06-18T13:00:00.433+0000] {drift_monitoring_dag.py:48} INFO - 🧬 Generate Snapshot-Embedding...
+[2025-06-18T13:00:01.499+0000] {drift_monitoring_dag.py:55} INFO - ✅ Embedding-Snapshot with code 0
+[2025-06-18T13:00:01.500+0000] {drift_monitoring_dag.py:59} WARNING - [2025-06-18 13:00:00,934] INFO - ✅ Embedding loaded: /opt/***/data/processed/hybrid_deep_embedding.csv
+[2025-06-18 13:00:01,164] INFO - 📌 Reference embedding saved: /opt/***/data/monitoring/reference_embedding.csv
+[2025-06-18 13:00:01,437] INFO - ✅ Snapshot saved (Train: 8304, Test: 2077)
+
+[2025-06-18T13:00:01.500+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T13:00:01.508+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=drift_monitoring_dag, task_id=generate_embedding_snapshot, execution_date=20250618T120000, start_date=20250618T130000, end_date=20250618T130001
+[2025-06-18T13:00:01.555+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T13:00:01.577+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

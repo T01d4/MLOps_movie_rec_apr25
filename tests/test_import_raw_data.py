@@ -1,12 +1,13 @@
 import os
 import unittest
-from unittest.mock import patch, MagicMock
-from src.data.import_raw_data import import_raw_data
+from unittest.mock import patch, MagicMock, mock_open
+from src.movie.data.import_raw_data import import_raw_data
 
 class TestImportRawData(unittest.TestCase):
-    @patch("src.data.import_raw_data.requests.get")
+    @patch("src.movie.data.import_raw_data.requests.get")
     @patch("os.makedirs")
-    def test_import_raw_data(self, mock_makedirs, mock_requests_get):
+    @patch("builtins.open", new_callable=mock_open)
+    def test_import_raw_data(self, mock_open, mock_makedirs, mock_requests_get):
         # Setup
         raw_data_path = "/tmp/test_raw_data"
         filenames = ["test_file.csv"]
@@ -21,15 +22,9 @@ class TestImportRawData(unittest.TestCase):
 
         # Assertions
         mock_makedirs.assert_called_once_with(raw_data_path, exist_ok=True)
-        mock_requests_get.assert_called_once_with(
-            os.path.join(bucket_folder_url, filenames[0]), timeout=10
-        )
-        output_file = os.path.join(raw_data_path, filenames[0])
-        self.assertTrue(os.path.exists(output_file))
-
-        # Cleanup
-        if os.path.exists(output_file):
-            os.remove(output_file)
+        mock_requests_get.assert_called_once_with("https://example.com/test_file.csv", timeout=10)
+        mock_open.assert_called_once_with(os.path.join(raw_data_path, "test_file.csv"), "wb")
+        mock_open().write.assert_called_once_with(b"test content")
 
 if __name__ == "__main__":
     unittest.main()

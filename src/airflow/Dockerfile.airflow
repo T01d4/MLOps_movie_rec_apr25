@@ -1,10 +1,10 @@
 #dockerfile.airflow
 FROM apache/airflow:2.8.1-python3.10
 
-# Arbeitsverzeichnis: Bleibe bei /opt/airflow für Airflow-Kompatibilität!
+# Keep working directory at /opt/airflow for compatibility with Airflow
 WORKDIR /opt/airflow
 
-# --- Root-User für System-Tools (git, bash) und Build-Dependencies ---
+# --- Use root user for system tools (git, bash) and build dependencies ---
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -13,25 +13,26 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# --- requirements kopieren und installieren ---
+# --- Copy and install requirements ---
 COPY requirements.airflow.txt /requirements.txt
 
-# Wechsel zurück zum airflow-User für pip und airflow Kommandos
+# Switch back to airflow user for pip and airflow commands
 USER airflow
-# Jetzt requirements installieren (nachdem sie kopiert wurden!)
+#WORKDIR /opt/airflow
+# Now install the requirements (after copying them)
 RUN pip install --no-cache-dir -r /requirements.txt
-# GIT config für airflow-User (NACH USER airflow!)
+# Configure git for the airflow user (must be done AFTER switching to USER airflow)
 RUN git config --global --add safe.directory /opt/airflow
-# GIT USER/EMAIL für airflow-User setzen (deine Airflow-Tasks laufen als dieser User)
+# Set git user/email for the airflow user (Airflow tasks run as this user)
 RUN git config --global user.name "airflow" \
     && git config --global user.email "airflow@container"
-# src-Ordner einbinden
+# src folder could be mounted here if needed
 #COPY ./src/movie /src
 
-# PYTHONPATH korrekt setzen
+# Set PYTHONPATH correctly
 #ENV PYTHONPATH="/src:/opt/airflow:${PYTHONPATH}"
 ENV PYTHONPATH="/opt/airflow/src:/opt/airflow:${PYTHONPATH}"
-# (Optional) Test: DVC- und dagshub-Installation prüfen (nur zur Kontrolle beim Build)
+# (Optional) Test: check DVC and dagshub installation (only for debugging)
 # RUN dvc --version && python -c "import dagshub; print('dagshub OK')"
 
-# Airflow-Entrypoint wird vom Baseimage gesetzt; kein CMD nötig
+# Airflow entrypoint is handled by the base image – no CMD needed

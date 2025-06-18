@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 import os
 
-# Hole ENV-Variablen oder nimm Fallbacks
+# Get ENV variables or use fallbacks
 DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
 RAW_DIR = os.path.join(DATA_DIR, "raw")
 PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
@@ -26,16 +26,16 @@ def create_user_matrix(ratings, movies):
     return user_matrix
 
 def main(force_rebuild=False):
-    # Zielpfade
+    # Target paths
     movie_matrix_path = os.path.join(PROCESSED_DIR, "movie_matrix.csv")
     user_matrix_path = os.path.join(PROCESSED_DIR, "user_matrix.csv")
 
-    # Nur bauen, wenn Files fehlen oder force_rebuild=True
+    # Only build if files are missing or force_rebuild=True
     if (not os.path.exists(movie_matrix_path) or
         not os.path.exists(user_matrix_path) or
         force_rebuild):
 
-        print("🔄 Baue Feature-Files ...")
+        print("🔄 Building feature files ...")
         ratings = read_ratings("ratings.csv")
         movies = read_movies("movies.csv")
         user_matrix = create_user_matrix(ratings, movies)
@@ -43,9 +43,9 @@ def main(force_rebuild=False):
         movies_no_title = movies.drop(columns=["title"])
         movies_no_title.to_csv(movie_matrix_path, index=False)
         user_matrix.to_csv(user_matrix_path)
-        print("✅ Feature-Files erzeugt!")
+        print("✅ Feature files created!")
     else:
-        print("✅ Feature-Files bereits vorhanden. Kein Build nötig.")
+        print("✅ Feature files already exist. No build required.")
 
 if __name__ == "__main__":
     main()
