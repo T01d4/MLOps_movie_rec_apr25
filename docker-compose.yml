@@ -5,7 +5,6 @@ services:
       context: ./src/streamlit_app
       dockerfile: Dockerfile.streamlit
     container_name: streamlit_app
-    user: "1000:1000"
     ports:
       - "8501:8501"
     volumes:
@@ -30,7 +29,6 @@ services:
       context: ./src/api_service
       dockerfile: Dockerfile.API
     container_name: api_service
-    user: "1000:1000"
     ports:
       - "8000:8000"
     volumes:
@@ -51,7 +49,6 @@ services:
   postgres:
     image: postgres:13
     container_name: postgres_airflow
-    user: "999:999"
     restart: always
     environment:
       POSTGRES_USER: airflow
@@ -67,7 +64,6 @@ services:
       context: ./src/airflow
       dockerfile: Dockerfile.airflow
     container_name: airflow-webserver
-    user: "1000:0"
     restart: always
     depends_on:
       - postgres
@@ -104,7 +100,6 @@ services:
       context: ./src/airflow
       dockerfile: Dockerfile.airflow
     container_name: airflow-scheduler
-    user: "1000:0"
     restart: always
     depends_on:
       - postgres
@@ -129,35 +124,34 @@ services:
     networks:
       - airflow_net
 
-  bentoml:
-    build:
-      context: ./src/Bento_service
-      dockerfile: Dockerfile.Bento
-    container_name: bentoml_service
-    user: "${UID}:${GID}"
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./src/Bento_service:/app/src/Bento_service
-      - ./src/movie:/app/src/movie
-      - ./reports:/app/reports
-      - ./src/monitoring:/app/src/monitoring
-      - ./models:/app/models
-      - ./data:/app/data
-    env_file: .env
-    environment:
-      - TZ=Europe/Berlin
-      - DATA_DIR=/app/data
-      - MODEL_DIR=/app/models
-      - REPORT_DIR=/app/reports
-    networks:
-      - airflow_net
-    restart: always
+  # bentoml:
+  #   build:
+  #     context: ./src/Bento_service
+  #     dockerfile: Dockerfile.Bento
+  #   container_name: bentoml_service
+  #   ports:
+  #     - "4000:4000"
+  #   volumes:
+  #     - ./src/Bento_service:/app/src/Bento_service
+  #     - ./src/movie:/app/src/movie
+  #     - ./reports:/app/reports
+  #     - ./src/monitoring:/app/src/monitoring
+  #     - ./models:/app/models
+  #     - ./data:/app/data
+  #   env_file: .env
+  #   environment:
+  #     - TZ=Europe/Berlin
+  #     - DATA_DIR=/app/data
+  #     - MODEL_DIR=/app/models
+  #     - REPORT_DIR=/app/reports
+  #   networks:
+  #     - airflow_net
+  #   restart: always
     
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    user: "1000:1000"
+    user: "0:0"
     ports:
       - "9090:9090"
     volumes:
@@ -171,7 +165,6 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
-    user: "1000:1000"
     ports:
       - "3000:3000"
     volumes:
