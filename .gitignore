@@ -46,19 +46,5 @@ dist/
 mlruns/
 model_cache/
 
-# Airflow
-src/airflow/logs/*
-airflow/*
-
-# Archives
+# archives
 *.zip
-
-# prometheus
-*.prometheus
-src/prometheus/data/*
-data/monitoring/*
-
-#logs
-src/airflow/logs
-src/prometheus/data
-reports/*
