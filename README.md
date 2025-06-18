@@ -139,7 +139,7 @@ pip install -r requirements.txt
 ## Usage
 
 ### Start the service
-Use the start script to launch the service locally (runs `docker-compose up --build`):
+Use the start script to launch the service locally (runs `docker compose up --build`): #important docker compose v2 without -
 ```bash
 ./start.sh
 ```
