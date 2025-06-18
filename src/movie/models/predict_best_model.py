@@ -10,7 +10,9 @@ from mlflow.tracking import MlflowClient
 import json
 
 load_dotenv()
-
+DATA_DIR = os.getenv("DATA_DIR", "/opt/airflow/data")
+PROCESSED_DIR = os.path.join(DATA_DIR, "processed")
+os.makedirs(PROCESSED_DIR, exist_ok=True)  # Stelle sicher, dass der Ordner existiert
 REGISTRY_NAME = "hybrid_deep_model"
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 mlflow.set_experiment("model_validate")
@@ -59,6 +61,11 @@ def predict_best_model(n_users=10):
     input_matrix = load_artifact_df_from_best_model(
         REGISTRY_NAME, "best_embedding/hybrid_deep_embedding_best.csv"
     )
+        # Save file to local processed folder if not yet present
+    local_path = os.path.join(PROCESSED_DIR, "hybrid_deep_embedding_best.csv")
+    if not os.path.exists(local_path):
+        input_matrix.to_csv(local_path)
+        
     feature_count = input_matrix.shape[1]
     input_matrix.columns = [f"emb_{i}" for i in range(feature_count)]
     input_df = input_matrix.iloc[:n_users].copy().astype("float32")

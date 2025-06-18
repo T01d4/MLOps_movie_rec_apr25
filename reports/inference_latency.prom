@@ -1,1 +1,1 @@
-inference_latency_seconds{model="Deep Hybrid-KNN_best"} 0.0107
+inference_latency_seconds{model="Deep Hybrid-KNN_best"} 0.0112
