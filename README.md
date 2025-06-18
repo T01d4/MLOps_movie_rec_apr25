@@ -177,7 +177,7 @@ graph TD
     %% Infrastruktur
     subgraph Infrastruktur
         C1[PostgreSQL DB]
-        C2[(Volumes: /data, /models, /src)]
+        C2[(Volumes: /data, /models, /movies)]
         C3[Docker Socket]
     end
 
@@ -196,7 +196,7 @@ graph TD
         D4[Model Registry]
     end
 
-    D2[Netflix-Daten]
+    D2[MIT-Daten]
 
     %% Beziehungen
     A1 --> A2
