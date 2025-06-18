@@ -1,5 +1,0 @@
-{
-  "precision_target": 0.8,
-  "drift_alert_threshold": 0.3,
-  "latency_alert_threshold": 0.5
-}
