@@ -1,150 +1,252 @@
-MovieReco - MLOPS Project
-==============================
+# MovieRecomm - MLOPS Project
 
-This project is a starting Pack for MLOps projects based on the subject "movie_recommandation". It's not perfect so feel free to make some modifications on it.
+## Overview
+MovieRecomm is a full-stack machine learning project for movie recommendation, taking a practical approach from Jupyter notebook prototyping all the way to containerized, production-grade MLOps.
+The project’s core: Build reliable, personalized movie recommendations, automate ML pipelines, and make the system easily reproducible for any team member.
 
+The project began with fast experimentation and model-building in Jupyter notebooks, focusing on understanding the data, user behavior, and the most effective recommendation strategies. Special care was taken to construct train/test splits for each individual user—a non-trivial problem in real-world recommendation systems. We also integrated genre-based modeling to combine collaborative and content-based filtering.
 
-otherwise Merge-conflicts, History-Problems or wrong DVC-States!
+Once initial models delivered convincing results, the system was refactored into a modern, modular architecture:
 
-Project Setup
+* All services (API, Streamlit app, Airflow, database, monitoring) run in Docker containers managed by Docker Compose.
 
-- Modelltrain & -versioning **MLflow**
+* Orchestration is handled by Apache Airflow, automating data pipelines from ingestion to retraining.
 
-- Taskmanager Workflows **Airflow**
+* Data and model artifacts are versioned using DVC to guarantee full reproducibility.
 
-- Deep Learning + Collaborative Filtering
+* A VS Code Devcontainer is provided for easy, consistent onboarding and development.
 
-- Monitoring  **Prometheus & Grafana**
+* Automated tests and continuous integration are in place for reliability and fast iteration.
 
-- API & UI via **FastAPI + Streamlit**
+* Monitoring with Prometheus and Grafana ensures insight into both system health and model performance.
 
-- Container **Docker Compose**
+### In short:
+MovieRecomm demonstrates how to take a data-driven prototype and turn it into a robust, maintainable machine learning product—ready for real-world usage and further scaling.
 
--  Unit Tests & Linting via **GitHub Actions**
-==============================
+## Features
+- Docker Compose for container orchestration
+- VS Code Devcontainer for easy development setup
+- Data version control using DVC
+- Automated testing with pytest
+- Example data and pre-trained models included
+- Airflow run ning the pipelines
+- Streamlit for user access and visualisation
 
-As of 02.06.2025
+## Methodology
+This project followed a typical data science and MLOps workflow, starting with rapid prototyping in Jupyter Notebooks and evolving into a production-ready, containerized system.
 
-You need a single .env file in the project root (see example below).
+### Prototyping and Exploratory Data Analysis
 
-DagsHub Token is required for DVC and MLflow tracking.
+* The project started with exploratory analysis and modeling in Jupyter Notebooks.
 
-Required .env (root directory) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-==============================
+* Data wrangling, visualization, feature engineering, and initial model selection were performed interactively to quickly iterate on ideas and gain insights.
 
+### Custom Train/Test Split per User
 
-# Required .env (root directory) !!!!!
+* Unlike standard ML projects, splitting the data required special handling.
 
-# --- Airflow ---
-AIRFLOW__CORE__EXECUTOR=LocalExecutor
+* For every user in the dataset, a dedicated train and test set was created to ensure fair evaluation and avoid data leakage between train/test phases.
 
-AIRFLOW__CORE__FERNET_KEY=oLfPThKYdHr7hjymM4p97WLVlGzJByb9ULqat9MqObs=
+* This approach guarantees that each user’s recommendations are tested on unseen movies, leading to a more realistic and robust model evaluation.
 
-AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+### Genre-Based Modeling
 
-AIRFLOW__CORE__LOAD_EXAMPLES=False
+* In addition to user-based recommendations, the system also generates predictions based on movie genres.
 
-AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+* This dual-approach allows for hybrid recommendations, combining collaborative filtering with content-based filtering.
 
-AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
+### Transition to Production Architecture
 
-PYTHONPATH=/opt/airflow/src
+* Once the notebook-based models reached satisfactory results, the project moved to a modular, containerized architecture.
 
-AIRFLOW_UID=50000
+* All components (API, Streamlit app, Airflow pipelines, database, monitoring stack) were migrated into Docker containers for consistency and reproducibility.
 
-AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+### Pipeline Orchestration and Automation
 
-AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
+* Apache Airflow orchestrates the training, evaluation, and retraining pipelines.
 
-# --- MLflow & DagsHub ---
-MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+* Each step (data processing, model training, validation, reporting) is automated, ensuring a reproducible workflow from raw data to final predictions.
 
-PROM_URL=http://prometheus:9090
+### Data and Model Versioning
 
+* All datasets, model artifacts, and experiment results are versioned using DVC (Data Version Control), supporting experiment tracking and rollbacks.
 
+* Environment variables and secrets are kept out of version control to protect sensitive data.
 
-MLFLOW_TRACKING_USERNAME=your_dagshub_username
+### Testing, CI/CD and Development Workflow
 
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token
+* Automated tests (pytest) and GitHub Actions CI/CD ensure code quality and fast feedback on pull requests.
 
-API_URL=http://api_service:8000
+* The project supports fast onboarding with a VS Code Devcontainer and a unified Docker Compose setup.
 
-GRAFANA_URL=http://localhost:3000/d/4f619286-f4fd-4040-821b-2189eb929e4c/movie-recommender?orgId=1&from=now-6h&to=now&timezone=browser
+### Monitoring and Visualization
 
-#https://www.themoviedb.org/settings/api
+* Model performance and system health are continuously monitored using Prometheus and visualized with Grafana dashboards.
 
-TMDB_API_KEY=48a501167bbb3fe39749d61d3fd3b0f6
+* Drift detection, metrics, and system reports are integrated into the monitoring stack.
 
+By combining rapid notebook-based experimentation with robust MLOps practices, this project delivers a scalable, maintainable, and production-ready movie recommendation system.
 
+## Installation
 
+### Prerequisites
+- Docker & Docker Compose
+- VS Code with Remote - Containers extension (optional)
+- Python 3.8+ (if running locally without Docker)
 
-============================== 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-⚠️ Replace your_dagshub_username and your_dagshub_token with your own credentials!
-Never commit real tokens to git!
-
-DVC Configuration (.dvc/config.local or .dvc/config)
-
-==============================
-
-['remote "dagshub"']
-
-    auth = basic
-
-    user = your_dagshub_username
-
-    password = your_dagshub_token
-
-==============================
-
-⚠️ Do not commit your .dvc/config.local with credentials! (Add it to .gitignore)
-
-
-**| Start the App  - after you have build the .env  -> docker compose up --build |**
-
-
-Streamlit: http://localhost:8501/
-
-
-https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-
-**| USER: admin / PW: admin  |**
-
-
-
-Airflow Web UI: http://localhost:8080/
-
-
-**| USER: admin / PW: admin  |**
-
-
-Airflow API (for service-to-service): http://airflow-webserver:8080/api/v1
-
-
+### Provide the .env information
+In dummy.env add your personal information for dagshub (user and token). These information will be put
+into the .env file, providing the service with information regarding the location of the models.
 Notes
-All services read environment variables from the root .env (see env_file in docker-compose.yml).
+> Note: All services read environment variables from the root .env.
+> * For team work: Every developer needs their own DagsHub token in their local .env.
+> * Never share .env and .dvc/config.local with secrets in public repos.
+> * You can also add you tmdb api key to get the covers of recommanded movies.
 
-For team work: Every developer needs their own DagsHub token in their local .env.
+### Setup using Devcontainer (recommended) - only for development
+1. Open the project folder in VS Code.
+2. When prompted, reopen in container.
+3. This will build and start the devcontainer with all dependencies installed.
 
-Never share .env and .dvc/config.local with secrets in public repos.
+### Setup using Docker Compose
+Run the start script which generates the .env and internally executes the Docker Compose command:
+```bash
+./start.sh
+```
+
+### Setup local Python environment
+
+**Linux/macOS:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**Windows:**
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+#### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Start the service
+Use the start script to launch the service locally (runs `docker compose up --build`): #important docker compose v2 without -
+```bash
+./start.sh
+```
+
+### Access API
+After starting, the API will be accessible at `http://localhost:5000` (default port).
+Other ports that might be interesting are:
+* Airflow:      `http://localhost:8080`
+* Streamlit:    `http://localhost:8501`
+> Note: user and password for all services is "admin".
+> import reports/movie_recommender_grafana_dashboard.json into grafana dashboard !!!
+### Run tests
+Run all tests with pytest:
+```bash
+pytest tests/
+```
+
+## Architecture Overview
+
+```mermaid
+graph TD
+
+    %% User-Facing
+    subgraph Interface
+        A1[Streamlit App]
+        A2[API-Service: FastAPI]
+    end
+
+    %% Orchestration
+    subgraph Airflow
+        B1[Webserver]
+        B2[Scheduler]
+    end
+
+    %% Infrastruktur
+    subgraph Infrastruktur
+        C1[PostgreSQL DB]
+        C2[(Volumes: /data, /models, /movies)]
+        C3[Docker Socket]
+    end
+
+    %% Monitoring
+    subgraph Monitoring
+        E1[Prometheus]
+        E2[Grafana]
+    end
+
+    %% Modell & Daten
+    subgraph DagsHub
+        subgraph MLflow
+            D1[ML Model]
+            D3[MLflow Tracking]
+        end
+        D4[Model Registry]
+    end
+
+    D2[MIT-Daten]
+
+    %% Beziehungen
+    A1 --> A2
+    A1 --> B1
+    A1 --> D3
+    A1 --> C3
+
+    A2 --> D1
+    A2 --> C2
+
+    B1 --> B2
+    B1 --> D1
+    B2 --> D1
+    B1 --> C1
+    B2 --> C1
+    B1 --> D2
+    B2 --> D2
+
+    B1 --> D3
+    D1 --> D3
+    D1 --> D4
+    D2 --> D1
+
+    C2 --> A1
+    C2 --> A2
+    C2 --> B1
+    C2 --> B2
+
+    E1 --> B1
+    E1 --> B2
+    E1 --> A1
+    E1 --> A2
+    E2 --> E1
+
+```
+
+---
+
 
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project.
     ├── .devcontainer/             # VS Code Umgebung
     ├── .github/                   # GitHub Actions Workflows
     ├── data
-    │   ├── monitoring       <- Data from third party sources.
+    │   ├── monitoring     <- Data from third party sources.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── models             <- Trained and serialized models, model predictions, or model summaries (local)
     │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
@@ -184,24 +286,19 @@ Never share .env and .dvc/config.local with secrets in public repos.
     │   │   ├── generate_embedding.py
     │   │   └── plot_precision_history.py
     │   ├── movie/
-    │   │   ├── __init__.py
     │   │   ├── data/
-    │   │   │   ├── __init__.py
     │   │   │   ├── check_structure.py
     │   │   │   ├── import_raw_data.py
     │   │   │   └── make_dataset.py
     │   │   ├── features/
-    │   │   │   ├── __init__.py
     │   │   │   └── build_features.py
     │   │   ├── models/
-    │   │   │   ├── __init__.py
     │   │   │   ├── predict_best_model.py
     │   │   │   ├── predict_model.py
     │   │   │   ├── train_hybrid_deep_model.py
     │   │   │   ├── train_model.py
     │   │   │   └── validate_model.py
     │   │   └── visualization/
-    │   │       ├── __init__.py
     │   │       └── visualize.py
     │   └── streamlit_app/
     │       ├── app.py
@@ -215,127 +312,19 @@ Never share .env and .dvc/config.local with secrets in public repos.
     ├── setup.py                   # Python Paket
     ├── requirements.txt           # installers for dev container
     ├── .env                       # Lokale Variablen (nicht tracken)
+
 --------
-
-## CI / CD Pipeline
-
-                                 ┌──────────────────────────────┐
-                                 │        MLflow / DagsHub      │
-                                 │     (Read-only: best_model)  │
-                                 │     - For Predict Fast_API    │
-                                 └────────────▲─────────────────┘
-                                              │
-                              ┌───────────────┴───────────────┐
-                              │     Prediction Service         │
-                              │     (FastAPI /recommend)       │
-                              └────▲──────────────┬────────────┘
-                                   │              │
-                                   │     ┌────────▼────────────┐
-                                   │     │  Prometheus Export  │
-                                   │     │  - Latency, User    │
-                                   │     └─────────┬───────────┘
-                                   │               │
-   ┌───────────────────────┐              ┌─-───────▼──────────┐
-   │      Streamlit        │─────────────►│ API EntryPoint     │
-   │    Admin / User       │              │ (FastAPI)          │
-   └──────────┬────────────┘              │ /auth /train ...   │
-              │                           └─────────┬──────────┘
-              ▼                                     ▼
- ┌──────────────────────────────┐        ┌────────────────────┐
- │        Admin Dashboard       │        │     Grafana Dash   │
- │ - Reports                    │        │     Metrics UI     │
- │ - Trigger DAGs               │        └────────────────────┘
- │ - train best_model           │
- │ - Metrics + Visualisation    │
- └────────────▲─────────────────┘
-              │
-              ▼
- ┌──────────────────────────────┐      ┌──────────────────────────────────────────────┐
- │          Airflow (DAGs)      │      │  MLflow / DagsHub (Tracking + Artefacts)     │
- │  - make_dataset              │─────►│  - Modell- and Metric-Logging                │
- │  - train_model               │      │  - Artefacts: Models, Reports, JSONs         │
- │  - validate_model            │      │  - Precision@10, Validation                  │
- │  - predict_model             │      └───────────────┬──────────────────────────────┘
- │  - drift_monitoring          │                      ▼
- └───────┬──────────────────────────────┬──────────────┐
-         ▼                              ▼              │
- ┌──────────────────────────────┐   ┌────────────────────────────┐
- │   Evidently Drift Reports    │   │        Data Volume         │
- │   - HTML + JSON              │   │ RAW / Processed / Monitor  │
- │   - Saved to /data/reports   │   └────────────┬───────────────┘
- └──────────────┬───────────────┘                ▼
-                └────────────────────────► Admin Dashboard
-                                             ( Reports)
---------
-
 
 
 ## Steps to Execute the Project
 
-### 1. Clone the Repository
+### 1- run the start.sh script
 
-If you haven't already cloned the repository, run:
+    ```bash
+    ./start.sh
+    ```
 
-```bash
-git clone <REPO_URL>
-```
-
----
-
-### 2. Create the `.env` File
-
-Create a `.env` file in the root directory:
-
-```bash
-touch .env
-```
-
-Edit the `.env` file and add the required environment variables:
-
-```plaintext
-# --- Airflow ---
-AIRFLOW__CORE__EXECUTOR=LocalExecutor
-AIRFLOW__CORE__FERNET_KEY=oLfPThKYdHr7hjymM4p97WLVlGzJByb9ULqat9MqObs=
-AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
-AIRFLOW__CORE__LOAD_EXAMPLES=False
-AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-AIRFLOW__WEBSERVER__SECRET_KEY=my_super_secret_key_42
-PYTHONPATH=/opt/airflow/src
-AIRFLOW_UID=50000
-AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
-AIRFLOW_API_URL=http://airflow-webserver:8080/api/v1
-
-# --- MLflow & DagsHub ---
-MLFLOW_TRACKING_URI=https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-PROM_URL=http://prometheus:9090
-
-MLFLOW_TRACKING_USERNAME=your_dagshub_username
-MLFLOW_TRACKING_PASSWORD=your_dagshub_token
-
-API_URL=http://api_service:8000
-
-GRAFANA_URL=http://localhost:3000/d/4f619286-f4fd-4040-821b-2189eb929e4c/movie-recommender?orgId=1&from=now-6h&to=now&timezone=browser
-
-#https://www.themoviedb.org/settings/api
-TMDB_API_KEY=48a501167bbb3fe39749d61d3fd3b0f6
-```
-
-Replace placeholders like `your_fernet_key_here`, `your_dagshub_username`, etc., with your actual values.
-
----
-
-### 3. Build and Start the Application
-
-Run the following command to build and start all services:
-
-```bash
-docker compose up --build
-```
-
----
-
-### 4. Access the Services
+### 2- Proceed to the relating web resources:
 
 Once the containers are running, access the services:
 
@@ -347,18 +336,12 @@ Once the containers are running, access the services:
   URL: [http://localhost:8080](http://localhost:8080)  
   Login: `admin / admin`
 
-- **Grafna UI:**  see full link with for .ENV
-  URL: http://localhost:3000/    
-  Login: `admin / admin`
+---
 
-- **MLFlow Web UI:**  
-  https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
-
-
-### 5. Verify Airflow DAGs
+### 3- Verify Airflow DAGs
 
 1. Open the Airflow Web UI.
-2. Check if the DAGs (e.g., `deep_models_pipeline_pipeline`) are listed.
+2. Check if the DAGs (e.g., `movie_recommendation_pipeline`) are listed.
 3. Trigger the DAG manually if needed.
 
 ---
@@ -366,25 +349,6 @@ Once the containers are running, access the services:
 ### Optional: Run Python Scripts Locally
 
 If you want to test the Python scripts manually (without Airflow), follow these steps:
-
-#### Create Virtual Environment
-
-```bash
-python -m venv my_env
-```
-
-Activate the virtual environment:
-
-```bash
-source my_env/bin/activate  # For Linux/MacOS
-./my_env/Scripts/activate   # For Windows
-```
-
-#### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
 
 #### Run Scripts
 
@@ -399,7 +363,5 @@ python src/models/predict_model.py
 ```
 
 ---
-
-Let me know if you need help with any specific command or step!
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>

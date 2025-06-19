@@ -12,6 +12,10 @@ def run_and_log(command: list, cwd: str = "/opt/airflow"):
     import subprocess
     try:
         logging.info(f"🟦 Running command: {' '.join(map(str, command))}")
+        logging.info(f"🟦 Working directory: {cwd}")
+        logging.info(f"MLflow Tracking URI: {os.getenv('MLFLOW_TRACKING_URI')}")
+        logging.info(f"User: {os.getenv('MLFLOW_TRACKING_USERNAME')}")
+        logging.info(f"Password: {str(os.getenv('MLFLOW_TRACKING_PASSWORD'))[:10]}")
         result = subprocess.run(
             command,
             cwd=cwd,
@@ -58,9 +62,6 @@ def run_validate_model(**context):
 
 def run_predict_best_model():
     run_and_log(["python", "/opt/airflow/src/movie/models/predict_best_model.py"])
-
-
-
 
 
 default_args = {

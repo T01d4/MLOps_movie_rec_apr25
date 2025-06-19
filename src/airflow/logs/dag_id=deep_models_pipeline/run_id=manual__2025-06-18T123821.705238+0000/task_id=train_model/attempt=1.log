@@ -1,0 +1,20 @@
+[2025-06-18T12:38:28.499+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.train_model manual__2025-06-18T12:38:21.705238+00:00 [queued]>
+[2025-06-18T12:38:28.506+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.train_model manual__2025-06-18T12:38:21.705238+00:00 [queued]>
+[2025-06-18T12:38:28.506+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-18T12:38:28.517+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): train_model> on 2025-06-18 12:38:21.705238+00:00
+[2025-06-18T12:38:28.525+0000] {standard_task_runner.py:60} INFO - Started process 401 to run task
+[2025-06-18T12:38:28.527+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'train_model', 'manual__2025-06-18T12:38:21.705238+00:00', '--job-id', '587', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp2q5u1v3k']
+[2025-06-18T12:38:28.529+0000] {standard_task_runner.py:88} INFO - Job 587: Subtask train_model
+[2025-06-18T12:38:28.564+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.train_model manual__2025-06-18T12:38:21.705238+00:00 [running]> on host 2218a87e1a23
+[2025-06-18T12:38:28.629+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='train_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T12:38:21.705238+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-18T12:38:21.705238+00:00'
+[2025-06-18T12:38:28.630+0000] {train_deep_model_dag.py:14} INFO - 🟦 Running command: python /opt/***/src/movie/models/train_model.py
+[2025-06-18T12:38:28.630+0000] {train_deep_model_dag.py:15} INFO - 🟦 Working directory: /opt/***
+[2025-06-18T12:38:28.630+0000] {train_deep_model_dag.py:16} INFO - MLflow Tracking URI: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+[2025-06-18T12:38:28.631+0000] {train_deep_model_dag.py:17} INFO - User: Klemp.Thomas
+[2025-06-18T12:38:28.631+0000] {train_deep_model_dag.py:18} INFO - Password: 24a59c66cf
+[2025-06-18T12:38:30.165+0000] {train_deep_model_dag.py:25} INFO - 🟩 [stdout]:
+
+[2025-06-18T12:38:30.166+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T12:38:30.174+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=train_model, execution_date=20250618T123821, start_date=20250618T123828, end_date=20250618T123830
+[2025-06-18T12:38:30.204+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T12:38:30.224+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

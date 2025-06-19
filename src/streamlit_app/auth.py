@@ -46,6 +46,7 @@ def get_user_role(user):
 
 def set_mlflow_from_env():
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
+
     os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
     os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 

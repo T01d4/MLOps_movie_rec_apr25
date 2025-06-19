@@ -1,0 +1,24 @@
+[2025-06-18T13:51:58.090+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.make_dataset manual__2025-06-18T13:51:55.830370+00:00 [queued]>
+[2025-06-18T13:51:58.097+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.make_dataset manual__2025-06-18T13:51:55.830370+00:00 [queued]>
+[2025-06-18T13:51:58.097+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-18T13:51:58.109+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): make_dataset> on 2025-06-18 13:51:55.830370+00:00
+[2025-06-18T13:51:58.117+0000] {standard_task_runner.py:60} INFO - Started process 3633 to run task
+[2025-06-18T13:51:58.119+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'make_dataset', 'manual__2025-06-18T13:51:55.830370+00:00', '--job-id', '626', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmpnsu0_f9c']
+[2025-06-18T13:51:58.120+0000] {standard_task_runner.py:88} INFO - Job 626: Subtask make_dataset
+[2025-06-18T13:51:58.158+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.make_dataset manual__2025-06-18T13:51:55.830370+00:00 [running]> on host 3cef70cd7501
+[2025-06-18T13:51:58.223+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='make_dataset' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T13:51:55.830370+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-18T13:51:55.830370+00:00'
+[2025-06-18T13:51:58.224+0000] {train_deep_model_dag.py:14} INFO - 🟦 Running command: python /opt/***/src/movie/data/make_dataset.py
+[2025-06-18T13:51:58.224+0000] {train_deep_model_dag.py:15} INFO - 🟦 Working directory: /opt/***
+[2025-06-18T13:51:58.225+0000] {train_deep_model_dag.py:16} INFO - MLflow Tracking URI: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+[2025-06-18T13:51:58.225+0000] {train_deep_model_dag.py:17} INFO - User: Klemp.Thomas
+[2025-06-18T13:51:58.225+0000] {train_deep_model_dag.py:18} INFO - Password: 24a59c66cf
+[2025-06-18T13:51:59.072+0000] {train_deep_model_dag.py:25} INFO - 🟩 [stdout]:
+
+[2025-06-18T13:51:59.072+0000] {train_deep_model_dag.py:27} WARNING - 🟨 [stderr]:
+2025-06-18 13:51:58,990 - __main__ - INFO - 📦 Starting preprocessing of raw data.
+2025-06-18 13:51:58,992 - __main__ - INFO - ✅ movies_matrix.csv already exists – skipping processing.
+
+[2025-06-18T13:51:59.073+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T13:51:59.082+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=make_dataset, execution_date=20250618T135155, start_date=20250618T135158, end_date=20250618T135159
+[2025-06-18T13:51:59.135+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T13:51:59.156+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

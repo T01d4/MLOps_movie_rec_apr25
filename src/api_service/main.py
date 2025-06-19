@@ -74,8 +74,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
-
 @app.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
@@ -85,7 +83,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         data={"sub": user["username"], "role": user["role"]}
     )
     return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
-
 
 
 # Health Endpoint

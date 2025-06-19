@@ -1,0 +1,37 @@
+[2025-06-18T12:41:05.149+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: drift_monitoring_dag.analyze_snapshot_drift manual__2025-06-18T12:41:02.039675+00:00 [queued]>
+[2025-06-18T12:41:05.160+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: drift_monitoring_dag.analyze_snapshot_drift manual__2025-06-18T12:41:02.039675+00:00 [queued]>
+[2025-06-18T12:41:05.160+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2025-06-18T12:41:05.172+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): analyze_snapshot_drift> on 2025-06-18 12:41:02.039675+00:00
+[2025-06-18T12:41:05.180+0000] {standard_task_runner.py:60} INFO - Started process 890 to run task
+[2025-06-18T12:41:05.182+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'drift_monitoring_dag', 'analyze_snapshot_drift', 'manual__2025-06-18T12:41:02.039675+00:00', '--job-id', '593', '--raw', '--subdir', 'DAGS_FOLDER/drift_monitoring_dag.py', '--cfg-path', '/tmp/tmp_wr_bbsu']
+[2025-06-18T12:41:05.185+0000] {standard_task_runner.py:88} INFO - Job 593: Subtask analyze_snapshot_drift
+[2025-06-18T12:41:05.225+0000] {task_command.py:423} INFO - Running <TaskInstance: drift_monitoring_dag.analyze_snapshot_drift manual__2025-06-18T12:41:02.039675+00:00 [running]> on host 2218a87e1a23
+[2025-06-18T12:41:05.302+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='drift_monitoring_dag' AIRFLOW_CTX_TASK_ID='analyze_snapshot_drift' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T12:41:02.039675+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-18T12:41:02.039675+00:00'
+[2025-06-18T12:41:05.304+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2025-06-18T12:41:05.304+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'python /opt/***/src/monitoring/analyze_drift.py']
+[2025-06-18T12:41:05.318+0000] {subprocess.py:86} INFO - Output:
+[2025-06-18T12:41:09.575+0000] {subprocess.py:93} INFO - 2025/06/18 12:41:09 INFO mlflow.tracking.fluent: Experiment with name 'hybrid_deep_model' does not exist. Creating a new experiment.
+[2025-06-18T12:41:09.575+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:09,575] WARNING - ⚠️ Failed to load configuration – using default – Default: [Errno 2] No such file or directory: '/opt/***/data/monitoring/monitoring_conf.json'
+[2025-06-18T12:41:09.631+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:09,630] INFO - ✅ Training and test data loaded
+[2025-06-18T12:41:12.600+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:12,600] INFO - 📊 Evidently report saved: /opt/***/reports/drift_report.html
+[2025-06-18T12:41:12.601+0000] {subprocess.py:93} INFO - INFO:***.task:📊 Evidently report saved: /opt/***/reports/drift_report.html
+[2025-06-18T12:41:12.616+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:12,616] INFO - ✅ Prometheus metrics saved: /opt/***/reports/drift_metrics.prom
+[2025-06-18T12:41:12.617+0000] {subprocess.py:93} INFO - INFO:***.task:✅ Prometheus metrics saved: /opt/***/reports/drift_metrics.prom
+[2025-06-18T12:41:12.721+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:12,720] INFO - 📥 Embedding files successfully loaded.
+[2025-06-18T12:41:12.721+0000] {subprocess.py:93} INFO - INFO:***.task:📥 Embedding files successfully loaded.
+[2025-06-18T12:41:12.723+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:12,723] INFO - ✅ 33 common columns for drift analysis.
+[2025-06-18T12:41:12.723+0000] {subprocess.py:93} INFO - INFO:***.task:✅ 33 common columns for drift analysis.
+[2025-06-18T12:41:13.523+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:13,523] INFO - 📈 Classic Prometheus metrics saved.
+[2025-06-18T12:41:13.524+0000] {subprocess.py:93} INFO - INFO:***.task:📈 Classic Prometheus metrics saved.
+[2025-06-18T12:41:14.240+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:14,240] WARNING - ⚠️ No model versions found – trying fallback to training run.
+[2025-06-18T12:41:14.241+0000] {subprocess.py:93} INFO - WARNING:***.task:⚠️ No model versions found – trying fallback to training run.
+[2025-06-18T12:41:14.245+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:14,245] ERROR - ❌ No fallback training run found – cannot log metrics.
+[2025-06-18T12:41:14.246+0000] {subprocess.py:93} INFO - ERROR:***.task:❌ No fallback training run found – cannot log metrics.
+[2025-06-18T12:41:14.252+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:14,252] INFO - 🔍  Drift detected in 50.00% of features (Alert=1)
+[2025-06-18T12:41:14.253+0000] {subprocess.py:93} INFO - INFO:***.task:🔍  Drift detected in 50.00% of features (Alert=1)
+[2025-06-18T12:41:14.263+0000] {subprocess.py:93} INFO - [2025-06-18 12:41:14,263] INFO - 📄 Drift metrics saved as JSON: /opt/***/reports/drift_metrics.json
+[2025-06-18T12:41:14.264+0000] {subprocess.py:93} INFO - INFO:***.task:📄 Drift metrics saved as JSON: /opt/***/reports/drift_metrics.json
+[2025-06-18T12:41:15.430+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2025-06-18T12:41:15.441+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=drift_monitoring_dag, task_id=analyze_snapshot_drift, execution_date=20250618T124102, start_date=20250618T124105, end_date=20250618T124115
+[2025-06-18T12:41:15.475+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T12:41:15.499+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

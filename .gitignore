@@ -3,12 +3,19 @@ __pycache__/
 *.py[cod]
 
 # Data: Nur CSV ausschließen, Struktur und Platzhalter bleiben
+data/*.csv
+data/**/*.csv
 data/raw/*.csv
 data/processed/*.csv
+data/*.json
+data/**/*.json
 !data/README.txt
 !data/.gitkeep
 !data/processed/
 !data/raw/
+#logs
+src/airflow/logs
+src/prometheus/data
 
 # Models: Nur PKL ausschließen, Struktur und Platzhalter bleiben
 models/*.pkl
@@ -25,11 +32,12 @@ models/*.pkl
 
 # Env/Secrets/Build
 .env
+dummy.env
 env/
-*.env
 build/
 dist/
 *.egg-info/
+*venv/
 
 # Notebooks, Jupyter-Checkpoints (optional)
 #.ipynb_checkpoints/
@@ -41,7 +49,5 @@ dist/
 mlruns/
 model_cache/
 
-#logs
-src/airflow/logs
-src/prometheus/data
-src/grafana/data
+# archives
+*.zip

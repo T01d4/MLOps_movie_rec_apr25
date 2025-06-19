@@ -1,0 +1,73 @@
+[2025-06-18T13:54:12.522+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-18T13:51:55.830370+00:00 [queued]>
+[2025-06-18T13:54:12.530+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-18T13:51:55.830370+00:00 [queued]>
+[2025-06-18T13:54:12.531+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 3
+[2025-06-18T13:54:12.543+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): predict_best_model> on 2025-06-18 13:51:55.830370+00:00
+[2025-06-18T13:54:12.551+0000] {standard_task_runner.py:60} INFO - Started process 4097 to run task
+[2025-06-18T13:54:12.552+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'deep_models_pipeline', 'predict_best_model', 'manual__2025-06-18T13:51:55.830370+00:00', '--job-id', '631', '--raw', '--subdir', 'DAGS_FOLDER/train_deep_model_dag.py', '--cfg-path', '/tmp/tmp0ob9yjwx']
+[2025-06-18T13:54:12.554+0000] {standard_task_runner.py:88} INFO - Job 631: Subtask predict_best_model
+[2025-06-18T13:54:12.592+0000] {task_command.py:423} INFO - Running <TaskInstance: deep_models_pipeline.predict_best_model manual__2025-06-18T13:51:55.830370+00:00 [running]> on host 3cef70cd7501
+[2025-06-18T13:54:12.658+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='deep_models_pipeline' AIRFLOW_CTX_TASK_ID='predict_best_model' AIRFLOW_CTX_EXECUTION_DATE='2025-06-18T13:51:55.830370+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-06-18T13:51:55.830370+00:00'
+[2025-06-18T13:54:12.659+0000] {train_deep_model_dag.py:14} INFO - 🟦 Running command: python /opt/***/src/movie/models/predict_best_model.py
+[2025-06-18T13:54:12.660+0000] {train_deep_model_dag.py:15} INFO - 🟦 Working directory: /opt/***
+[2025-06-18T13:54:12.660+0000] {train_deep_model_dag.py:16} INFO - MLflow Tracking URI: https://dagshub.com/sacer11/MLOps_movie_rec_apr25.mlflow
+[2025-06-18T13:54:12.661+0000] {train_deep_model_dag.py:17} INFO - User: Klemp.Thomas
+[2025-06-18T13:54:12.661+0000] {train_deep_model_dag.py:18} INFO - Password: 24a59c66cf
+[2025-06-18T13:54:34.130+0000] {train_deep_model_dag.py:25} INFO - 🟩 [stdout]:
+
+[2025-06-18T13:54:34.131+0000] {train_deep_model_dag.py:27} WARNING - 🟨 [stderr]:
+2025-06-18 13:54:14,833 - INFO - 🚀 Starte Prediction für hybrid_deep_model über MLflow Registry
+
+Downloading artifacts:   0%|          | 0/8 [00:00<?, ?it/s]
+Downloading artifacts:  12%|█▎        | 1/8 [00:00<00:00, 11244.78it/s]
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:02,  2.08it/s]   
+Downloading artifacts:  25%|██▌       | 2/8 [00:00<00:02,  2.08it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:01<00:03,  1.50it/s]
+Downloading artifacts:  38%|███▊      | 3/8 [00:01<00:03,  1.50it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:02<00:03,  1.26it/s]
+Downloading artifacts:  50%|█████     | 4/8 [00:02<00:03,  1.26it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:03<00:02,  1.15it/s]
+Downloading artifacts:  62%|██████▎   | 5/8 [00:03<00:02,  1.15it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:04<00:01,  1.10it/s]
+Downloading artifacts:  75%|███████▌  | 6/8 [00:04<00:01,  1.10it/s]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:06<00:01,  1.16s/it]
+Downloading artifacts:  88%|████████▊ | 7/8 [00:06<00:01,  1.16s/it]
+Downloading artifacts: 100%|██████████| 8/8 [00:07<00:00,  1.12s/it]
+Downloading artifacts: 100%|██████████| 8/8 [00:07<00:00,  1.12s/it]
+Downloading artifacts: 100%|██████████| 8/8 [00:07<00:00,  1.05it/s]
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.84s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.84s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.84s/it]
+2025-06-18 13:54:31,289 - INFO - 📥 Embedding loaded (directly from registry): Shape: (10381, 32)
+
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it]
+Downloading artifacts: 100%|██████████| 1/1 [00:01<00:00,  1.04s/it]
+2025-06-18 13:54:33,466 - INFO - 📄 Konfiguration geladen aus Registry:
+2025-06-18 13:54:33,466 - INFO -  - n_neighbors: 12
+2025-06-18 13:54:33,466 - INFO -  - latent_dim: 32
+2025-06-18 13:54:33,466 - INFO -  - hidden_dim: 256
+2025-06-18 13:54:33,466 - INFO -  - tfidf_features: 300
+2025-06-18 13:54:33,466 - INFO -  - epochs: 30
+2025-06-18 13:54:33,466 - INFO -  - lr: 0.001
+2025-06-18 13:54:33,466 - INFO -  - batch_size: 128
+2025-06-18 13:54:33,466 - INFO -  - metric: cosine
+2025-06-18 13:54:33,466 - INFO -  - content_weight: 0.5
+2025-06-18 13:54:33,466 - INFO -  - collab_weight: 0.5
+2025-06-18 13:54:33,466 - INFO -  - power_factor: 1.0
+2025-06-18 13:54:33,466 - INFO -  - drop_threshold: 0.0
+2025-06-18 13:54:33,576 - INFO - ✅ Prediction successful – result is kept in RAM, not saved to disk.
+2025-06-18 13:54:33,580 - INFO - 📊 Prediction results:
+ user_id                                                                                                                                                                                                                                                                                                                                                                                                                                                                   recommendations
+       1 [0, 4331, 2064, 2769, 5445, 7644, 7994, 4602, 9683, 2009, 8885, 9364, 3809, 346, 3550, 554, 7766, 9847, 9070, 2439, 9598, 10029, 3308, 4786, 9474, 9601, 8725, 9952, 3615, 916, 10313, 2694, 33, 9088, 8822, 2369, 3501, 7257, 9011, 1377, 1876, 9701, 9195, 9953, 8566, 922, 1826, 1784, 6793, 8328, 3997, 5021, 8052, 561, 9238, 7758, 9599, 1817, 8912, 926, 10128, 1645, 1814, 918, 10204, 1823, 8673, 9292, 7680, 560, 5551, 9977, 7907, 4946, 7806, 4421, 1872, 2911, 1821]
+       2              [1, 1790, 1752, 7600, 2138, 1591, 3525, 145, 2108, 1783, 301, 7811, 900, 8279, 1657, 1771, 3076, 5903, 8359, 1822, 455, 1496, 1776, 902, 5214, 5846, 8442, 4946, 8433, 1389, 1616, 2805, 2984, 1839, 8882, 1767, 1780, 3337, 2997, 430, 9523, 5759, 6795, 1774, 1788, 3930, 4713, 6305, 1819, 1831, 337, 8779, 606, 8599, 3511, 115, 1742, 650, 1768, 531, 909, 903, 1779, 2123, 1213, 1775, 1792, 630, 911, 1870, 2557, 7680, 738, 7029, 4717, 461, 8282, 8316, 54]
+       3      [2, 407, 390, 1886, 1584, 2179, 1258, 4, 904, 2396, 4012, 2117, 4627, 6098, 5155, 2621, 395, 3320, 6704, 4675, 4455, 3726, 1753, 1299, 2472, 1239, 5110, 1834, 1231, 4024, 3042, 731, 3610, 3950, 1741, 4178, 6273, 4019, 8717, 2081, 1532, 2272, 2088, 5335, 2114, 380, 3828, 2089, 2118, 3020, 5905, 3370, 4090, 2823, 6177, 3329, 10090, 7232, 1738, 3764, 6338, 385, 1789, 5285, 1603, 2791, 2430, 3886, 4548, 3335, 3545, 2882, 8873, 462, 2876, 790, 4151, 4140, 7331]
+       4      [3, 1889, 2316, 3738, 4651, 9137, 6020, 1249, 45, 1441, 3816, 1511, 1594, 3428, 474, 8642, 1207, 2124, 8125, 8982, 1278, 7319, 9318, 2201, 8404, 1627, 3373, 1384, 6278, 699, 1312, 205, 169, 2639, 4953, 4497, 3593, 7983, 4498, 1984, 740, 129, 8826, 6197, 3028, 8196, 1399, 2625, 3789, 1379, 2835, 166, 7500, 279, 9361, 3134, 6002, 9064, 255, 8511, 3984, 6761, 9204, 5715, 113, 10236, 8963, 10246, 7774, 7392, 5340, 8281, 3087, 8220, 3045, 8216, 632, 3524, 8495]
+       5          [4, 2, 4675, 5834, 407, 4674, 4090, 5049, 7635, 7232, 2621, 1753, 1886, 8717, 6273, 390, 904, 2396, 1831, 6098, 568, 1216, 7345, 10307, 2272, 262, 9974, 1299, 552, 5155, 1834, 2179, 7910, 1584, 7773, 3750, 4012, 2472, 7344, 5398, 1258, 173, 4140, 3042, 3505, 301, 1795, 3274, 834, 8282, 475, 1497, 3950, 6164, 5905, 2117, 3764, 708, 4029, 3020, 5110, 3370, 906, 1771, 8126, 1309, 1822, 156, 4627, 9965, 2876, 8570, 7811, 3083, 6274, 464, 10361, 7444, 7379]
+
+[2025-06-18T13:54:34.132+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-06-18T13:54:34.143+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=deep_models_pipeline, task_id=predict_best_model, execution_date=20250618T135155, start_date=20250618T135412, end_date=20250618T135434
+[2025-06-18T13:54:34.179+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-06-18T13:54:34.197+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
